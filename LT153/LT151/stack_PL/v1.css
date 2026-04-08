@@ -1,0 +1,1014 @@
+/* <style> */
+
+.hide-popup .mantine-Popover-dropdown {
+  display: none;
+}
+
+/* new cutsom quanity  and ADD styles */
+
+#quantity-swatches {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 44px;
+}
+.qty-swatch {
+  padding: 11px 16px;
+  border: 1px solid #bcbcbc;
+  font-weight: bold;
+  width: 100%;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.qty-swatch:hover,
+#qty-12-box:hover {
+  border: 2px solid black;
+  font-weight: bold;
+}
+
+#qty-12-box {
+  cursor: pointer;
+  margin: 1rem 0;
+  padding: 11px 16px;
+  border: 1px solid #ccc;
+  color: black;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 5px;
+  background: white;
+}
+
+#custom-quick-add {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  padding: 16px;
+  padding-top: unset;
+  margin: unset;
+}
+
+#quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  display: flex;
+  width: 34px !important;
+  height: 34px;
+  padding: 0.667px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+#qty-decrease:disabled {
+  color: #cccccc;
+  border: 1px solid #cccccc;
+  cursor: auto;
+}
+
+#custom-qty-input {
+  height: 34px;
+  border: unset !important;
+  border-radius: 0;
+  text-align: center;
+  font-weight: normal;
+  display: flex;
+  width: 40px;
+  min-height: var(--height-34, 34px);
+  padding: 7.8px 6px;
+  justify-content: center;
+  align-items: flex-start;
+  color: var(--www-laithwaites-co-uk-black, var(--color-black-solid, #000));
+  text-align: center;
+  font-family: var(--font-family-Font-2, Roboto);
+  font-size: var(--font-size-16, 16px);
+  font-style: normal;
+  font-weight: var(--font-weight-400, 400);
+  line-height: var(--line-height-18_4, 18.4px);
+}
+
+#custom-qty-input::-webkit-inner-spin-button,
+#custom-qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#custom-atb {
+  padding: 14px 26px;
+  background: #2e7d5d;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  height: 44px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#custom-atb:hover {
+  background: #094b32;
+  color: white;
+}
+
+/* hide original ATB BTB with popup etc.*/
+.grid-addto-cart-container {
+  display: none;
+}
+
+/* OFFER BADGE STYLES */
+
+.custom-pricing-cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-pricing-cont .lowestPricePossibleOnOffer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.badge-price {
+  height: 16px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* CUSTOM CREATED DEAL POPUP STYLES */
+
+.offer-price-badge {
+  position: relative;
+  padding-left: 6px;
+  padding-right: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deal-popup-container {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.deal-popup-arrow {
+  position: absolute;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: white;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  transform: rotate(45deg);
+  bottom: -1.125rem;
+  left: 50%;
+  margin-left: -1.125rem;
+  transition: left 0.2s ease;
+}
+
+/*left align popup deal text*/
+.deal-popup-container .add-on-container {
+  text-align: left;
+}
+
+.deal-popup-container .tiered-price-container {
+  text-align: left;
+}
+
+.deal-popup-container .top-price-section {
+  text-align: left;
+}
+
+.hide-section {
+  display: none;
+}
+
+.deal-popup-container .add-to-cart-section {
+  display: none;
+}
+
+/* ADD STYLES TO RESERVE ITEMS, TO REVER BACK TO ORIGINAL */
+
+.reserve-item .grid-addto-cart-container {
+  display: block !important;
+}
+
+.css-r4wj6w.grid-view
+  .ais-Hits-list
+  .ais-Hits-item.reserve-item
+  .addToCart-container {
+  bottom: 16px !important;
+}
+
+/* 'ADDING' text take up too much space, so spinner added insteas fro thoise screen sizes */
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hide spinner by default */
+#custom-atb .btn-spinner {
+  display: none;
+}
+
+/********* LT151 STYLES ***********/
+
+.custom-container {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* no offer pricing */
+
+.no-offer-pricing {
+  text-align: left;
+  display: flex;
+  padding: 16px;
+  width: 100%;
+  align-items: baseline;
+}
+
+.no-offer-pricing .price-clean {
+  color: rgba(34, 34, 34, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 3px;
+}
+
+.no-offer-pricing .per-bottle-text {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* offer pricing */
+
+.offer-pricing {
+  padding: 16px;
+  padding-bottom: 10px;
+}
+
+.offer-pricing .price-breakdown {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.offer-pricing .full-price-crossed {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: line-through;
+}
+
+.offer-pricing .offer-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.offer-pricing .price-clean {
+  color: rgba(175, 7, 15, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.offer-pricing .savings-balance {
+  display: flex;
+  padding: 3px 5px;
+  gap: 1px;
+  background: rgba(175, 7, 15, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+  padding-bottom: 2px;
+  white-space: nowrap;
+}
+
+.offer-pricing .per-bottle-text {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* promo offer */
+
+.promo-pricing {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  border-left: 4px solid rgba(27, 12, 94, 0.85);
+  background: #f6f5fc;
+}
+
+.promo-pricing .price-breakdown {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.promo-pricing .full-price-crossed {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: line-through;
+}
+
+.promo-pricing .offer-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.promo-pricing .price-clean {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.promo-pricing .savings-balance {
+  display: flex;
+  padding: 3px 5px;
+  padding-bottom: 2px;
+  gap: 2px;
+  background: rgba(27, 12, 94, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+.promo-pricing .per-bottle-text {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+.promo-rule {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 22.4px;
+  display: flex;
+  align-items: normal;
+}
+
+.highlight-price {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 0.2rem;
+}
+
+.promo-popup .add-on-container {
+  padding-top: 1rem;
+}
+
+.promo-popup .top-price-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promo-popup .straight-sku-wrapper {
+  padding-top: 1rem;
+}
+
+/* grey text explaining deal */
+.promo-popup div[data-testid="standard-price-section"] {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+
+/* grey text explaining deal */
+.promo-popup .tiered-price-container div[data-testid="tiered-price"] {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+
+/* purple main price */
+.promo-popup .tiered-price-container .price {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 0.2rem;
+}
+
+/* red svaings price */
+.promo-popup .straight-sku-wrapper .saving-section {
+  display: flex;
+  padding: 2px 5px;
+  gap: 1px;
+  background: rgba(175, 7, 15, 0.85) !important;
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+}
+
+/* red main price */
+.promo-popup .straight-sku-wrapper .price {
+  color: rgba(175, 7, 15, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.promo-popup .straight-sku-wrapper span[data-testid="qty-text"] {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+
+.promo-popup .straight-sku-wrapper .strike,
+.promo-popup .straight-sku-wrapper .strike-price {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+
+.promo-popup .straight-sku-wrapper .saving-section-content {
+  text-align: unset !important;
+  border-radius: unset !important;
+  background: unset !important;
+  font-size: unset !important;
+  font-weight: unset !important;
+  line-height: unset !important;
+  padding: unset !important;
+  margin-top: -1px;
+}
+
+.promo-popup .straight-sku-wrapper .saving-section-content .saving {
+  color: white !important;
+  padding: unset !important;
+}
+
+/* bulk deal promo pricing popup styles */
+
+.promo-popup .case-sku {
+  display: flex;
+  flex-direction: column;
+}
+
+/*swap the bulk price deals, so that purple deal is at the top */
+.promo-popup .top-price-section.mixed-case {
+  order: 1;
+  padding-top: 1rem;
+}
+
+.promo-popup .price-section {
+  width: 100%;
+}
+
+.promo-popup .price-section .strike {
+  color: #565960;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 140%; /* 16.8px */
+  text-decoration-line: line-through;
+}
+
+.promo-popup .saving-section-content {
+  max-height: 20px;
+}
+
+/* purple bacground saving price */
+.promo-popup .top-price-section .saving-section {
+  display: flex;
+  padding: 2px 5px;
+  gap: 1px;
+  background: rgba(27, 12, 94, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.promo-popup .top-price-section .saving-section span {
+  white-space: nowrap;
+}
+
+/*puple main price */
+.promo-popup .top-price-section span[data-testid="price"] {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 0.2rem;
+}
+
+/* red bacground saving price */
+.promo-popup .top-price-section.mixed-case .saving-section {
+  background: rgba(175, 7, 15, 0.85);
+}
+
+/*red main price*/
+.promo-popup .top-price-section.mixed-case span[data-testid="price"] {
+  color: rgba(175, 7, 15, 0.85);
+}
+
+/* grey text exlaining case promo details */
+.promo-popup .sale-price div,
+.promo-popup .case-details {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+.promo-rule.mix-match span {
+  font-size: 14px;
+}
+
+/* ============================================ */
+/* ALL MEDIA QUERIES - ORDERED LARGEST TO SMALLEST */
+/* ============================================ */
+
+/* Extra Large Screens (1680px and above) */
+@media (min-width: 1680px) {
+  .deal-popup-container {
+    width: 480px;
+  }
+}
+
+/* Large Screens (1551px - 1679px) */
+@media (min-width: 1551px) and (max-width: 1679px) {
+  .deal-popup-container {
+    width: 420px;
+  }
+}
+
+/* Medium-Large Screens (1480px - 1550px) */
+@media (min-width: 1480px) and (max-width: 1550px) {
+  .deal-popup-container {
+    width: 380px;
+  }
+}
+
+/* Desktop Screens (1465px and above) */
+@media (min-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Desktop Screens (1300px - 1464px) */
+@media (min-width: 1300px) and (max-width: 1464px) {
+  /* No styles currently */
+}
+
+/* Desktop to Tablet Landscape (1025px - 1299px) */
+@media (min-width: 1025px) and (max-width: 1299px) {
+  .deal-popup-container {
+    width: 350px;
+  }
+}
+
+/* Desktop to Tablet (1024px - 1230px) */
+@media (min-width: 1024px) and (max-width: 1230px) {
+  #custom-quick-add {
+    gap: 16px;
+  }
+}
+
+/* Desktop to Tablet (1024px - 1300px) */
+@media (min-width: 1024px) and (max-width: 1300px) {
+  #custom-atb.loading .btn-spinner {
+    display: inline-block;
+  }
+  #custom-atb.loading .btn-text-short,
+  #custom-atb.loading .btn-text-full {
+    display: none !important;
+  }
+}
+
+/* Tablet and Desktop (1025px and above) */
+@media (min-width: 1025px) {
+  .deal-popup-container {
+    width: 350px;
+  }
+}
+
+/* Tablet and below (max-width: 1024px) */
+@media (max-width: 1024px) {
+  #bottom-wrapper {
+    gap: 4px;
+  }
+  #custom-qty-input {
+    width: 50px;
+  }
+  .offer-price-badge {
+    padding: 14px;
+    margin: -14px;
+  }
+  .custom-pricing-cont .lowestPricePossibleOnOffer span {
+    padding-right: 6px;
+  }
+}
+
+/* Tablet (max-width: 1030px) */
+@media (max-width: 1030px) {
+  .promo-rule.promo-popup span {
+    padding-right: 5px;
+  }
+}
+
+/* Tablet Portrait to Mobile Landscape (768px - 1022px) */
+@media (min-width: 768px) and (max-width: 1022px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Tablet Portrait to Mobile Landscape (767px - 1022px) */
+@media (min-width: 767px) and (max-width: 1022px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Tablet Portrait (768px - 1022px) */
+@media (min-width: 1022px) and (max-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: inline;
+  }
+  #custom-atb .btn-text-full {
+    display: none;
+  }
+}
+
+/* Tablet and below (max-width: 1022px) */
+@media (max-width: 1022px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Mobile Landscape (max-width: 767px) */
+@media (max-width: 767px) {
+  /* ============================================ */
+  /* Container & Layout Styles
+    /* ============================================ */
+  .deal-popup-container {
+    min-width: unset;
+  }
+
+  /* Prevent horizontal scrolling */
+  .ais-Hits-list {
+    overflow-x: hidden !important;
+  }
+
+  /* ============================================ */
+  /* Hit Item Layout
+    /* ============================================ */
+  .ais-Hits-item {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: stretch !important;
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* ============================================ */
+  /* Image Container Styles
+    /* ============================================ */
+  /* Set fixed width for image container */
+  .ais-Hits-item .image-bg {
+    width: 100px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* Make image container take full height */
+  .ais-Hits-item .image-container {
+    height: 100% !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Ensure image fills its container */
+  .ais-Hits-item .image {
+    width: 100% !important;
+    height: 100px !important;
+    border-radius: 0 !important;
+  }
+
+  .ais-Hits-item .image img {
+    object-fit: contain !important;
+  }
+
+  /* Adjust image inside */
+  .ais-Hits-item .image-bg .image-container {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .ais-Hits-item .image-bg img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* Hide quick links on mobile */
+  .image-bg .quick-links-container,
+  .quick-links-container > .zoom {
+    display: none !important;
+  }
+
+  /* ============================================ */
+  /* Product Content Wrapper
+    /* ============================================ */
+  .ais-Hits-item .product-content-wrapper {
+    flex: 1 !important;
+    min-width: 0 !important; /* Allows content to shrink */
+    max-width: calc(
+      100% - 112px
+    ) !important; /* Account for image width + gap */
+    overflow-x: hidden !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Ensure all child elements don't overflow */
+  .ais-Hits-item .product-content-wrapper * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* ============================================ */
+  /* Hit Content (Title & Rating)
+    /* ============================================ */
+  /* Position all content inside hit-content to the left */
+  .hit-content.align-top {
+    text-align: left !important;
+    padding: 0 !important;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  /* Ensure inline containers also align left */
+  .hit-content.align-top .inline-container,
+  .hit-content.align-top .title {
+    text-align: left !important;
+  }
+
+  .hit-content.align-top .title {
+    margin-bottom: 18px !important;
+  }
+
+  /* Hide inline container on mobile */
+  .hit-content > .inline-container {
+    display: none !important;
+  }
+
+  /* Handle long text */
+  .ais-Hits-item .title a,
+  .ais-Hits-item .titleDescSale {
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+
+  /* ============================================ */
+  /* Pricing Section Styles
+    /* ============================================ */
+  /* Pricing containers */
+  .promo-pricing {
+    padding: 12px !important;
+  }
+
+  .offer-pricing {
+    padding: 18px 0 !important;
+  }
+
+  /* Price breakdown layouts */
+  .promo-pricing .price-breakdown,
+  .offer-pricing .price-breakdown {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  /* Savings badge */
+  .savings-balance {
+    white-space: nowrap !important;
+    font-size: 10px !important;
+    padding: 2px 4px !important;
+  }
+
+  /* Price text */
+  .price-clean {
+    font-size: 18px !important;
+  }
+
+  /* ============================================ */
+  /* Quick Add / Add to Cart Section
+    /* ============================================ */
+  /* Custom quick add container */
+  #custom-quick-add {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 18px !important;
+    padding: 0 !important;
+  }
+
+  /* Quantity selector */
+  #quantity-selector {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .qty-btn {
+    width: 49px !important;
+    height: 49px !important;
+  }
+
+  #custom-qty-input {
+    height: 42px !important;
+    width: 36px !important;
+    padding: 0 !important;
+  }
+
+  /* Add to cart button */
+  #custom-atb .btn-text-full {
+    display: none !important;
+  }
+
+  #custom-atb .btn-text-short {
+    display: block !important;
+    font-size: 1.5rem;
+  }
+
+  /* ============================================ */
+  /* Add to Cart Container
+    /* ============================================ */
+  .product-content-wrapper .addToCart-container {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* Mobile (max-width: 766px) */
+@media (max-width: 766px) {
+  .ais-Hits-list .ais-Hits-item.reserve-item .addToCart-container {
+    margin-bottom: 16px !important;
+  }
+}
+
+/* Small Mobile (max-width: 375px) */
+@media (max-width: 375px) {
+  .qty-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  #custom-atb .btn-text-short {
+    display: inline;
+  }
+  #custom-atb .btn-text-full {
+    display: none;
+  }
+}
+
+/* Hover-based interactions (desktop) */
+@media (hover: hover) and (pointer: fine) {
+  .offer-price-badge:hover .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Touch-based interactions (mobile/tablet) */
+@media (hover: none) and (pointer: coarse) {
+  .offer-price-badge.popup-active .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .offer-price-badge:not(.popup-active) .deal-popup-container {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* </style> */

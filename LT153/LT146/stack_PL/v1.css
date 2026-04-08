@@ -1,0 +1,658 @@
+/* <style> */
+
+@media (min-width: 1366px) {
+  .grid-view .web-description {
+    display: none !important;
+  }
+  /* hide descirption */
+  .grid-view .ais-Hits .ais-Hits-item .web-description.class-grid {
+    display: none !important;
+  }
+
+  .css-16v6bxo .ais-Hits-list .ais-Hits-item .hit-content .web-description {
+    display: none !important;
+  }
+
+  /*reduce content height for title and other items */
+  .grid-view .ais-Hits .ais-Hits-item .hit-content {
+    min-height: unset !important;
+    height: fit-content;
+    /*background: pink;*/
+  }
+
+  /*remove absoulte position for child elements */
+  .grid-view .ais-Hits .ais-Hits-item .hit-content .country {
+    position: static !important;
+  }
+
+  .grid-view .ais-Hits .ais-Hits-item .hit-content .inline-container .rating {
+    position: static !important;
+  }
+
+  /* add s[ace between the reviews and other stuff */
+  .grid-view
+    .ais-Hits-list
+    .ais-Hits-item
+    .hit-content
+    .inline-container
+    .rating {
+    margin-top: 0 !important;
+  }
+
+  /*remove the space for happy to wait products */
+  .grid-view
+    .ais-Hits-list
+    .ais-Hits-item.happy-to-wait-prod
+    .hit-content
+    .inline-container
+    .rating {
+    margin-top: unset !important;
+  }
+
+  .grid-view
+    .ais-Hits-list
+    .ais-Hits-item
+    .hit-content
+    .inline-container
+    .rating.default {
+    margin-top: 10px !important;
+  }
+
+  .grid-view
+    .ais-Hits-list
+    .ais-Hits-item
+    .hit-content
+    .inline-container
+    .happy-to-wait-container {
+    min-height: 46px;
+    margin-top: -0.65rem;
+  }
+}
+
+/*********** LT146 STYLES *********/
+
+.hide-popup .mantine-Popover-dropdown {
+  display: none;
+}
+
+/* new cutsom quanity  and ADD styles */
+
+.css-r4wj6w.grid-view .ais-Hits-list .ais-Hits-item .addToCart-container {
+  bottom: 75px !important;
+}
+
+#quantity-swatches {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 44px;
+}
+.qty-swatch {
+  padding: 11px 16px;
+  border: 1px solid #bcbcbc;
+  font-weight: bold;
+  width: 100%;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.qty-swatch:hover,
+#qty-12-box:hover {
+  border: 2px solid black;
+  font-weight: bold;
+}
+
+#qty-12-box {
+  cursor: pointer;
+  margin: 1rem 0;
+  padding: 11px 16px;
+  border: 1px solid #ccc;
+  color: black;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 5px;
+  background: white;
+}
+
+#custom-quick-add {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-top: 1rem;
+  margin-top: auto;
+  width: 100%;
+  padding: 16px;
+}
+
+@media (min-width: 1024px) and (max-width: 1230px) {
+  #custom-quick-add {
+    gap: 16px;
+  }
+}
+
+#quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  display: flex;
+  width: 34px !important;
+  height: 34px;
+  padding: 0.667px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+@media (max-width: 375px) {
+  .qty-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
+#qty-decrease:disabled {
+  color: #cccccc;
+  border: 1px solid #cccccc;
+  cursor: auto;
+}
+
+#custom-qty-input {
+  height: 34px;
+  border: unset !important;
+  border-radius: 0;
+  text-align: center;
+  font-weight: normal;
+  -moz-appearance: textfield;
+  display: flex;
+  width: 40px;
+  min-height: var(--height-34, 34px);
+  padding: 7.8px 6px;
+  justify-content: center;
+  align-items: flex-start;
+  color: var(--www-laithwaites-co-uk-black, var(--color-black-solid, #000));
+  text-align: center;
+  font-family: var(--font-family-Font-2, Roboto);
+  font-size: var(--font-size-16, 16px);
+  font-style: normal;
+  font-weight: var(--font-weight-400, 400);
+  line-height: var(--line-height-18_4, 18.4px);
+}
+
+#custom-qty-input::-webkit-inner-spin-button,
+#custom-qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#custom-atb {
+  padding: 14px 26px;
+  background: #2e7d5d;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  height: 44px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#custom-atb:hover {
+  background: #094b32;
+  color: white;
+}
+
+@media (max-width: 1024px) {
+  #bottom-wrapper {
+    gap: 4px;
+  }
+  #custom-qty-input {
+    width: 50px;
+  }
+}
+
+/* hide original ATB BTB with popup etc.*/
+.grid-addto-cart-container {
+  display: none;
+}
+
+/* OFFER BADGE STYLES */
+
+.custom-pricing-cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-pricing-cont .lowestPricePossibleOnOffer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.badge-price {
+  height: 16px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* CUSTOM CREATED DEAL POPUP STYLES */
+
+.offer-price-badge {
+  position: relative;
+  padding-left: 6px;
+  padding-right: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile only - larger touch target */
+@media (max-width: 1024px) {
+  .offer-price-badge {
+    padding: 14px;
+    margin: -14px;
+  }
+
+  .custom-pricing-cont .lowestPricePossibleOnOffer span {
+    padding-right: 6px;
+  }
+}
+
+.deal-popup-container {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  /* // min-width: 250px; */
+  /* // max-width: calc(100% - 40px); */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.deal-popup-arrow {
+  position: absolute;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: white;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  transform: rotate(45deg);
+  bottom: -1.125rem;
+  left: 50%;
+  margin-left: -1.125rem;
+  transition: left 0.2s ease;
+}
+
+/*left align popup deal text*/
+.deal-popup-container .add-on-container {
+  text-align: left;
+}
+
+.deal-popup-container .tiered-price-container {
+  text-align: left;
+}
+
+.deal-popup-container .top-price-section {
+  text-align: left;
+}
+
+/* Desktop hover */
+@media (hover: hover) and (pointer: fine) {
+  .offer-price-badge:hover .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Mobile/touch devices only */
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile active state */
+  .offer-price-badge.popup-active .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Force hide when not active on mobile */
+  .offer-price-badge:not(.popup-active) .deal-popup-container {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Tablet width */
+/* // @media (min-width: 768px) and (max-width: 1023px) {
+// 	.deal-popup-container {
+// 		width: 430px;
+// 	}
+// } */
+
+/* Mobile - almost full width */
+@media (max-width: 767px) {
+  .deal-popup-container {
+    min-width: unset;
+  }
+
+  /* // New styles = David */
+  .css-1x2qwlw .ais-Hits-list {
+    grid-gap: 0 !important;
+  }
+  /* Make the list item use flexbox with row direction for left/right layout */
+  .ais-Hits-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  /* Set fixed width for image container */
+  .ais-Hits-item .image-bg {
+    width: 100px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+  }
+
+  /* Make image container take full height */
+  .ais-Hits-item .image-container {
+    height: 100% !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure image fills its container */
+  .ais-Hits-item .image {
+    width: 100% !important;
+    height: 100px !important;
+  }
+
+  .ais-Hits-item .image img {
+    object-fit: contain !important;
+  }
+
+  /* Right side container - everything except the image */
+  .ais-Hits-item > :not(.image-bg) {
+    flex: 1 !important;
+    min-width: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    margin-bottom: 20px;
+  }
+
+  /* Target product-content-wrapper and all its children */
+  .product-content-wrapper,
+  .product-content-wrapper * {
+    text-align: left !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+  }
+
+  /* Ensure the inline container and rating are left-aligned */
+  .product-content-wrapper .inline-container,
+  .product-content-wrapper .rating {
+    text-align: left !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+
+  /* New group container that holds both content-wrapper and quick-add */
+  .right-side-group {
+    display: flex !important;
+    flex-direction: column !important;
+    margin-top: auto !important;
+    width: 100% !important;
+  }
+
+  /* Product content wrapper inside the group */
+  .right-side-group .product-content-wrapper {
+    width: 100% !important;
+    order: 0 !important;
+  }
+
+  /* Custom quick add inside the group */
+  .right-side-group #custom-quick-add {
+    width: 100% !important;
+    order: 1 !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    padding-left: 16px !important;
+  }
+
+  /* Keep hit-content at the top (outside the group) */
+  .ais-Hits-item .hit-content {
+    display: block !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Keep addToCart-container in the middle (outside the group) */
+  .ais-Hits-item .addToCart-container {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Custom quick add styling */
+  #custom-quick-add {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  #quantity-selector {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .qty-btn {
+    width: 49px !important;
+    height: 49px !important;
+  }
+
+  #custom-qty-input {
+    height: 42px !important;
+    width: 36px !important;
+    padding: 0 !important;
+  }
+
+  #custom-atb {
+    flex: 1 !important;
+    text-align: center !important;
+    height: 50px !important;
+    padding: 8px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .quick-links-container .zoom {
+    display: none;
+  }
+
+  /* Center align stars with review count */
+  .rating {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .rating a {
+    display: inline-flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+  }
+
+  .star-icons {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 2px !important;
+  }
+
+  .star-icons svg {
+    display: inline-block !important;
+    vertical-align: middle !important;
+  }
+
+  .review-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+
+  #custom-atb .btn-text-full {
+    display: none !important;
+  }
+
+  #custom-atb .btn-text-short {
+    display: block !important;
+    font-size: 1.5rem;
+  }
+}
+
+/* Desktop widths */
+@media (min-width: 1680px) {
+  .deal-popup-container {
+    width: 480px;
+  }
+}
+@media (min-width: 1551px) {
+  .deal-popup-container {
+    width: 420px;
+  }
+}
+@media (min-width: 1480px) {
+  .deal-popup-container {
+    width: 380px;
+  }
+}
+@media (min-width: 1025px) {
+  .deal-popup-container {
+    width: 350px;
+  }
+}
+
+.hide-section {
+  display: none;
+}
+
+.deal-popup-container .add-to-cart-section {
+  display: none;
+}
+
+/* 'ADD TO BASKET' OR 'ADD' - depending on card widths */
+@media (min-width: 1022px) and (max-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: inline;
+  }
+  #custom-atb .btn-text-full {
+    display: none;
+  }
+}
+
+@media (max-width: 1022px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+@media (min-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+@media (max-width: 375px) {
+}
+
+/* ADD STYLES TO RESERVE ITEMS, TO REVER BACK TO ORIGINAL */
+
+.reserve-item .grid-addto-cart-container {
+  display: block !important;
+}
+
+.css-r4wj6w.grid-view
+  .ais-Hits-list
+  .ais-Hits-item.reserve-item
+  .addToCart-container {
+  bottom: 16px !important;
+}
+
+/* remove margin bpttom for pricing element on mobile */
+
+.css-r4wj6w .ais-Hits-item .addToCart-container {
+  margin-bottom: unset !important;
+}
+
+@media (max-width: 766px) {
+  .ais-Hits-list .ais-Hits-item.reserve-item .addToCart-container {
+    margin-bottom: 16px !important;
+  }
+}
+
+/* 'ADDING' text take up too much space, so spinner added insteas fro thoise screen sizes */
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Hide spinner by default */
+#custom-atb .btn-spinner {
+  display: none;
+}
+
+/* Show spinner and hide text when loading on medium screens */
+@media (min-width: 1024px) and (max-width: 1300px) {
+  #custom-atb.loading .btn-spinner {
+    display: inline-block;
+  }
+  #custom-atb.loading .btn-text-short,
+  #custom-atb.loading .btn-text-full {
+    display: none !important;
+  }
+}
+
+/* </style> */

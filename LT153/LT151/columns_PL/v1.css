@@ -1,0 +1,813 @@
+/* <style> */
+
+.hide-popup .mantine-Popover-dropdown {
+  display: none;
+}
+
+.hide-section {
+  display: none;
+}
+
+/* Main Container */
+#custom-quick-add {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  padding: 16px;
+  padding-top: unset;
+  margin: unset;
+}
+
+/* Quantity Selector */
+#quantity-selector {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 34px;
+  flex-shrink: 0;
+}
+
+.qty-btn {
+  display: flex;
+  width: 34px !important;
+  height: 34px;
+  padding: 0.667px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 1px solid black;
+  cursor: pointer;
+  background: white;
+  color: black;
+}
+
+#qty-decrease:disabled {
+  color: #cccccc;
+  border: 1px solid #cccccc;
+  cursor: auto;
+}
+
+#custom-qty-input {
+  height: 34px;
+  border: unset !important;
+  border-radius: 0;
+  text-align: center;
+  font-weight: normal;
+  display: flex;
+  width: 40px;
+  min-height: var(--height-34, 34px);
+  padding: 7.8px 6px;
+  justify-content: center;
+  align-items: flex-start;
+  color: var(--www-laithwaites-co-uk-black, var(--color-black-solid, #000));
+  text-align: center;
+  font-family: var(--font-family-Font-2, Roboto);
+  font-size: var(--font-size-16, 16px);
+  font-style: normal;
+  font-weight: var(--font-weight-400, 400);
+  line-height: var(--line-height-18_4, 18.4px);
+}
+
+#custom-qty-input::-webkit-inner-spin-button,
+#custom-qty-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Quantity Swatches (LT146) */
+#quantity-swatches {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  height: 44px;
+}
+
+.qty-swatch {
+  padding: 11px 16px;
+  border: 1px solid #bcbcbc;
+  font-weight: bold;
+  width: 100%;
+  background: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.qty-swatch:hover,
+#qty-12-box:hover {
+  border: 2px solid black;
+  font-weight: bold;
+}
+
+#qty-12-box {
+  cursor: pointer;
+  margin: 1rem 0;
+  padding: 11px 16px;
+  border: 1px solid #ccc;
+  color: black;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  border-radius: 5px;
+  background: white;
+}
+
+/* Add to Basket Button */
+#custom-atb {
+  padding: 14px 26px;
+  background: #2e7d5d;
+  color: white;
+  font-weight: bold;
+  border: none;
+  width: 100%;
+  height: 44px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+#custom-atb:hover {
+  background: #094b32;
+  color: white;
+}
+
+/* Button Text Responsive - Base Styles */
+#custom-atb .btn-text-short,
+#custom-atb .btn-text-full {
+  display: none;
+}
+
+/* Loading State & Spinner */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#custom-atb .btn-spinner {
+  display: none;
+}
+
+/* Hide Original ATB */
+.grid-addto-cart-container {
+  display: none;
+}
+
+/* Reserve Items - Revert to Original */
+.reserve-item .grid-addto-cart-container {
+  display: block !important;
+}
+
+.css-r4wj6w.grid-view
+  .ais-Hits-list
+  .ais-Hits-item.reserve-item
+  .addToCart-container {
+  bottom: 16px !important;
+}
+
+/* ---------------------------------------- */
+/* 3. PRICING DISPLAY COMPONENTS            */
+/* ---------------------------------------- */
+
+.custom-container {
+  width: 100%;
+  margin-top: auto;
+}
+
+/* No Offer Pricing */
+.no-offer-pricing {
+  text-align: left;
+  display: flex;
+  padding: 16px;
+  width: 100%;
+  align-items: baseline;
+}
+
+.no-offer-pricing .price-clean {
+  color: rgba(34, 34, 34, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 3px;
+}
+
+.no-offer-pricing .per-bottle-text {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* Offer Pricing (Red) */
+.offer-pricing {
+  padding: 16px;
+  padding-bottom: 10px;
+}
+
+.offer-pricing .price-breakdown {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.offer-pricing .full-price-crossed {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: line-through;
+}
+
+.offer-pricing .offer-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.offer-pricing .price-clean {
+  color: rgba(175, 7, 15, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.offer-pricing .savings-balance {
+  display: flex;
+  padding: 3px 5px;
+  gap: 1px;
+  background: rgba(175, 7, 15, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+  padding-bottom: 2px;
+  white-space: nowrap;
+}
+
+.offer-pricing .per-bottle-text {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* Promo Pricing (Purple) */
+.promo-pricing {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  padding-bottom: 12px;
+  padding-left: 12px;
+  border-left: 4px solid rgba(27, 12, 94, 0.85);
+  background: #f6f5fc;
+}
+
+.promo-pricing .price-breakdown {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.promo-pricing .full-price-crossed {
+  color: #73767d;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: line-through;
+}
+
+.promo-pricing .offer-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.promo-pricing .price-clean {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.promo-pricing .savings-balance {
+  display: flex;
+  padding: 3px 5px;
+  padding-bottom: 2px;
+  gap: 2px;
+  background: rgba(27, 12, 94, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+  white-space: nowrap;
+}
+
+.promo-pricing .per-bottle-text {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+}
+
+/* Promo Rule Text */
+.promo-rule {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 22.4px;
+  display: flex;
+  align-items: normal;
+}
+
+/* Highlight Price */
+.highlight-price {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 0.2rem;
+}
+
+/* Pricing Container */
+.custom-pricing-cont {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.custom-pricing-cont .lowestPricePossibleOnOffer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.custom-pricing-cont .lowestPricePossibleOnOffer span {
+  padding-right: 6px;
+}
+
+/* ---------------------------------------- */
+/* 4. OFFER BADGE & DEAL POPUP              */
+/* ---------------------------------------- */
+
+/* Badge Container */
+.offer-price-badge {
+  position: relative;
+  padding-left: 6px;
+  padding-right: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-price {
+  height: 16px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+/* Popup Container */
+.deal-popup-container {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+/* Popup Arrow */
+.deal-popup-arrow {
+  position: absolute;
+  width: 2.25rem;
+  height: 2.25rem;
+  background: white;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  transform: rotate(45deg);
+  bottom: -1.125rem;
+  left: 50%;
+  margin-left: -1.125rem;
+  transition: left 0.2s ease;
+}
+
+/* Left Align Popup Content */
+.deal-popup-container .add-on-container {
+  text-align: left;
+}
+
+.deal-popup-container .tiered-price-container {
+  text-align: left;
+}
+
+.deal-popup-container .top-price-section {
+  text-align: left;
+}
+
+/* Hide Add to Cart Section in Popup */
+.deal-popup-container .add-to-cart-section {
+  display: none;
+}
+
+/* ---------------------------------------- */
+/* 5. PROMO POPUP SPECIFIC STYLES           */
+/* ---------------------------------------- */
+
+.promo-popup .add-on-container {
+  padding-top: 1rem;
+}
+
+.promo-popup .top-price-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.promo-popup .straight-sku-wrapper {
+  padding-top: 1rem;
+}
+
+/* Grey Text - Deal Explanations */
+.promo-popup div[data-testid="standard-price-section"],
+.promo-popup .tiered-price-container div[data-testid="tiered-price"],
+.promo-popup .straight-sku-wrapper span[data-testid="qty-text"],
+.promo-popup .sale-price div,
+.promo-popup .case-details {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+}
+
+/* Purple Price Elements */
+.promo-popup .tiered-price-container .price,
+.promo-popup .top-price-section span[data-testid="price"] {
+  color: rgba(27, 12, 94, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  padding-right: 0.2rem;
+}
+
+/* Red Price Elements */
+.promo-popup .straight-sku-wrapper .price {
+  color: rgba(175, 7, 15, 0.85);
+  font-family: Roboto;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+/* Red Savings Section */
+.promo-popup .straight-sku-wrapper .saving-section {
+  display: flex;
+  padding: 2px 5px;
+  gap: 1px;
+  background: rgba(175, 7, 15, 0.85) !important;
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.promo-popup .straight-sku-wrapper .saving-section-content {
+  text-align: unset !important;
+  border-radius: unset !important;
+  background: unset !important;
+  font-size: unset !important;
+  font-weight: unset !important;
+  line-height: unset !important;
+  padding: unset !important;
+  margin-top: -1px;
+}
+
+.promo-popup .straight-sku-wrapper .saving-section-content .saving {
+  color: white !important;
+  padding: unset !important;
+}
+
+/* Strike-through Prices */
+.promo-popup .straight-sku-wrapper .strike,
+.promo-popup .straight-sku-wrapper .strike-price,
+.promo-popup .price-section .strike {
+  color: #5a5d62;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 22.4px;
+  text-decoration-line: line-through;
+}
+
+/* Bulk Deal Promo Styles */
+.promo-popup .case-sku {
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-popup .top-price-section.mixed-case {
+  order: 1;
+  padding-top: 1rem;
+}
+
+.promo-popup .price-section {
+  width: 100%;
+}
+
+.promo-popup .saving-section-content {
+  max-height: 20px;
+}
+
+/* Purple Background Savings */
+.promo-popup .top-price-section .saving-section {
+  display: flex;
+  padding: 2px 5px;
+  gap: 1px;
+  background: rgba(27, 12, 94, 0.85);
+  align-items: end;
+  color: #fff;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  height: fit-content;
+}
+
+.promo-popup .top-price-section .saving-section span {
+  white-space: nowrap;
+}
+
+/* Red Background Savings for Mixed Cases */
+.promo-popup .top-price-section.mixed-case .saving-section {
+  background: rgba(175, 7, 15, 0.85);
+}
+
+.promo-popup .top-price-section.mixed-case span[data-testid="price"] {
+  color: rgba(175, 7, 15, 0.85);
+}
+
+/* ======================================== */
+/* ALL MEDIA QUERIES                        */
+/* ======================================== */
+
+/* Max-width: 375px */
+@media (max-width: 375px) {
+  .qty-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  #custom-atb .btn-text-short {
+    display: inline;
+  }
+  #custom-atb .btn-text-full {
+    display: none;
+  }
+}
+
+/* Max-width: 766px */
+@media (max-width: 766px) {
+  .ais-Hits-list .ais-Hits-item.reserve-item .addToCart-container {
+    margin-bottom: 16px !important;
+  }
+}
+
+/* Max-width: 767px */
+@media (max-width: 767px) {
+  .deal-popup-container {
+    min-width: unset;
+  }
+
+  .css-1x2qwlw .ais-Hits-item {
+    border-radius: 0px !important;
+    border: none !important;
+  }
+
+  .ais-Hits-list .ais-Hits-item.hit-item-v2 .image-bg {
+    border-top-left-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+  }
+
+  .grid-view .ais-Hits-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .ais-Highlight,
+  .titleDescSale > a {
+    display: flex;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .ais-Highlight-nonHighlighted {
+    text-align: left !important;
+  }
+
+  #custom-atb .btn-text-full {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .country-rating .country {
+    display: flex;
+    flex-direction: column;
+    align-items: start !important;
+    gap: 0.5rem;
+  }
+
+  .offer-pricing {
+    padding: 0 0 10px 0;
+  }
+
+  #custom-quick-add {
+    flex-direction: column;
+    align-items: start;
+    padding: 0;
+    gap: 1rem;
+  }
+
+  .ais-Hits-item.hit-item-v2 .hit-content {
+    padding: 10px 0 !important;
+  }
+
+  .hit-content .inline-container {
+    align-items: start !important;
+  }
+
+  .hit-content .inline-container .rating {
+    gap: 5px;
+  }
+}
+
+/* Max-width: 1022px */
+@media (max-width: 1022px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Max-width: 1024px */
+@media (max-width: 1024px) {
+  #bottom-wrapper {
+    gap: 4px;
+  }
+  #custom-qty-input {
+    width: 50px;
+  }
+
+  .offer-price-badge {
+    padding: 14px;
+    margin: -14px;
+  }
+}
+
+/* Max-width: 1030px */
+@media (max-width: 1030px) {
+  .promo-rule.promo-popup span {
+    padding-right: 5px;
+  }
+}
+
+/* Min-width: 1022px and Max-width: 1465px */
+@media (min-width: 1022px) and (max-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: inline;
+  }
+  #custom-atb .btn-text-full {
+    display: none;
+  }
+}
+
+/* Min-width: 1024px and Max-width: 1230px */
+@media (min-width: 1024px) and (max-width: 1230px) {
+  #custom-quick-add {
+    gap: 16px;
+  }
+}
+
+/* Min-width: 1024px and Max-width: 1300px */
+@media (min-width: 1024px) and (max-width: 1300px) {
+  #custom-atb.loading .btn-spinner {
+    display: inline-block;
+  }
+  #custom-atb.loading .btn-text-short,
+  #custom-atb.loading .btn-text-full {
+    display: none !important;
+  }
+}
+
+/* Min-width: 1025px */
+@media (min-width: 1025px) {
+  .deal-popup-container {
+    width: 350px;
+  }
+}
+
+/* Min-width: 1465px */
+@media (min-width: 1465px) {
+  #custom-atb .btn-text-short {
+    display: none;
+  }
+}
+
+/* Min-width: 1480px */
+@media (min-width: 1480px) {
+  .deal-popup-container {
+    width: 380px;
+  }
+}
+
+/* Min-width: 1551px */
+@media (min-width: 1551px) {
+  .deal-popup-container {
+    width: 420px;
+  }
+}
+
+/* Min-width: 1680px */
+@media (min-width: 1680px) {
+  .deal-popup-container {
+    width: 480px;
+  }
+}
+
+/* Hover State Media Query */
+@media (hover: hover) and (pointer: fine) {
+  .offer-price-badge:hover .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Mobile Active State Media Query */
+@media (hover: none) and (pointer: coarse) {
+  .offer-price-badge.popup-active .deal-popup-container {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .offer-price-badge:not(.popup-active) .deal-popup-container {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* </style> */
