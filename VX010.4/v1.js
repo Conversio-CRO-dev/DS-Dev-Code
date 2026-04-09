@@ -1,4 +1,4 @@
-// Mobile & Desktopo Version | Separate CSS
+console.log("David | Desktop & Mobile Version");
 
 if (window.innerWidth < 768) {
   // mobile code
@@ -477,6 +477,7 @@ if (window.innerWidth < 768) {
     },
   ];
 
+  // Function to get add-ons HTML
   async function getAddOns() {
     let addOnHtml = "";
 
@@ -491,7 +492,12 @@ if (window.innerWidth < 768) {
       selectedSkus = preSelectedAddOns.map((addon) => addon.sku);
     }
 
-    addOns.forEach((addOn) => {
+    let addedCount = 0;
+    const maxAddOns = 2;
+
+    for (const addOn of addOns) {
+      if (addedCount >= maxAddOns) break;
+
       let title = addOn.textContent.trim();
       let item = addOn.closest("label");
       let savingPrice = item.querySelector(".price-box .saving-price");
@@ -502,64 +508,54 @@ if (window.innerWidth < 768) {
 
       // Skip if this add-on was already selected on PDP
       if (product && selectedSkus && selectedSkus.includes(product.sku)) {
-        return; // Skip this iteration
+        continue;
       }
 
       if (product) {
         addOnHtml += `
- <a href="${product.url}" class="add-on-item">
- <img src="${product.imageUrl}" alt="${product.name}" class="add-on-image">
- <div class="add-on-details">
- <h3 class="add-on-item-title">${product.name}</h3>
- <div class="add-on-rating">
- ${generateStars(product.rating)}
- </div>
- <div class="add-on-price">
- ${savingPrice && savingPrice.textContent ? `<span class="add-on-saving-price">${savingPrice.textContent}</span>` : ""}
- <span class="current-price">${currPrice.textContent}</span>
- </div>
- </div>
- <button class="add-on-add-to-cart-btn" data-product-id="${product.productId}">
- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 18" fill="none" stroke="none" class="h-auto w-5 md:w-6 pointer-events-none" role="img">
- <g clip-path="url(#clip0_1555_2892)">
- <path d="M3.53086 -0.00012207C3.82512 -0.00012207 4.05293 0.181636 4.11094 0.437573L4.26562 1.12488H19.7977C20.5113 1.12488 21.0809 1.83679 20.8805 2.55433L19.65 6.92214C19.2879 6.83425 18.9117 6.78152 18.5285 6.76043L19.7977 2.24988H4.52227L6.02695 8.99988H13.4133C13.1285 9.34441 12.8789 9.7241 12.675 10.1249H6.31172L6.825 12.3749H12.0246C12.007 12.5612 12 12.7475 12 12.9374C12 13.1272 12.007 13.3135 12.0246 13.4999H6.375C6.11133 13.4999 5.88633 13.3171 5.82656 13.0604L3.11355 1.12488H1.3125C1.00186 1.12488 0.75 0.873159 0.75 0.562378C0.75 0.251737 1.00186 -0.000111523 1.3125 -0.000111523L3.53086 -0.00012207ZM5.21836 16.0311C5.21836 14.9448 6.13242 14.0624 7.18711 14.0624C8.30508 14.0624 9.15586 14.9448 9.15586 16.0311C9.15586 17.1175 8.30508 17.9999 7.18711 17.9999C6.13242 17.9999 5.21836 17.1175 5.21836 16.0311ZM7.18711 16.8749C7.68633 16.8749 8.03086 16.4987 8.03086 16.0311C8.03086 15.5635 7.68633 15.1874 7.18711 15.1874C6.75117 15.1874 6.34336 15.5635 6.34336 16.0311C6.34336 16.4987 6.75117 16.8749 7.18711 16.8749ZM18.75 12.3432H20.4375C20.7469 12.3432 21 12.628 21 12.9057C21 13.2468 20.7469 13.4682 20.4375 13.4682H18.75V15.1557C18.75 15.4968 18.4969 15.7182 18.1875 15.7182C17.8781 15.7182 17.625 15.4968 17.625 15.1557V13.4682H15.9375C15.6281 13.4682 15.375 13.2468 15.375 12.9057C15.375 12.628 15.6281 12.3432 15.9375 12.3432H17.625V10.6557C17.625 10.378 17.8781 10.0932 18.1875 10.0932C18.4969 10.0932 18.75 10.378 18.75 10.6557V12.3432ZM23.25 12.9374C23.25 15.7323 20.9824 17.9999 18.1875 17.9999C15.3926 17.9999 13.125 15.7323 13.125 12.9374C13.125 10.1425 15.3926 7.87488 18.1875 7.87488C20.9824 7.87488 23.25 10.1425 23.25 12.9374ZM18.1875 8.99988C16.0113 8.99988 14.25 10.7612 14.25 12.9374C14.25 15.1136 16.0113 16.8749 18.1875 16.8749C20.3637 16.8749 22.125 15.1136 22.125 12.9374C22.125 10.7612 20.3637 8.99988 18.1875 8.99988Z" fill="white"></path>
- </g>
- <defs>
- <clipPath id="clip0_1555_2892">
- <rect width="22.5" height="18" fill="white" transform="translate(0.75 -0.00012207)"></rect>
- </clipPath>
- </defs>
- </svg>
- </button>
- </a>
- `;
-      }
-    });
+				<a href="${product.url}" class="add-on-item">
+				  <img src="${product.imageUrl}" alt="${product.name}" class="add-on-image" />
+				  <div class="add-on-details">
+				    <h3 class="add-on-item-title">${product.name}</h3>
+				    <div class="add-on-rating">${generateStars(product.rating)}</div>
+				    <div class="add-on-price">
+				      <span class="current-price">${currPrice.textContent}</span>
+				    </div>
+				  </div>
+				  <button class="add-on-add-to-cart-btn" data-product-id="${product.productId}">
+				    <svg
+				      xmlns="http://www.w3.org/2000/svg"
+				      width="24"
+				      height="24"
+				      viewBox="0 0 24 18"
+				      fill="none"
+				      stroke="none"
+				      class="h-auto w-5 md:w-6 pointer-events-none"
+				      role="img"
+				    >
+				      <g clip-path="url(#clip0_1555_2892)">
+				        <path
+				          d="M3.53086 -0.00012207C3.82512 -0.00012207 4.05293 0.181636 4.11094 0.437573L4.26562 1.12488H19.7977C20.5113 1.12488 21.0809 1.83679 20.8805 2.55433L19.65 6.92214C19.2879 6.83425 18.9117 6.78152 18.5285 6.76043L19.7977 2.24988H4.52227L6.02695 8.99988H13.4133C13.1285 9.34441 12.8789 9.7241 12.675 10.1249H6.31172L6.825 12.3749H12.0246C12.007 12.5612 12 12.7475 12 12.9374C12 13.1272 12.007 13.3135 12.0246 13.4999H6.375C6.11133 13.4999 5.88633 13.3171 5.82656 13.0604L3.11355 1.12488H1.3125C1.00186 1.12488 0.75 0.873159 0.75 0.562378C0.75 0.251737 1.00186 -0.000111523 1.3125 -0.000111523L3.53086 -0.00012207ZM5.21836 16.0311C5.21836 14.9448 6.13242 14.0624 7.18711 14.0624C8.30508 14.0624 9.15586 14.9448 9.15586 16.0311C9.15586 17.1175 8.30508 17.9999 7.18711 17.9999C6.13242 17.9999 5.21836 17.1175 5.21836 16.0311ZM7.18711 16.8749C7.68633 16.8749 8.03086 16.4987 8.03086 16.0311C8.03086 15.5635 7.68633 15.1874 7.18711 15.1874C6.75117 15.1874 6.34336 15.5635 6.34336 16.0311C6.34336 16.4987 6.75117 16.8749 7.18711 16.8749ZM18.75 12.3432H20.4375C20.7469 12.3432 21 12.628 21 12.9057C21 13.2468 20.7469 13.4682 20.4375 13.4682H18.75V15.1557C18.75 15.4968 18.4969 15.7182 18.1875 15.7182C17.8781 15.7182 17.625 15.4968 17.625 15.1557V13.4682H15.9375C15.6281 13.4682 15.375 13.2468 15.375 12.9057C15.375 12.628 15.6281 12.3432 15.9375 12.3432H17.625V10.6557C17.625 10.378 17.8781 10.0932 18.1875 10.0932C18.4969 10.0932 18.75 10.378 18.75 10.6557V12.3432ZM23.25 12.9374C23.25 15.7323 20.9824 17.9999 18.1875 17.9999C15.3926 17.9999 13.125 15.7323 13.125 12.9374C13.125 10.1425 15.3926 7.87488 18.1875 7.87488C20.9824 7.87488 23.25 10.1425 23.25 12.9374ZM18.1875 8.99988C16.0113 8.99988 14.25 10.7612 14.25 12.9374C14.25 15.1136 16.0113 16.8749 18.1875 16.8749C20.3637 16.8749 22.125 15.1136 22.125 12.9374C22.125 10.7612 20.3637 8.99988 18.1875 8.99988Z"
+				          fill="white"
+				        ></path>
+				      </g>
+				      <defs>
+				        <clipPath id="clip0_1555_2892">
+				          <rect
+				            width="22.5"
+				            height="18"
+				            fill="white"
+				            transform="translate(0.75 -0.00012207)"
+				          ></rect>
+				        </clipPath>
+				      </defs>
+				    </svg>
+				  </button>
+				</a>
+			`;
 
-    if (addOnHtml === "") {
-      //console.log("VX010.3 | (Variation 1) | User adds to bag from PDP: no add-ons shown");
-      window.dataLayer.push({
-        event: "conversioEvent",
-        conversio: {
-          event_category: "Conversio CRO",
-          event_action: "VX010.3 | Event Tracking",
-          event_label:
-            "VX010.3 | (Variation 1) | User adds to bag from PDP: no add-ons shown",
-          event_segment: "VX010.3EV1I",
-        },
-      });
-    } else {
-      // console.log("VX010.3 | (Variation 1) | User adds to bag from PDP: add-ons shown");
-      window.dataLayer.push({
-        event: "conversioEvent",
-        conversio: {
-          event_category: "Conversio CRO",
-          event_action: "VX010.3 | Event Tracking",
-          event_label:
-            "VX010.3 | (Variation 1) | User adds to bag from PDP: add-ons shown",
-          event_segment: "VX010.3EV1H",
-        },
-      });
+        addedCount++;
+      }
     }
 
     return addOnHtml;
@@ -701,7 +697,7 @@ if (window.innerWidth < 768) {
     <span class="price"> ${totalPrice}</span>
     </div>
     <div class="btn-group grid grid-cols-2 gap-6 lg:gap-12">
-    <a href="https://www.vax.co.uk/checkout/cart/" class="action go-to-basket leading-4 lg:leading-6" style="background-color: #FF671F;">
+    <a href="https://www.vax.co.uk/checkout/cart/" class="action go-to-basket leading-4 lg:leading-6" style="background-color: #FF671F !important;">
     View Basket </a>
     <a href="https://www.vax.co.uk/checkout/" class="action go-to-checkout leading-4 lg:leading-6" style="background-color: #003366;">
     Checkout </a>
@@ -801,6 +797,41 @@ if (window.innerWidth < 768) {
     </div>
     </div>
     `;
+
+    // Add item category & item quantity below product title
+    setTimeout(() => {
+      const cartItem = document.querySelector(".atb-notification .cart-item");
+
+      if (cartItem) {
+        let itemCategory = "";
+        let itemQuantity = "";
+
+        for (let i = dataLayer.length - 1; i >= 0; i--) {
+          if (dataLayer[i].ecommerce && dataLayer[i].ecommerce.items) {
+            itemCategory = dataLayer[i].ecommerce.items[0].item_category;
+            itemQuantity = dataLayer[i].ecommerce.items[0].quantity;
+            break;
+          }
+        }
+
+        if (itemCategory) {
+          const productLink = cartItem.querySelector(".product-item-link");
+          const categoryHtml = `<div class="item-category uppercase text-xs font-bold">${itemCategory}</div>`;
+          productLink.insertAdjacentHTML("afterend", categoryHtml);
+        }
+
+        if (itemQuantity) {
+          const categoryDiv = cartItem.querySelector(".item-category");
+          const quantityHtml = `<div class="item-quantity uppercase text-xs md:text-sm text-slate-400 md:mt-6">QTY ${itemQuantity}</div>`;
+          if (categoryDiv) {
+            categoryDiv.insertAdjacentHTML("afterend", quantityHtml);
+          } else {
+            const productLink = cartItem.querySelector(".product-item-link");
+            productLink.insertAdjacentHTML("afterend", quantityHtml);
+          }
+        }
+      }
+    }, 150);
 
     document.body.appendChild(atbNotificationEl);
 
@@ -1644,115 +1675,93 @@ if (window.innerWidth < 768) {
   function generateStars(rating) {
     const pct = Math.max(0, Math.min(100, (rating / 5) * 100));
 
-    const starSVG = `
-	  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="11" viewBox="0 0 14 13" fill="none" stroke="none" style="display:inline-block; margin-right:2px;">
-			<path d="M6.73002 0L8.89253 4.1L13.46 4.89L10.2275 8.2125L10.8875 12.8L6.73002 10.755L2.57001 12.8L3.23001 8.2125L0 4.89L4.56502 4.1L6.73002 0Z"/>
-		</svg>
-	`;
+    const starSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13.46" height="12.8" viewBox="0 0 14 13" fill="none" stroke="none" style="display:inline-block;"><path d="M6.73002 0L8.89253 4.1L13.46 4.89L10.2275 8.2125L10.8875 12.8L6.73002 10.755L2.57001 12.8L3.23001 8.2125L0 4.89L4.56502 4.1L6.73002 0Z"/></svg>`;
 
     const fiveStars = starSVG.repeat(5);
 
-    return `
-		<span
-		  class="addon-stars"
-		  aria-label="${rating} out of 5 stars"
-		  style="position: relative; display: inline-block; line-height: 1; white-space: nowrap;"
-		>
-		  <span style="opacity: 0.35">${fiveStars.replace(/fill="none"/g, 'fill="#000"')}</span>
-		  <span style="position:absolute; top:0; left:0; overflow:hidden; width:${pct}%;">
-		    <span>${fiveStars.replace(/fill="none"/g, 'fill="#FF671F"')}</span>
-		  </span>
-		</span>
-    `;
+    return `<span class="addon-stars" aria-label="${rating} out of 5 stars" style="position: relative; display: inline-block; line-height: 1; white-space: nowrap;"><span style="opacity: 0.35">${fiveStars.replace(/fill="none"/g, 'fill="#000"')}</span><span style="position:absolute; top:0; left:0; overflow:hidden; width:${pct}%;"><span>${fiveStars.replace(/fill="none"/g, 'fill="#FF671F"')}</span></span></span>`;
   }
 
   // Function to get add-ons HTML
   async function getAddOns() {
-    console.log("🔍 getAddOns() called");
     let addOnHtml = "";
-
-    // Check if the add-ons container exists on the page
-    const container = document.querySelector(
-      "#dropdown-container-top-picks-with-your-purchase",
-    );
-    console.log("📦 Add-ons container found?", container);
 
     let addOns = await allElementsReady(
       "#dropdown-container-top-picks-with-your-purchase .addon-option .addon-name",
     );
 
-    console.log("🔍 Found add-on elements:", addOns.length);
-
     let preSelectedAddOns = await getSelectedAddons();
-    console.log("📋 Pre-selected add-ons:", preSelectedAddOns);
 
     let selectedSkus;
     if (preSelectedAddOns.length > 0) {
       selectedSkus = preSelectedAddOns.map((addon) => addon.sku);
-      console.log("🎯 Selected SKUs to filter out:", selectedSkus);
     }
 
-    addOns.forEach((addOn, index) => {
-      let title = addOn.textContent.trim();
-      console.log(`📝 Add-on ${index + 1}: "${title}"`);
+    let addedCount = 0;
+    const maxAddOns = 2;
 
+    for (const addOn of addOns) {
+      if (addedCount >= maxAddOns) break;
+
+      let title = addOn.textContent.trim();
       let item = addOn.closest("label");
       let savingPrice = item.querySelector(".price-box .saving-price");
       let currPrice = item.querySelector(".price-box .current-price");
 
-      console.log(
-        `  💰 Prices - Saving: ${savingPrice?.textContent}, Current: ${currPrice?.textContent}`,
-      );
-
       // Find matching product in data
       let product = vaxAddOns.find((p) => p.name === title);
-      console.log(`  🏷️ Product found in vaxAddOns?`, product ? "YES" : "NO");
 
       // Skip if this add-on was already selected on PDP
       if (product && selectedSkus && selectedSkus.includes(product.sku)) {
-        console.log(`  ⏭️ Skipping ${title} - already selected`);
-        return; // Skip this iteration
+        continue;
       }
 
       if (product) {
-        console.log(`  ✅ Adding ${title} to HTML`);
         addOnHtml += `
- <a href="${product.url}" class="add-on-item">
- <img src="${product.imageUrl}" alt="${product.name}" class="add-on-image">
- <div class="add-on-details">
- <h3 class="add-on-item-title">${product.name}</h3>
- <div class="add-on-rating">
- ${generateStars(product.rating)}
- </div>
- <div class="add-on-price">
- ${savingPrice && savingPrice.textContent ? `<span class="add-on-saving-price">${savingPrice.textContent}</span>` : ""}
- <span class="current-price">${currPrice.textContent}</span>
- </div>
- </div>
- <button class="add-on-add-to-cart-btn" data-product-id="${product.productId}">
- <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 18" fill="none" stroke="none" class="h-auto w-5 md:w-6 pointer-events-none" role="img">
- <g clip-path="url(#clip0_1555_2892)">
- <path d="M3.53086 -0.00012207C3.82512 -0.00012207 4.05293 0.181636 4.11094 0.437573L4.26562 1.12488H19.7977C20.5113 1.12488 21.0809 1.83679 20.8805 2.55433L19.65 6.92214C19.2879 6.83425 18.9117 6.78152 18.5285 6.76043L19.7977 2.24988H4.52227L6.02695 8.99988H13.4133C13.1285 9.34441 12.8789 9.7241 12.675 10.1249H6.31172L6.825 12.3749H12.0246C12.007 12.5612 12 12.7475 12 12.9374C12 13.1272 12.007 13.3135 12.0246 13.4999H6.375C6.11133 13.4999 5.88633 13.3171 5.82656 13.0604L3.11355 1.12488H1.3125C1.00186 1.12488 0.75 0.873159 0.75 0.562378C0.75 0.251737 1.00186 -0.000111523 1.3125 -0.000111523L3.53086 -0.00012207ZM5.21836 16.0311C5.21836 14.9448 6.13242 14.0624 7.18711 14.0624C8.30508 14.0624 9.15586 14.9448 9.15586 16.0311C9.15586 17.1175 8.30508 17.9999 7.18711 17.9999C6.13242 17.9999 5.21836 17.1175 5.21836 16.0311ZM7.18711 16.8749C7.68633 16.8749 8.03086 16.4987 8.03086 16.0311C8.03086 15.5635 7.68633 15.1874 7.18711 15.1874C6.75117 15.1874 6.34336 15.5635 6.34336 16.0311C6.34336 16.4987 6.75117 16.8749 7.18711 16.8749ZM18.75 12.3432H20.4375C20.7469 12.3432 21 12.628 21 12.9057C21 13.2468 20.7469 13.4682 20.4375 13.4682H18.75V15.1557C18.75 15.4968 18.4969 15.7182 18.1875 15.7182C17.8781 15.7182 17.625 15.4968 17.625 15.1557V13.4682H15.9375C15.6281 13.4682 15.375 13.2468 15.375 12.9057C15.375 12.628 15.6281 12.3432 15.9375 12.3432H17.625V10.6557C17.625 10.378 17.8781 10.0932 18.1875 10.0932C18.4969 10.0932 18.75 10.378 18.75 10.6557V12.3432ZM23.25 12.9374C23.25 15.7323 20.9824 17.9999 18.1875 17.9999C15.3926 17.9999 13.125 15.7323 13.125 12.9374C13.125 10.1425 15.3926 7.87488 18.1875 7.87488C20.9824 7.87488 23.25 10.1425 23.25 12.9374ZM18.1875 8.99988C16.0113 8.99988 14.25 10.7612 14.25 12.9374C14.25 15.1136 16.0113 16.8749 18.1875 16.8749C20.3637 16.8749 22.125 15.1136 22.125 12.9374C22.125 10.7612 20.3637 8.99988 18.1875 8.99988Z" fill="white"></path>
- </g>
- <defs>
- <clipPath id="clip0_1555_2892">
- <rect width="22.5" height="18" fill="white" transform="translate(0.75 -0.00012207)"></rect>
- </clipPath>
- </defs>
- </svg>
- </button>
- </a>
- `;
-      } else {
-        console.log(`  ❌ No matching product found for "${title}"`);
-      }
-    });
+				<a href="${product.url}" class="add-on-item">
+				  <img src="${product.imageUrl}" alt="${product.name}" class="add-on-image" />
+				  <div class="add-on-details">
+				    <h3 class="add-on-item-title">${product.name}</h3>
+				    <div class="add-on-rating">${generateStars(product.rating)}</div>
+				    <div class="add-on-price">
+				      <span class="current-price">${currPrice.textContent}</span>
+				    </div>
+				  </div>
+				  <button class="add-on-add-to-cart-btn" data-product-id="${product.productId}">
+				    <svg
+				      xmlns="http://www.w3.org/2000/svg"
+				      width="24"
+				      height="24"
+				      viewBox="0 0 24 18"
+				      fill="none"
+				      stroke="none"
+				      class="h-auto w-5 md:w-6 pointer-events-none"
+				      role="img"
+				    >
+				      <g clip-path="url(#clip0_1555_2892)">
+				        <path
+				          d="M3.53086 -0.00012207C3.82512 -0.00012207 4.05293 0.181636 4.11094 0.437573L4.26562 1.12488H19.7977C20.5113 1.12488 21.0809 1.83679 20.8805 2.55433L19.65 6.92214C19.2879 6.83425 18.9117 6.78152 18.5285 6.76043L19.7977 2.24988H4.52227L6.02695 8.99988H13.4133C13.1285 9.34441 12.8789 9.7241 12.675 10.1249H6.31172L6.825 12.3749H12.0246C12.007 12.5612 12 12.7475 12 12.9374C12 13.1272 12.007 13.3135 12.0246 13.4999H6.375C6.11133 13.4999 5.88633 13.3171 5.82656 13.0604L3.11355 1.12488H1.3125C1.00186 1.12488 0.75 0.873159 0.75 0.562378C0.75 0.251737 1.00186 -0.000111523 1.3125 -0.000111523L3.53086 -0.00012207ZM5.21836 16.0311C5.21836 14.9448 6.13242 14.0624 7.18711 14.0624C8.30508 14.0624 9.15586 14.9448 9.15586 16.0311C9.15586 17.1175 8.30508 17.9999 7.18711 17.9999C6.13242 17.9999 5.21836 17.1175 5.21836 16.0311ZM7.18711 16.8749C7.68633 16.8749 8.03086 16.4987 8.03086 16.0311C8.03086 15.5635 7.68633 15.1874 7.18711 15.1874C6.75117 15.1874 6.34336 15.5635 6.34336 16.0311C6.34336 16.4987 6.75117 16.8749 7.18711 16.8749ZM18.75 12.3432H20.4375C20.7469 12.3432 21 12.628 21 12.9057C21 13.2468 20.7469 13.4682 20.4375 13.4682H18.75V15.1557C18.75 15.4968 18.4969 15.7182 18.1875 15.7182C17.8781 15.7182 17.625 15.4968 17.625 15.1557V13.4682H15.9375C15.6281 13.4682 15.375 13.2468 15.375 12.9057C15.375 12.628 15.6281 12.3432 15.9375 12.3432H17.625V10.6557C17.625 10.378 17.8781 10.0932 18.1875 10.0932C18.4969 10.0932 18.75 10.378 18.75 10.6557V12.3432ZM23.25 12.9374C23.25 15.7323 20.9824 17.9999 18.1875 17.9999C15.3926 17.9999 13.125 15.7323 13.125 12.9374C13.125 10.1425 15.3926 7.87488 18.1875 7.87488C20.9824 7.87488 23.25 10.1425 23.25 12.9374ZM18.1875 8.99988C16.0113 8.99988 14.25 10.7612 14.25 12.9374C14.25 15.1136 16.0113 16.8749 18.1875 16.8749C20.3637 16.8749 22.125 15.1136 22.125 12.9374C22.125 10.7612 20.3637 8.99988 18.1875 8.99988Z"
+				          fill="white"
+				        ></path>
+				      </g>
+				      <defs>
+				        <clipPath id="clip0_1555_2892">
+				          <rect
+				            width="22.5"
+				            height="18"
+				            fill="white"
+				            transform="translate(0.75 -0.00012207)"
+				          ></rect>
+				        </clipPath>
+				      </defs>
+				    </svg>
+				  </button>
+				</a>
+			`;
 
-    console.log("📊 Final addOnHtml length:", addOnHtml.length);
-    console.log(
-      "🎨 First 200 chars of addOnHtml:",
-      addOnHtml.substring(0, 200),
-    );
+        addedCount++;
+      }
+    }
 
     return addOnHtml;
   }
@@ -1988,6 +1997,101 @@ if (window.innerWidth < 768) {
 
   openMiniBag();
 
+  // Function to get PLP add-ons based on product category
+  async function getPLPAddOns() {
+    let addOnHtml = "";
+    let addedCount = 0;
+    const maxAddOns = 2;
+
+    // Get the product category from the added product
+    let itemCategory = "";
+    for (let i = dataLayer.length - 1; i >= 0; i--) {
+      if (dataLayer[i].ecommerce && dataLayer[i].ecommerce.items) {
+        itemCategory = dataLayer[i].ecommerce.items[0].item_category;
+        break;
+      }
+    }
+
+    // Filter add-ons based on category (customize this logic)
+    let relevantAddOns = filterAddOnsByCategory(vaxAddOns, itemCategory);
+
+    for (const product of relevantAddOns) {
+      if (addedCount >= maxAddOns) break;
+
+      addOnHtml += `
+      <a href="${product.url}" class="add-on-item">
+        <img src="${product.imageUrl}" alt="${product.name}" class="add-on-image" />
+        <div class="add-on-details">
+          <h3 class="add-on-item-title">${product.name}</h3>
+          <div class="add-on-rating">${generateStars(product.rating)}</div>
+          <div class="add-on-price">
+            <span class="current-price">${getPriceForProduct(product.productId)}</span>
+          </div>
+        </div>
+        <button class="add-on-add-to-cart-btn" data-product-id="${product.productId}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 18" fill="none" stroke="none">
+            <g clip-path="url(#clip0_1555_2892)">
+              <path d="M3.53086 -0.00012207C3.82512 -0.00012207 4.05293 0.181636 4.11094 0.437573L4.26562 1.12488H19.7977C20.5113 1.12488 21.0809 1.83679 20.8805 2.55433L19.65 6.92214C19.2879 6.83425 18.9117 6.78152 18.5285 6.76043L19.7977 2.24988H4.52227L6.02695 8.99988H13.4133C13.1285 9.34441 12.8789 9.7241 12.675 10.1249H6.31172L6.825 12.3749H12.0246C12.007 12.5612 12 12.7475 12 12.9374C12 13.1272 12.007 13.3135 12.0246 13.4999H6.375C6.11133 13.4999 5.88633 13.3171 5.82656 13.0604L3.11355 1.12488H1.3125C1.00186 1.12488 0.75 0.873159 0.75 0.562378C0.75 0.251737 1.00186 -0.000111523 1.3125 -0.000111523L3.53086 -0.00012207ZM5.21836 16.0311C5.21836 14.9448 6.13242 14.0624 7.18711 14.0624C8.30508 14.0624 9.15586 14.9448 9.15586 16.0311C9.15586 17.1175 8.30508 17.9999 7.18711 17.9999C6.13242 17.9999 5.21836 17.1175 5.21836 16.0311ZM7.18711 16.8749C7.68633 16.8749 8.03086 16.4987 8.03086 16.0311C8.03086 15.5635 7.68633 15.1874 7.18711 15.1874C6.75117 15.1874 6.34336 15.5635 6.34336 16.0311C6.34336 16.4987 6.75117 16.8749 7.18711 16.8749ZM18.75 12.3432H20.4375C20.7469 12.3432 21 12.628 21 12.9057C21 13.2468 20.7469 13.4682 20.4375 13.4682H18.75V15.1557C18.75 15.4968 18.4969 15.7182 18.1875 15.7182C17.8781 15.7182 17.625 15.4968 17.625 15.1557V13.4682H15.9375C15.6281 13.4682 15.375 13.2468 15.375 12.9057C15.375 12.628 15.6281 12.3432 15.9375 12.3432H17.625V10.6557C17.625 10.378 17.8781 10.0932 18.1875 10.0932C18.4969 10.0932 18.75 10.378 18.75 10.6557V12.3432ZM23.25 12.9374C23.25 15.7323 20.9824 17.9999 18.1875 17.9999C15.3926 17.9999 13.125 15.7323 13.125 12.9374C13.125 10.1425 15.3926 7.87488 18.1875 7.87488C20.9824 7.87488 23.25 10.1425 23.25 12.9374ZM18.1875 8.99988C16.0113 8.99988 14.25 10.7612 14.25 12.9374C14.25 15.1136 16.0113 16.8749 18.1875 16.8749C20.3637 16.8749 22.125 15.1136 22.125 12.9374C22.125 10.7612 20.3637 8.99988 18.1875 8.99988Z" fill="white"/>
+            </g>
+            <defs><clipPath id="clip0_1555_2892"><rect width="22.5" height="18" fill="white" transform="translate(0.75 -0.00012207)"/></clipPath></defs>
+          </svg>
+        </button>
+      </a>
+    `;
+      addedCount++;
+    }
+
+    return addOnHtml;
+  }
+
+  // Helper function to filter add-ons by product category
+  function filterAddOnsByCategory(addOns, category) {
+    // Customize this logic based on your category-to-addon mapping
+    // For example, return specific add-ons for carpet cleaners vs floor cleaners
+
+    if (category.toLowerCase().includes("carpet")) {
+      // Return carpet cleaning solutions
+      return addOns
+        .filter(
+          (item) =>
+            item.name.toLowerCase().includes("carpet") ||
+            item.name.toLowerCase().includes("solution"),
+        )
+        .slice(0, 4);
+    } else if (
+      category.toLowerCase().includes("floor") ||
+      category.toLowerCase().includes("hard")
+    ) {
+      // Return hard floor solutions
+      return addOns
+        .filter(
+          (item) =>
+            item.name.toLowerCase().includes("hard floor") ||
+            item.name.toLowerCase().includes("solution"),
+        )
+        .slice(0, 4);
+    } else if (category.toLowerCase().includes("spot")) {
+      // Return spot cleaner accessories
+      return addOns
+        .filter(
+          (item) =>
+            item.name.toLowerCase().includes("spotwash") ||
+            item.name.toLowerCase().includes("spot"),
+        )
+        .slice(0, 4);
+    }
+
+    // Default: return generic popular add-ons
+    return addOns.slice(0, 4);
+  }
+
+  // Helper function to get price for a product (you may need to fetch this)
+  function getPriceForProduct(productId) {
+    // You can either fetch the price dynamically or return a placeholder
+    // The price will be shown from the fetched cart content anyway
+    return '<span class="price">£0.00</span>';
+  }
+
   async function showCartPopup(htmlContent, itemCount, totalPrice) {
     // Prevent multiple popups
     if (document.querySelector(".atb-notification")) {
@@ -1997,14 +2101,19 @@ if (window.innerWidth < 768) {
     // Check if we're on a PDP page and get add-ons
     let addOnHtml = "";
     const prodAddOns = document.querySelector("#product-addons");
-    console.log("🔍 Checking for #product-addons:", prodAddOns);
+    let isPLP =
+      document.querySelector("#product-list") ||
+      document.querySelector("#layer-product-list");
 
     if (prodAddOns) {
-      console.log("✅ #product-addons found, calling getAddOns()");
+      // PDP: Get add-ons from the page's add-on selector
       addOnHtml = await getAddOns();
-      console.log("📦 addOnHtml returned length:", addOnHtml.length);
-    } else {
-      console.log("❌ No #product-addons found on page");
+    } else if (isPLP) {
+      // PLP: Get add-ons from static array based on current product category
+      addOnHtml = await getPLPAddOns();
+    } else if (!prodAddOns && !isPLP) {
+      // Other pages
+      console.log("No add-ons shown");
     }
 
     let atbNotificationEl = document.createElement("div");
@@ -2042,7 +2151,7 @@ if (window.innerWidth < 768) {
 	    
 	      <div id="cart-drawer-title" class="flex flex-col justify-between px-6 pt-6">
 	        <div class="flex justify-between items-center mb-4">
-	          <h3 class="uppercase text-xl">Added to basket</h3>
+	          <h3 class="add-on-cont-title">Added to basket</h3>
 	          <svg
 	            onclick="removeAtbNotification()"
 	            xmlns="http://www.w3.org/2000/svg"
@@ -2099,11 +2208,8 @@ if (window.innerWidth < 768) {
   }
   
   <div class="flex flex-col px-6 pb-6 flex-1">
-    <div class="flex items-center justify-end mb-4 gap-2 mt-auto">
-      <span class="text-lg font-bold uppercase">Total:</span>
-      <span class="text-lg font-bold text-secondary">
-        <span class="price">${totalPrice}</span>
-      </span>
+    <div class="add-on-cont-title flex items-center justify-end mb-4 gap-2 mt-auto">
+      <span>Total: ${totalPrice}</span>
     </div>
     
     <div class="btn-group grid grid-cols-2 gap-6">
@@ -2123,6 +2229,71 @@ if (window.innerWidth < 768) {
   </div>
 </div>
 	`;
+
+    // Add saving badge to product price in top section
+    setTimeout(() => {
+      const savingPriceElement = document.querySelector(
+        ".atb-notification .add-on-saving-price",
+      );
+      if (savingPriceElement) {
+        const savingText = savingPriceElement.textContent;
+        const currentPriceSpan = document.querySelector(
+          ".atb-notification .current-price .price",
+        );
+        if (currentPriceSpan) {
+          const badgeHtml = `<span class="add-on-saving-price" style="display: inline-block !important; margin-right: 8px;">${savingText}</span>`;
+          currentPriceSpan.insertAdjacentHTML("beforebegin", badgeHtml);
+        }
+      }
+    }, 100);
+
+    // Add item category & item quantity below product title
+    setTimeout(() => {
+      const cartItem = document.querySelector(".atb-notification .cart-item");
+
+      if (cartItem) {
+        let itemCategory = "";
+        let itemQuantity = "";
+
+        for (let i = dataLayer.length - 1; i >= 0; i--) {
+          if (dataLayer[i].ecommerce && dataLayer[i].ecommerce.items) {
+            itemCategory = dataLayer[i].ecommerce.items[0].item_category;
+            itemQuantity = dataLayer[i].ecommerce.items[0].quantity;
+            break;
+          }
+        }
+
+        if (itemCategory) {
+          const productLink = cartItem.querySelector(".product-item-link");
+          const categoryHtml = `<div class="item-category uppercase text-xs font-bold">${itemCategory}</div>`;
+          productLink.insertAdjacentHTML("afterend", categoryHtml);
+        }
+
+        if (itemQuantity) {
+          const categoryDiv = cartItem.querySelector(".item-category");
+          const quantityHtml = `<div class="item-quantity uppercase text-sm text-slate-400 mt-1">QTY ${itemQuantity}</div>`;
+          if (categoryDiv) {
+            categoryDiv.insertAdjacentHTML("afterend", quantityHtml);
+          } else {
+            const productLink = cartItem.querySelector(".product-item-link");
+            productLink.insertAdjacentHTML("afterend", quantityHtml);
+          }
+        }
+      }
+    }, 150);
+
+    // Remove hover-underline-effect class from product title
+    setTimeout(() => {
+      const productLink = document.querySelector(
+        ".atb-notification .product-item-link",
+      );
+      if (
+        productLink &&
+        productLink.classList.contains("hover-underline-effect")
+      ) {
+        productLink.classList.remove("hover-underline-effect");
+      }
+    }, 200);
 
     let defaultMiniCartContents = await elementReady(
       '#cart-drawer [aria-labelledby="cart-drawer-title"]',
