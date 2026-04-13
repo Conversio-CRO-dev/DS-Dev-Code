@@ -1,5 +1,3 @@
-/* <style> */
-
 .hide-popup .mantine-Popover-dropdown {
   display: none;
 }
@@ -8,6 +6,9 @@
   display: none;
 }
 
+/* ---------------------------------------- */
+/* 2. CUSTOM QUICK ADD COMPONENT            */
+/* ---------------------------------------- */
 /* Main Container */
 #custom-quick-add {
   display: flex;
@@ -181,7 +182,6 @@
 /* ---------------------------------------- */
 /* 3. PRICING DISPLAY COMPONENTS            */
 /* ---------------------------------------- */
-
 .custom-container {
   width: 100%;
   margin-top: auto;
@@ -389,7 +389,6 @@
 /* ---------------------------------------- */
 /* 4. OFFER BADGE & DEAL POPUP              */
 /* ---------------------------------------- */
-
 /* Badge Container */
 .offer-price-badge {
   position: relative;
@@ -461,7 +460,6 @@
 /* ---------------------------------------- */
 /* 5. PROMO POPUP SPECIFIC STYLES           */
 /* ---------------------------------------- */
-
 .promo-popup .add-on-container {
   padding-top: 1rem;
 }
@@ -606,8 +604,6 @@
 /* ======================================== */
 /* ALL MEDIA QUERIES                        */
 /* ======================================== */
-
-/* Max-width: 375px */
 @media (max-width: 375px) {
   .qty-btn {
     width: 44px !important;
@@ -622,15 +618,11 @@
   }
 }
 
-/* Max-width: 766px */
-@media (max-width: 766px) {
+@media (max-width: 767px) {
   .ais-Hits-list .ais-Hits-item.reserve-item .addToCart-container {
     margin-bottom: 16px !important;
   }
-}
 
-/* Max-width: 767px */
-@media (max-width: 767px) {
   .deal-popup-container {
     min-width: unset;
   }
@@ -697,14 +689,12 @@
   }
 }
 
-/* Max-width: 1022px */
 @media (max-width: 1022px) {
   #custom-atb .btn-text-short {
     display: none;
   }
 }
 
-/* Max-width: 1024px */
 @media (max-width: 1024px) {
   #bottom-wrapper {
     gap: 4px;
@@ -719,14 +709,12 @@
   }
 }
 
-/* Max-width: 1030px */
 @media (max-width: 1030px) {
   .promo-rule.promo-popup span {
     padding-right: 5px;
   }
 }
 
-/* Min-width: 1022px and Max-width: 1465px */
 @media (min-width: 1022px) and (max-width: 1465px) {
   #custom-atb .btn-text-short {
     display: inline;
@@ -736,14 +724,12 @@
   }
 }
 
-/* Min-width: 1024px and Max-width: 1230px */
 @media (min-width: 1024px) and (max-width: 1230px) {
   #custom-quick-add {
     gap: 16px;
   }
 }
 
-/* Min-width: 1024px and Max-width: 1300px */
 @media (min-width: 1024px) and (max-width: 1300px) {
   #custom-atb.loading .btn-spinner {
     display: inline-block;
@@ -754,35 +740,30 @@
   }
 }
 
-/* Min-width: 1025px */
 @media (min-width: 1025px) {
   .deal-popup-container {
     width: 350px;
   }
 }
 
-/* Min-width: 1465px */
 @media (min-width: 1465px) {
   #custom-atb .btn-text-short {
     display: none;
   }
 }
 
-/* Min-width: 1480px */
 @media (min-width: 1480px) {
   .deal-popup-container {
     width: 380px;
   }
 }
 
-/* Min-width: 1551px */
 @media (min-width: 1551px) {
   .deal-popup-container {
     width: 420px;
   }
 }
 
-/* Min-width: 1680px */
 @media (min-width: 1680px) {
   .deal-popup-container {
     width: 480px;
@@ -809,5 +790,3 @@
     pointer-events: none !important;
   }
 }
-
-/* </style> */

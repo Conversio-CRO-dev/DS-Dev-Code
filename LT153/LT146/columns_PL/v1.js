@@ -3,7 +3,6 @@ console.log("David Adam Silva | LT153 - LT146/columns product list");
 console.log("====================================================>");
 
 // <script>
-
 function elementReady(selector) {
   return new Promise((resolve, reject) => {
     let el = document.querySelector(selector);
@@ -126,8 +125,19 @@ async function addCustomQuickAdd() {
   // Wait for all API calls to complete
   await Promise.all(promises);
 }
-
 addCustomQuickAdd();
+
+// Clean review numbers to show only digits
+function cleanReviewNumbers() {
+  const reviewCounts = document.querySelectorAll(".review-count");
+  reviewCounts.forEach((reviewSpan) => {
+    const numberOnly = reviewSpan.textContent.match(/\d+/);
+    if (numberOnly) {
+      reviewSpan.textContent = numberOnly[0];
+    }
+  });
+}
+cleanReviewNumbers();
 
 async function getPricingPanels() {
   let allAtbButtons = await allElementsReady(
@@ -229,86 +239,6 @@ getPricingPanels();
 
 // Track currently open popup
 let currentOpenPopup = null;
-
-// function positionDealPopup(badge) {
-// 	const popup = badge.querySelector(".deal-popup-container");
-// 	const arrow = badge.querySelector(".deal-popup-arrow");
-
-// 	if (!popup || !arrow) return;
-
-// 	// Get badge position relative to viewport
-// 	const badgeRect = badge.getBoundingClientRect();
-// 	const popupWidth = popup.offsetWidth || 350;
-// 	const viewportWidth = window.innerWidth;
-
-// 	// Badge center in viewport coordinates
-// 	const badgeCenterX = badgeRect.left + badgeRect.width / 2;
-
-// 	// On mobile with full-width popup, use viewport-based positioning
-// 	const isMobile = viewportWidth <= 768;
-
-// 	if (isMobile) {
-// 		// Mobile: center popup in viewport with margins
-// 		// const margin = 16;
-// 		// popup.style.left = margin - badgeRect.left + "px";
-// 		// popup.style.transform = "none";
-// 		// popup.style.bottom = "37px";
-
-// 		// // Arrow points to badge center
-// 		// const arrowPosition = badgeCenterX - margin - 14;
-
-// 		// arrow.style.left = arrowPosition + "px";
-// 		// arrow.style.marginLeft = "0";
-// 			// Mobile: position relative to container, not viewport
-// 	const margin = 16;
-// 	popup.style.left = margin + "px";
-// 	popup.style.transform = "none";
-// 	popup.style.bottom = "37px";
-
-// 	// Arrow points to badge center relative to popup
-// 	const popupRect = popup.getBoundingClientRect();
-// 	const arrowPosition = badgeCenterX - popupRect.left - 14;
-
-// 	arrow.style.left = arrowPosition + "px";
-// 	arrow.style.marginLeft = "0";
-// 	} else {
-// 		// Desktop: original logic
-// 		const margin = 20;
-// 		const idealPopupLeft = badgeCenterX - popupWidth / 2;
-
-// 		const needsLeftAdjustment = idealPopupLeft < margin;
-// 		const needsRightAdjustment = idealPopupLeft + popupWidth > viewportWidth - margin;
-
-// 		if (!needsLeftAdjustment && !needsRightAdjustment) {
-// 			// Perfect - keep centered
-// 			popup.style.left = "50%";
-// 			popup.style.transform = "translateX(-50%)";
-// 			arrow.style.left = "50%";
-// 			arrow.style.marginLeft = "-1.125rem";
-// 		} else {
-// 			// Needs adjustment
-// 			let popupLeft = idealPopupLeft;
-
-// 			if (needsLeftAdjustment) {
-// 				popupLeft = margin;
-// 			} else if (needsRightAdjustment) {
-// 				popupLeft = viewportWidth - margin - popupWidth;
-// 			}
-
-// 			// Position popup relative to badge
-// 			const offsetFromBadge = popupLeft - badgeRect.left;
-
-// 			popup.style.left = offsetFromBadge + "px";
-// 			popup.style.transform = "none";
-
-// 			// Arrow position
-// 			const arrowPosition = badgeCenterX - popupLeft;
-
-// 			arrow.style.left = arrowPosition + "px";
-// 			arrow.style.marginLeft = "0";
-// 		}
-// 	}
-// }
 
 function positionDealPopup(badge) {
   const popup = badge.querySelector(".deal-popup-container");
@@ -582,6 +512,7 @@ function observeProductGrid() {
     if (hasProductChanges) {
       addCustomQuickAdd();
       getPricingPanels();
+      cleanReviewNumbers();
     }
   });
 
@@ -801,5 +732,4 @@ elementReady("body").then((main) => {
     main.classList.add("test-lt146");
   }
 });
-
 // </script>

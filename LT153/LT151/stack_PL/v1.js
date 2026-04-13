@@ -3,7 +3,6 @@ console.log("David Adam Silva | LT153 - LT151/stack product list");
 console.log("==================================================>");
 
 // <script>
-
 function elementReady(selector) {
   return new Promise((resolve, reject) => {
     let el = document.querySelector(selector);
@@ -112,6 +111,31 @@ function restructureProductItem(productListItem) {
   productListItem.insertBefore(productImageContainer, productContentWrapper);
 }
 
+// Add this function AFTER restructureAllProductItems() and BEFORE init()
+function forceFixMobileWidths() {
+  if (window.innerWidth <= 767) {
+    const items = document.querySelectorAll(".ais-Hits-item");
+    items.forEach((item) => {
+      // Force reflow
+      item.style.display = "flex";
+      item.style.width = "100%";
+
+      const wrapper = item.querySelector(".product-content-wrapper");
+      if (wrapper) {
+        wrapper.style.width = "auto";
+        wrapper.style.maxWidth = "100%";
+        wrapper.style.flex = "1 1 0";
+      }
+
+      const title = item.querySelector(".title a, .titleDescSale");
+      if (title) {
+        title.style.whiteSpace = "normal";
+        title.style.wordWrap = "break-word";
+      }
+    });
+  }
+}
+
 // Function to restructure all product items
 function restructureAllProductItems() {
   // Select all product list items
@@ -120,6 +144,9 @@ function restructureAllProductItems() {
   productListItems.forEach((item) => {
     restructureProductItem(item);
   });
+
+  // Force fix mobile widths after restructuring
+  forceFixMobileWidths();
 }
 
 async function addCustomQuickAdd() {
@@ -1030,6 +1057,16 @@ window.addEventListener("resize", () => {
   }
 });
 
+let resizeTimeout;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    if (window.innerWidth <= 767) {
+      forceFixMobileWidths();
+    }
+  }, 150);
+});
+
 function observeProductGrid() {
   const observer = new MutationObserver((mutations) => {
     let hasProductChanges = false;
@@ -1070,6 +1107,23 @@ function observeProductGrid() {
     subtree: true,
   });
 }
+
+// Add this after the observeProductGrid function
+function observeMobileWidthChanges() {
+  const observer = new MutationObserver(() => {
+    forceFixMobileWidths();
+  });
+
+  observer.observe(document.body, {
+    attributes: true,
+    childList: true,
+    subtree: true,
+    attributeFilter: ["style", "class"],
+  });
+}
+
+// Call this after your existing observer
+setTimeout(observeMobileWidthChanges, 1000);
 
 setTimeout(observeProductGrid, 1000);
 

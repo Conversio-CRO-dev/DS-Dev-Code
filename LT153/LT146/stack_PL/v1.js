@@ -3,7 +3,6 @@ console.log("David Adam Silva | LT153 - LT146/stack product list");
 console.log("==================================================>");
 
 // <script>
-
 function elementReady(selector) {
   return new Promise((resolve, reject) => {
     let el = document.querySelector(selector);
@@ -951,5 +950,4 @@ elementReady("body").then((main) => {
     main.classList.add("test-lt146");
   }
 });
-
 // </script>

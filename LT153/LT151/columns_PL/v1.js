@@ -3,7 +3,6 @@ console.log("David Adam Silva | LT153 - LT151/columns product list");
 console.log("====================================================>");
 
 // <script>
-
 function elementReady(selector) {
   return new Promise((resolve, reject) => {
     let el = document.querySelector(selector);

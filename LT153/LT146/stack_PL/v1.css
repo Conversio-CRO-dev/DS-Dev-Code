@@ -69,13 +69,9 @@
   }
 }
 
-/*********** LT146 STYLES *********/
-
 .hide-popup .mantine-Popover-dropdown {
   display: none;
 }
-
-/* new cutsom quanity  and ADD styles */
 
 .css-r4wj6w.grid-view .ais-Hits-list .ais-Hits-item .addToCart-container {
   bottom: 75px !important;
@@ -285,8 +281,6 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 16px;
-  /* // min-width: 250px; */
-  /* // max-width: calc(100% - 40px); */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   opacity: 0;
@@ -345,23 +339,16 @@
   }
 }
 
-/* Tablet width */
-/* // @media (min-width: 768px) and (max-width: 1023px) {
-// 	.deal-popup-container {
-// 		width: 430px;
-// 	}
-// } */
-
 /* Mobile - almost full width */
 @media (max-width: 767px) {
   .deal-popup-container {
     min-width: unset;
   }
 
-  /* // New styles = David */
   .css-1x2qwlw .ais-Hits-list {
     grid-gap: 0 !important;
   }
+
   /* Make the list item use flexbox with row direction for left/right layout */
   .ais-Hits-item {
     display: flex !important;
@@ -488,11 +475,15 @@
   }
 
   #custom-atb {
-    flex: 1 !important;
-    text-align: center !important;
-    height: 50px !important;
-    padding: 8px 16px !important;
-    font-size: 14px !important;
+    display: flex !important;
+    height: 40px !important;
+    padding: 14px 26px !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex: 1 0 0 !important;
+    border-radius: 5px !important;
+    background: #117b53 !important;
   }
 
   .quick-links-container .zoom {
@@ -537,7 +528,16 @@
 
   #custom-atb .btn-text-short {
     display: block !important;
-    font-size: 1.5rem;
+    color: var(
+      --www-laithwaites-co-uk-white,
+      var(--color-white-solid, #fff)
+    ) !important;
+    text-align: center !important;
+    font-family: var(--font-family-Font-2, Roboto) !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    line-height: var(--line-height-26, 26px) !important;
   }
 }
 
@@ -619,10 +619,47 @@
   .ais-Hits-list .ais-Hits-item.reserve-item .addToCart-container {
     margin-bottom: 16px !important;
   }
+
+  .css-1x2qwlw.grid-view .ais-Hits-list .ais-Hits-item .hit-content {
+    padding: 16px 0 !important;
+  }
+
+  .css-1x2qwlw.grid-view .ais-Hits-list .ais-Hits-item .addToCart-container {
+    padding: 0 !important;
+  }
+
+  .css-1x2qwlw.grid-view
+    .ais-Hits-list
+    .ais-Hits-item
+    .hit-content
+    .title
+    .titleDescSale {
+    overflow: hidden !important;
+    color: #000 !important;
+    text-overflow: ellipsis !important;
+    font-family: "Noto Serif" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    line-height: 20px !important;
+    letter-spacing: 0 !important;
+  }
+
+  .right-side-group #custom-quick-add {
+    padding: 0 !important;
+  }
+
+  .qty-btn {
+    display: flex !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0.667px !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
 }
 
 /* 'ADDING' text take up too much space, so spinner added insteas fro thoise screen sizes */
-
 .btn-spinner {
   width: 16px;
   height: 16px;

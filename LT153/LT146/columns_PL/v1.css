@@ -1,5 +1,3 @@
-/* <style> */
-
 .hide-popup .mantine-Popover-dropdown {
   display: none;
 }
@@ -253,11 +251,6 @@
   display: none;
 }
 
-/* ============================================
-   MEDIA QUERIES
-   ============================================ */
-
-/* David | Mobile: 2-column product grid layout */
 @media (max-width: 767px) {
   body,
   html {
@@ -276,7 +269,7 @@
   .ais-Hits-list {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    gap: 18px !important;
+    gap: 16px !important;
     padding: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -305,9 +298,28 @@
     padding: 0 !important;
   }
 
-  /* ============================================
-     IMAGE CONTAINER - Match existing structure
-     ============================================ */
+  .ais-Highlight > .ais-Highlight-nonHighlighted {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-self: stretch !important;
+
+    overflow: hidden !important;
+    color: var(--content-headings-headings, #000) !important;
+    text-overflow: ellipsis !important;
+    font-family: "Noto Serif" !important;
+    font-size: 18px !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    line-height: var(
+      --typography-label-Medium-Bold-line-height,
+      20px
+    ) !important; /* 111.111% */
+    letter-spacing: var(
+      --typography-label-Medium-Bold-letter-spacing,
+      0
+    ) !important;
+  }
 
   /* Target the image-bg and image-container that actually contain the images */
   .ais-Hits-item .image-bg {
@@ -346,10 +358,6 @@
     background-color: #f8f5ef !important;
   }
 
-  /* ============================================
-     FLAG / COUNTRY STYLES - Match your HTML structure
-     ============================================ */
-
   /* Country container */
   .ais-Hits-item .country {
     display: inline-flex !important;
@@ -361,9 +369,7 @@
 
   /* Country container div */
   .ais-Hits-item .country-container {
-    display: inline-flex !important;
     align-items: center !important;
-    gap: 4px !important;
   }
 
   /* Flag images */
@@ -383,8 +389,7 @@
 
   /* Wine style text */
   .ais-Hits-item .wine-style {
-    font-size: 16px !important;
-    display: inline-block !important;
+    display: none !important;
   }
 
   /* Grape variety container */
@@ -403,23 +408,26 @@
   }
 
   /* Country rating container */
-  .ais-Hits-item .country-rating {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 8px !important;
-    align-items: center !important;
+  .inline-container > .inline-container {
+    width: 100% !important;
   }
 
-  /* ============================================
-     RATING STYLES
-     ============================================ */
+  .inline-container > .country-rating {
+    display: flex !important;
+    flex-flow: row wrap !important;
+    justify-content: start !important;
+    width: 100% !important;
+
+    /* gap: 0 !important; */
+    margin: 0 !important;
+  }
 
   /* Rating container */
   .ais-Hits-item .rating {
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    /* flex-wrap: !important; */
+    flex-wrap: !important;
   }
 
   /* Rating stars container */
@@ -427,12 +435,6 @@
     display: inline-flex !important;
     align-items: center !important;
     gap: 2px !important;
-  }
-
-  /* Rating stars SVG */
-  .ais-Hits-item .star-icons svg {
-    width: 12px !important;
-    height: 12px !important;
   }
 
   /* Review count */
@@ -448,13 +450,21 @@
     align-items: center !important;
   }
 
-  /* ============================================
-     CONTENT STYLES
-     ============================================ */
+  .country-rating :last-child {
+    display: flex !important;
+    justify-content: start !important;
+    width: 100% !important;
+    font-size: 12px !important;
+    gap: 0 !important;
+  }
+
+  .css-1x2qwlw .ais-Hits-item .hit-content .inline-container .rating {
+    width: 100% !important;
+  }
 
   /* Hit content padding */
   .ais-Hits-item .hit-content {
-    padding: 0 !important;
+    padding: 16px 0 0 0 !important;
   }
 
   /* Title */
@@ -467,9 +477,9 @@
   /* Price container */
   .ais-Hits-item .lowestPricepossible,
   .ais-Hits-item .price-container {
-    font-size: 18px !important;
-    font-weight: bold !important;
-    margin: 14px 0 !important;
+    font-size: 14px !important;
+    margin: 14px 0 0 0 !important;
+    font-weight: normal !important;
   }
 
   /* Saving text */
@@ -489,11 +499,8 @@
   .maxSavingsContainer {
     display: flex !important;
     justify-content: flex-start !important;
+    margin: 10px 0 !important;
   }
-
-  /* ============================================
-     CUSTOM QUICK ADD STYLES
-     ============================================ */
 
   #custom-quick-add {
     gap: 10px !important;
@@ -517,9 +524,16 @@
   }
 
   #custom-atb {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    align-self: stretch !important;
     font-size: 12px !important;
     height: 44px !important;
-    padding: 14px 26px !important;
+    padding: 14px !important;
+    border-radius: 5px !important;
+    background: #2e7d5d !important;
   }
 
   /* Button text */
@@ -543,9 +557,32 @@
     height: 14px !important;
   }
 
+  .css-1x2qwlw.grid-view
+    .ais-Hits-list
+    .ais-Hits-item
+    .hit-content
+    .inline-container
+    .rating
+    a
+    span
+    svg {
+    margin-right: 0 !important ;
+  }
+
   .image-container > .quick-links-container,
   .quick-links-container > .zoom {
     display: none;
+  }
+
+  .lowestPricepossible,
+  .lowestPricePossibleOnOffer {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    flex-flow: wrap !important;
+  }
+
+  .ais-Hits-item .lowestPricepossible {
   }
 
   /* Position all content inside hit-content to the left */
@@ -579,15 +616,6 @@
 
 /* Extra small devices (phones under 380px) */
 @media (max-width: 380px) {
-  .ais-Hits-list {
-    gap: 8px !important;
-    padding: 0 6px !important;
-  }
-
-  .ais-Hits-item .hit-content {
-    padding: 6px !important;
-  }
-
   .ais-Hits-item .titleDescSale a {
     font-size: 12px !important;
   }
@@ -597,11 +625,6 @@
     max-width: 18px !important;
   }
 
-  .ais-Hits-item .star-icons svg {
-    width: 10px !important;
-    height: 10px !important;
-  }
-
   #custom-quick-add {
     flex-direction: column !important;
     gap: 8px !important;
@@ -609,7 +632,6 @@
 
   #quantity-selector {
     width: 100% !important;
-    justify-content: center !important;
   }
 
   #custom-atb {
@@ -800,5 +822,3 @@
     width: 480px;
   }
 }
-
-/* </style> */
