@@ -1,6 +1,6 @@
-(function () {
-  console.log("David Adam Silva | LT147 D-version");
+console.log("David Adam Silva | LT147 D-version");
 
+(function () {
   // Only run this code once
   if (window.purchaseTabsAlreadyAdded) return;
   window.purchaseTabsAlreadyAdded = true;
@@ -195,19 +195,23 @@
       oldPriceHTML = '<span class="old-price">' + info.oldPrice + "</span>";
     }
 
-    card.innerHTML = `${badgeHTML}
-		  <div class="purchase-tab-content">
-		    <div class="min-tab-content">
-		      <span class="purchase-tab-radio"></span>
-		      <div class="tab-title-container">
-		        <span class="purchase-tab-title">${info.title}</span>
-		        <div class="info-panel-price">
-		        	${info.price}<span class="price-case">/case </span>${oldPriceHTML}
-		        </div>
-		      </div>
-		    </div>
-		  </div>
-		`;
+    card.innerHTML =
+      badgeHTML +
+      '<div class="purchase-tab-content">' +
+      '<div class="min-tab-content">' +
+      '<span class="purchase-tab-radio"></span>' +
+      '<div class="tab-title-container">' +
+      '<span class="purchase-tab-title">' +
+      info.title +
+      "</span>" +
+      '<div class="info-panel-price">' +
+      info.price +
+      '<span class="price-case">/case </span>' +
+      oldPriceHTML +
+      "</div>" +
+      "</div>" +
+      "</div>" +
+      "</div>";
 
     return card;
   }
@@ -223,59 +227,57 @@
   function updateInfoPanel(panel, info, quantity) {
     let oldPriceHTML = "";
     if (info.oldPrice) {
-      oldPriceHTML = `<span class="old-price">${info.oldPrice}</span>`;
+      oldPriceHTML = '<span class="old-price">' + info.oldPrice + "</span>";
     }
 
     let saveHTML = "";
     if (info.save) {
-      console.log("this is save badge info:", info.save);
-      saveHTML = `<span class="save-badge">${info.save}</span>`;
+      saveHTML = '<span class="save-badge">' + info.save + "</span>";
     }
-
-    console.log("This is what is store in the variable:", saveHTML);
 
     if (info.type === "subscribe") {
       // This panel is for subscribe and save
-      panel.innerHTML = `
-			  <div class="info-panel-meta">
-					<span>${formatMetaInfo(info.meta)}</span>
-					${saveHTML}
-				</div>
-			
-				<a href="">
-					<span class="info-link">How does it work?</span>
-				</a>
-			  
-				<button class="add-to-cart-btn">${info.buttonText}</button>
-			`;
+      panel.innerHTML =
+        '<div class="info-panel-meta">' +
+        "<span>" +
+        formatMetaInfo(info.meta) +
+        "</span>" +
+        saveHTML +
+        "</div>" +
+        '<a href="">' +
+        '<span class="info-link">How does it work?</span>' +
+        "</a>" +
+        '<button class="add-to-cart-btn">' +
+        info.buttonText +
+        "</button>";
     } else {
       // This panel is for one time purchase
-      panel.innerHTML = `
-				<div class="info-panel-meta">
-				  <span>${formatMetaInfo(info.meta)}</span>
-
-				</div>
-
-				<div class="purchase-actions">
-					<div class="quantity-container">
-						<button class="quantity-btn minus">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-							  <path d="M0.64 11.2798C0.64 11.2798 0.586667 11.2931 0.48 11.3198C0.373333 11.3465 0.266667 11.4398 0.16 11.5998C0.0533333 11.7598 0 11.9065 0 12.0398C0 12.1731 0.0533333 12.3198 0.16 12.4798C0.266667 12.6398 0.386667 12.7331 0.52 12.7598C0.653333 12.7865 4.48 12.7998 12 12.7998C19.52 12.7998 23.3467 12.7865 23.48 12.7598C23.6133 12.7331 23.7333 12.6398 23.84 12.4798C23.9467 12.3198 24 12.1731 24 12.0398C24 11.9065 23.96 11.7731 23.88 11.6398C23.8 11.5065 23.72 11.4265 23.64 11.3998C23.56 11.3731 22.9333 11.3331 21.76 11.2798H0.64Z" fill="#CCCCCC"/>
-							</svg>
-						</button>
-						
-						<span class="quantity-display">${quantity}</span>
-						
-						<button class="quantity-btn plus">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-							  <path d="M11.6002 0.799782C11.4935 0.906448 11.4135 0.986448 11.3602 1.03979L11.2802 1.19979L11.2002 11.1998L1.92021 11.2798C1.44021 11.2798 1.17354 11.3065 1.12021 11.3598C0.853548 11.4665 0.720215 11.6931 0.720215 12.0398C0.720215 12.3865 0.880215 12.6131 1.20021 12.7198C1.30688 12.7198 3.01354 12.7198 6.32021 12.7198H11.2002L11.2802 22.7998L11.3602 22.9598C11.5202 23.1731 11.7335 23.2798 12.0002 23.2798C12.2668 23.2798 12.4802 23.1731 12.6402 22.9598L12.7202 22.7998L12.8002 12.7998L22.8002 12.7198L22.9602 12.6398C23.1735 12.4798 23.2802 12.2531 23.2802 11.9598C23.2802 11.6665 23.1468 11.4665 22.8802 11.3598C22.8268 11.3065 22.5602 11.2798 22.0802 11.2798L12.8002 11.1998L12.7202 1.91979C12.7202 1.43979 12.6935 1.13312 12.6402 0.999782C12.5868 0.866449 12.4535 0.773115 12.2402 0.719782C12.0268 0.666448 11.8135 0.693115 11.6002 0.799782Z" fill="black"/>
-							</svg>
-						</button>
-					</div>
-					
-					<button class="add-to-cart-btn">${info.buttonText}</button>
-				</div>
-			`;
+      panel.innerHTML =
+        '<div class="info-panel-meta">' +
+        "<span>" +
+        formatMetaInfo(info.meta) +
+        "</span>" +
+        "</div>" +
+        '<div class="purchase-actions">' +
+        '<div class="quantity-container">' +
+        '<button class="quantity-btn minus">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">' +
+        '<path d="M0.64 11.2798C0.64 11.2798 0.586667 11.2931 0.48 11.3198C0.373333 11.3465 0.266667 11.4398 0.16 11.5998C0.0533333 11.7598 0 11.9065 0 12.0398C0 12.1731 0.0533333 12.3198 0.16 12.4798C0.266667 12.6398 0.386667 12.7331 0.52 12.7598C0.653333 12.7865 4.48 12.7998 12 12.7998C19.52 12.7998 23.3467 12.7865 23.48 12.7598C23.6133 12.7331 23.7333 12.6398 23.84 12.4798C23.9467 12.3198 24 12.1731 24 12.0398C24 11.9065 23.96 11.7731 23.88 11.6398C23.8 11.5065 23.72 11.4265 23.64 11.3998C23.56 11.3731 22.9333 11.3331 21.76 11.2798H0.64Z" fill="#CCCCCC"/>' +
+        "</svg>" +
+        "</button>" +
+        '<span class="quantity-display">' +
+        quantity +
+        "</span>" +
+        '<button class="quantity-btn plus">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">' +
+        '<path d="M11.6002 0.799782C11.4935 0.906448 11.4135 0.986448 11.3602 1.03979L11.2802 1.19979L11.2002 11.1998L1.92021 11.2798C1.44021 11.2798 1.17354 11.3065 1.12021 11.3598C0.853548 11.4665 0.720215 11.6931 0.720215 12.0398C0.720215 12.3865 0.880215 12.6131 1.20021 12.7198C1.30688 12.7198 3.01354 12.7198 6.32021 12.7198H11.2002L11.2802 22.7998L11.3602 22.9598C11.5202 23.1731 11.7335 23.2798 12.0002 23.2798C12.2668 23.2798 12.4802 23.1731 12.6402 22.9598L12.7202 22.7998L12.8002 12.7998L22.8002 12.7198L22.9602 12.6398C23.1735 12.4798 23.2802 12.2531 23.2802 11.9598C23.2802 11.6665 23.1468 11.4665 22.8802 11.3598C22.8268 11.3065 22.5602 11.2798 22.0802 11.2798L12.8002 11.1998L12.7202 1.91979C12.7202 1.43979 12.6935 1.13312 12.6402 0.999782C12.5868 0.866449 12.4535 0.773115 12.2402 0.719782C12.0268 0.666448 11.8135 0.693115 11.6002 0.799782Z" fill="black"/>' +
+        "</svg>" +
+        "</button>" +
+        "</div>" +
+        '<button class="add-to-cart-btn">' +
+        info.buttonText +
+        "</button>" +
+        "</div>";
 
       // Set up quantity buttons for one-time purchase
       const minusBtn = panel.querySelector(".minus");
