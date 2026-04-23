@@ -343,7 +343,9 @@
     return (
       '<div class="purchase-actions">' +
       '<div class="quantity-container">' +
-      '<button class="quantity-btn minus">' +
+      '<button class="quantity-btn minus" ' +
+      (quantity <= 1 ? "disabled" : "") +
+      ">" +
       '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">' +
       '<path d="M0.64 11.2798C0.64 11.2798 0.586667 11.2931 0.48 11.3198C0.373333 11.3465 0.266667 11.4398 0.16 11.5998C0.0533333 11.7598 0 11.9065 0 12.0398C0 12.1731 0.0533333 12.3198 0.16 12.4798C0.266667 12.6398 0.386667 12.7331 0.52 12.7598C0.653333 12.7865 4.48 12.7998 12 12.7998C19.52 12.7998 23.3467 12.7865 23.48 12.7598C23.6133 12.7331 23.7333 12.6398 23.84 12.4798C23.9467 12.3198 24 12.1731 24 12.0398C24 11.9065 23.96 11.7731 23.88 11.6398C23.8 11.5065 23.72 11.4265 23.64 11.3998C23.56 11.3731 22.9333 11.3331 21.76 11.2798H0.64Z" fill="#CCCCCC"/>' +
       "</svg>" +
@@ -377,6 +379,50 @@
       howButton = document.querySelector("[data-testid='how-it-works']");
     }
     return howButton;
+  }
+
+  // Helper function to get the original quantity selector input
+  function getOriginalQuantityInput() {
+    // Try multiple selectors to find the original quantity input
+    let quantityInput = document.querySelector(
+      ".customProdQantityField .form-control.quantity",
+    );
+    if (!quantityInput) {
+      quantityInput = document.querySelector('[data-testid="quantity-input"]');
+    }
+    if (!quantityInput) {
+      quantityInput = document.querySelector('input[name="quantity"]');
+    }
+    if (!quantityInput) {
+      quantityInput = document.querySelector(".quantity-input");
+    }
+    return quantityInput;
+  }
+
+  // Helper function to get the original decrement button
+  function getOriginalDecrementButton() {
+    let decrementBtn = document.querySelector(
+      ".customProdQantityField .btn-minus",
+    );
+    if (!decrementBtn) {
+      decrementBtn = document.querySelector(
+        '[data-testid="decrement-quantity"]',
+      );
+    }
+    return decrementBtn;
+  }
+
+  // Helper function to get the original increment button
+  function getOriginalIncrementButton() {
+    let incrementBtn = document.querySelector(
+      ".customProdQantityField .btn-plus",
+    );
+    if (!incrementBtn) {
+      incrementBtn = document.querySelector(
+        '[data-testid="increment-quantity"]',
+      );
+    }
+    return incrementBtn;
   }
 
   // Updates the info panel with the correct information
@@ -522,6 +568,7 @@
           caseSize +
           " bottles - " +
           subscribePrice +
+          " /bottle" +
           "</span>" +
           '<a href="#">' +
           '<span class="info-link">How does it work?</span>' +
@@ -582,53 +629,65 @@
           info.buttonText +
           "</button>";
       }
+
+      // Set up add to cart button for SUBSCRIBE tab
+      const subscribeAddToCartBtn = panel.querySelector(".add-to-cart-btn");
+      if (subscribeAddToCartBtn) {
+        subscribeAddToCartBtn.onclick = function () {
+          if (info.sourceButton) {
+            info.sourceButton.click();
+          }
+        };
+      }
     } else {
       // ONE TIME PURCHASE TAB
       if (isSingleBottle) {
         // SINGLE BOTTLE - One Time Purchase
-        let oneTimePricePerBottle = null;
-        if (cachedPriceData && cachedPriceData.salePrice) {
-          oneTimePricePerBottle = cachedPriceData.salePrice;
-        }
 
-        let oneTimePriceValue = null;
-        let oneTimePriceFormatted = "";
+        let clonedPricingHTML = "";
 
-        if (oneTimePricePerBottle) {
-          oneTimePriceValue = oneTimePricePerBottle;
-          oneTimePriceFormatted = "£" + oneTimePriceValue.toFixed(2);
+        // Try to find and clone the straight-sku-wrapper element
+        const straightSkuWrapper = document.querySelector(
+          ".straight-sku-wrapper",
+        );
+        if (straightSkuWrapper) {
+          // Clone the element and get its HTML
+          const clone = straightSkuWrapper.cloneNode(true);
+          clonedPricingHTML = clone.outerHTML;
         } else {
-          oneTimePriceFormatted = info.price;
-          const priceMatch = info.price.match(/£([\d.]+)/);
-          if (priceMatch) {
-            oneTimePriceValue = parseFloat(priceMatch[1]);
+          // Fallback: try alternative selectors
+          const vppPriceElement = document.querySelector(
+            '[data-testid="vpp-price"]',
+          );
+          const standardPriceSection = document.querySelector(
+            '[data-testid="standard-price-section"]',
+          );
+          const addOnContainer = document.querySelector(
+            '[data-testid="add-on-container"]',
+          );
+
+          if (vppPriceElement || standardPriceSection || addOnContainer) {
+            let fallbackHTML = '<div class="straight-sku-wrapper">';
+            if (vppPriceElement) {
+              fallbackHTML += vppPriceElement.outerHTML;
+            }
+            if (standardPriceSection && standardPriceSection.parentElement) {
+              fallbackHTML +=
+                '<div class="top-price-section">' +
+                standardPriceSection.parentElement.innerHTML +
+                "</div>";
+            }
+            if (addOnContainer) {
+              fallbackHTML += addOnContainer.outerHTML;
+            }
+            fallbackHTML += "</div>";
+            clonedPricingHTML = fallbackHTML;
           }
-        }
-
-        const caseSize = 12;
-        let oneTimeCaseTotal = "";
-
-        if (oneTimePriceValue && !isNaN(oneTimePriceValue)) {
-          oneTimeCaseTotal = "£" + (oneTimePriceValue * caseSize).toFixed(2);
         }
 
         panel.innerHTML =
           '<div class="info-panel-one-time-single-bottle">' +
-          '<div class="subscribe-price-row">' +
-          '<div class="case-price">' +
-          '<span class="case-price-total">' +
-          oneTimeCaseTotal +
-          "</span>" +
-          '<span class="price-unit">/case </span>' +
-          "</div>" +
-          "</div>" +
-          '<div class="subscribe-case-upsell">' +
-          '<span class="case-upsell-title">' +
-          caseSize +
-          " bottles - " +
-          oneTimePriceFormatted +
-          "</span>" +
-          "</div>" +
+          clonedPricingHTML +
           "</div>" +
           getQuantitySelectorHTML(quantity, info.buttonText);
       } else if (isCase) {
@@ -672,31 +731,90 @@
 
       let currentQty = quantity;
 
+      // Get original quantity elements from the page
+      const originalQuantityInput = getOriginalQuantityInput();
+      const originalDecrementBtn = getOriginalDecrementButton();
+      const originalIncrementBtn = getOriginalIncrementButton();
+
+      // Function to update quantity display and disabled state
+      function updateQuantityDisplay(newQty) {
+        currentQty = newQty;
+        quantityDisplay.textContent = currentQty;
+
+        // Update disabled state of minus button (grey out when quantity is 1)
+        if (minusBtn) {
+          if (currentQty <= 1) {
+            minusBtn.setAttribute("disabled", "disabled");
+          } else {
+            minusBtn.removeAttribute("disabled");
+          }
+        }
+      }
+
+      // Handle minus button click
       if (minusBtn) {
-        minusBtn.onclick = function () {
+        minusBtn.onclick = function (e) {
+          e.preventDefault();
           if (currentQty > 1) {
-            currentQty--;
-            quantityDisplay.textContent = currentQty;
+            const newQty = currentQty - 1;
+            updateQuantityDisplay(newQty);
+
+            // Also update the original quantity selector if it exists
+            if (originalQuantityInput) {
+              originalQuantityInput.value = newQty;
+              // Trigger change event on original input
+              const changeEvent = new Event("change", { bubbles: true });
+              originalQuantityInput.dispatchEvent(changeEvent);
+            }
+
+            // Click the original decrement button if it exists
+            if (originalDecrementBtn && !originalDecrementBtn.disabled) {
+              originalDecrementBtn.click();
+            }
           }
         };
       }
 
+      // Handle plus button click
       if (plusBtn) {
-        plusBtn.onclick = function () {
-          currentQty++;
-          quantityDisplay.textContent = currentQty;
+        plusBtn.onclick = function (e) {
+          e.preventDefault();
+          if (currentQty < 99) {
+            const newQty = currentQty + 1;
+            updateQuantityDisplay(newQty);
+
+            // Also update the original quantity selector if it exists
+            if (originalQuantityInput) {
+              originalQuantityInput.value = newQty;
+              // Trigger change event on original input
+              const changeEvent = new Event("change", { bubbles: true });
+              originalQuantityInput.dispatchEvent(changeEvent);
+            }
+
+            // Click the original increment button if it exists
+            if (originalIncrementBtn) {
+              originalIncrementBtn.click();
+            }
+          }
         };
       }
-    }
 
-    // Set up add to cart button (common for both subscribe and one-time)
-    const addToCartBtn = panel.querySelector(".add-to-cart-btn");
-    if (addToCartBtn) {
-      addToCartBtn.onclick = function () {
-        if (info.sourceButton) {
-          info.sourceButton.click();
-        }
-      };
+      // Set up add to cart button for ONE TIME purchase tab
+      const oneTimeAddToCartBtn = panel.querySelector(".add-to-cart-btn");
+      if (oneTimeAddToCartBtn) {
+        oneTimeAddToCartBtn.onclick = function () {
+          if (info.sourceButton) {
+            // Sync the quantity to the original selector
+            if (originalQuantityInput) {
+              originalQuantityInput.value = currentQty;
+              const changeEvent = new Event("change", { bubbles: true });
+              originalQuantityInput.dispatchEvent(changeEvent);
+            }
+            // Then click the original add to cart button
+            info.sourceButton.click();
+          }
+        };
+      }
     }
 
     // Set up "How does it work?" link click events
@@ -894,527 +1012,506 @@
     if (document.getElementById("purchase-tabs-styles")) return;
 
     const styles = `
-      .custom-purchase-tabs {
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-        border-radius: 4px 4px 4px 4px;
-      }
-      
-      .custom-tab-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0 !important;
-      }
-      
-      .purchase-tab-card {
-        display: flex;
-        min-height: 103px;
-        padding: 24px 16px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 8px;
-        flex: 1 0 0;
-        position: relative;
-      }
-      
-      .one-time-purchase {
-        border-radius: 4px 0 0 0 !important;
-        border: 1px solid #e8e8e8;
-        background: #f8f8f8;
-      }
-      
-      .subscribe-and-save {
-        border-radius: 0 4px 0 0 !important;
-        border: 1px solid #e8e8e8;
-        background: #f8f8f8;
-      }
-      
-      .purchase-tab-card.active {
-        border-radius: 0 !important;
-        border-top: 1px solid;
-        border-right: 1px solid;
-        border-left: 1px solid;
-        border-bottom: 0 solid;
-        border-color: #e8e8e8;
-        background: #fff;
-      }
-      
-      .purchase-tab-card.active::before {
-        content: "";
-        position: absolute;
-        width: 100.5%;
-        height: 7px;
-        border-radius: 8px 8px 0 0;
-        background: #448020;
-        top: -6px;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      
-      .min-tab-content {
-        display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
-        gap: 8px;
-        align-self: stretch;
-        position: relative;
-      }
-      
-      .purchase-tab-title {
-        display: flex;
-        padding: 6px 0;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        align-self: stretch;
-        color: #000;
-        font-family: Roboto;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        letter-spacing: 0.24px;
-        text-transform: uppercase;
-        margin-bottom: 0;
-      }
-      
-      .purchase-tab-title span:last-child {
-        color: #000;
-        font-family: Roboto;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        letter-spacing: 0.24px;
-        text-transform: uppercase;
-      }
-      
-      .purchase-tab-radio {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-        aspect-ratio: 1/1;
-        position: relative;
-        top: 5px;
-        background: #fff;
-        border-radius: 50%;
-        border: 2px solid #adadad;
-      }
-      
-      .purchase-tab-card.active .purchase-tab-radio {
-        width: 16px;
-        height: 16px;
-        flex-shrink: 0;
-        border-radius: 50%;
-        border: 2px solid #198754;
-      }
-      
-      .purchase-tab-card.active .purchase-tab-radio:after {
-        content: "";
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #198754;
-      }
-      
-      .purchase-tab-price {
-        font-size: 18px;
-        font-weight: bold;
-        color: #d4145a;
-      }
-      
-      .purchase-tab-subtext {
-        display: none;
-        margin-top: 8px;
-        font-size: 14px;
-        color: #111;
-      }
-      
-      .purchase-tab-badge {
-        display: flex !important;
-        width: 63px;
-        padding: 2px 8px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        right: 145.5px;
-        top: -7px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-radius: 2px;
-        background: #448020;
-        color: #fff6f6;
-        font-family: Roboto;
-        font-size: 10px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        white-space: nowrap;
-        z-index: 1;
-      }
-      
-      .purchase-tab-card.active .purchase-tab-badge {
-        top: -10px;
-      }
-      
-      .purchase-tab-card.subscribe .purchase-tab-badge,
-      .purchase-tab-card.active .purchase-tab-badge {
-        display: block;
-      }
-      
-      .purchase-info-panel {
-        display: flex;
-        padding: 16px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 16px;
-        align-self: stretch;
-        border-radius: 0 0 4px 4px;
-        border-right: 1px solid #e8e8e8;
-        border-bottom: 1px solid #e8e8e8;
-        border-left: 1px solid #e8e8e8;
-        background: #fff;
-      }
-      
-      .purchase-info-panel > .info-panel-one-time-case {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-self: stretch;
-        width: 100%;
-      }
-      
-      .purchase-info-panel > .info-panel-subscribe-case {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-      
-      .info-panel-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-      
-      .info-panel-meta span:first-child {
-        color: #000;
-        font-family: Roboto;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        letter-spacing: var(--typography-label-Small-Regular-letter-spacing, 0);
-      }
-      
-      .save-badge {
-        display: inline-flex !important;
-        flex-direction: row !important;
-        align-items: center;
-        white-space: nowrap;
-        width: auto;
-        padding: 4px 8px;
-        color: #e2004d;
-        font-family: Roboto;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 18px;
-        border-radius: 30px;
-        background: #fbe6f1;
-      }
-      
-      .info-panel-price,
-      .case-price-total {
-        color: var(--content-accent-accent-primary, #e2004d);
-        font-family: "Noto Serif";
-        font-size: 20px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: 140%;
-        letter-spacing: 0.2px;
-      }
-      
-      .info-panel-price > .price-case,
-      .price-unit {
-        color: var(--content-accent-accent-primary, #e2004d);
-        font-family: Roboto;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 140%;
-        letter-spacing: 0.12px;
-      }
-      
-      .strike,
-      .old-price {
-        color: var(--colour-text-secondary, #616161);
-        font-family: Roboto;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 140%;
-        text-decoration-line: line-through;
-      }
-      
-      .purchase-actions {
-        display: flex;
-        align-items: center;
-        flex: 1 0 0;
-        width: 100%;
-        gap: 24px;
-      }
-      
-      .quantity-container {
-        display: flex;
-        align-items: center;
-      }
-      
-      .quantity-btn {
-        width: 48px;
-        height: 48px;
-        border: 1px solid #cfcfcf;
-        background: white;
-        font-size: 30px;
-        cursor: pointer;
-      }
-      
-      .quantity-display {
-        display: flex;
-        width: 40px;
-        min-height: var(--height-34, 34px);
-        padding: 7.002px 0 7.998px 0;
-        justify-content: center;
-        align-items: center;
-        color: #000;
-        font-family: Roboto;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-      }
-      
-      .purchase-info-panel > a {
-        display: flex;
-        align-items: center;
-        width: 100%;
-      }
-      
-      .purchase-info-panel .info-link {
-        color: #000;
-        text-align: center;
-        font-family: Roboto;
-        font-size: 12px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: normal;
-        text-decoration-line: underline;
-      }
-      
-      .purchase-info-panel > .add-to-cart-btn,
-      .purchase-actions > .add-to-cart-btn {
-        display: flex;
-        padding: 12px 24px;
-        justify-content: center;
-        align-items: center;
-        flex: 1 0 0;
-        width: 100%;
-        height: 44px;
-        border: none;
-        border-radius: var(--radius-xs, 2px);
-        background: var(--surface-action-primary, #117b53);
-        color: var(--content-on-surface-on-surface, #fff);
-        text-align: center;
-        font-family: Roboto !important;
-        font-size: 14px !important;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 16px !important;
-        letter-spacing: 0.28px;
-        text-transform: uppercase !important;
-      }
-      
-      .purchase-info-panel > .add-to-cart-btn:hover,
-      .purchase-actions > .add-to-cart-btn:hover {
-        cursor: pointer;
-      }
-      
-      .purchase-info-panel > .add-to-cart-btn:active,
-      .purchase-actions > .add-to-cart-btn:active {
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        transform: translateY(2px);
-      }
-      
-      .purchase-actions .quantity-container > .minus {
-        border: var(--stroke-weight-1, 1px) solid var(--color-grey-80, #ccc);
-        background: var(--color-white-solid, #fff);
-      }
-      
-      .purchase-actions .quantity-container > .plus {
-        border: var(--stroke-weight-1, 1px) solid var(--color-black-solid, #000);
-        background: var(--color-white-solid, #fff);
-      }
-      
-      .purchase-actions .quantity-container > .quantity-btn {
-        display: flex;
-        width: 34px;
-        height: 34px;
-        padding: 0.667px;
-        justify-content: center;
-        align-items: center;
-        border-radius: 5px;
-      }
-      
-      .hide-original-panel .accordion-item-panel,
-      .hide-original-panel .mantine-Accordion-chevron,
-      .hide-original-panel .ss-item-content,
-      .hide-original-panel [data-testid="pricing-and-purchase-panel-wrapper"] {
-        display: none !important;
-      }
-      
-      .css-6baa2j .see-more-description,
-      .css-6baa2j .product-layout .description-container {
-        margin: 0 !important;
-      }
-      
-      .product-layout .layout-details > .no-print {
-        margin-top: 36px;
-      }
-      
-      .info-panel-subscribe-case > .promo-sub-price {
-        color: #000;
-        font-family: Roboto;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        letter-spacing: var(--typography-label-Small-Regular-letter-spacing, 0);
-      }
-      
-      .tab-title-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-        flex: 1 0 0;
-      }
-      
-      .info-panel-subscribe-single-bottle {
-        width: 100%;
-      }
-      
-      .subscribe-price-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-self: stretch;
-        width: 100%;
-      }
-      
-      .subscribe-case-upsell {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        align-self: stretch;
-        width: 100%;
-      }
-      
-      .subscribe-case-upsell > .case-upsell-title {
-        color: #000;
-        font-family: Roboto;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        letter-spacing: var(--typography-label-Small-Regular-letter-spacing, 0);
-      }
-      
-      .info-panel-one-time-single-bottle {
-        display: flex;
-        flex-direction: row-reverse;
-        width: 100%;
-      }
-      
-      .info-panel-one-time-single-bottle .subscribe-price-row {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-      }
-      
-      .info-panel-one-time-single-bottle .subscribe-price-row .case-price {
-        display: flex;
-        align-items: baseline;
-        gap: 4px;
-      }
-      
-      .info-panel-one-time-single-bottle .subscribe-case-upsell {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-      }
-      
-      .info-panel-one-time-single-bottle .subscribe-case-upsell .case-upsell-title {
-        color: #000;
-        font-family: Roboto;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-      }
-      
-      .saving-section-content {
-        display: inline-flex;
-        align-items: center;
-      }
-      
-      .info-panel-one-time-case {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        gap: 16px;
-        flex-wrap: wrap;
-      }
-      
-      .info-panel-one-time-case .info-panel-meta {
-        flex: 1;
-      }
-      
-      .info-panel-one-time-case .saving-section-content {
-        display: inline-flex;
-        align-items: center;
-      }
-      
-      @media (max-width: 429px) {
-        .purchase-tab-card {
-          padding: 12px 16px;
-        }
-      
-        .purchase-tab-card.active::before {
-          height: 4px;
-          top: -4px;
-        }
-      
-        .purchase-tab-radio {
-          top: 3px;
-        }
-      
-        .purchase-tab-title {
-          font-size: 10px;
-        }
-      
-        .purchase-tab-card.active .purchase-tab-badge {
-          top: -9px;
-        }
-      }
+			.custom-purchase-tabs {
+			  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+			  border-radius: 4px;
+			}
+			
+			.custom-tab-buttons {
+			  display: grid;
+			  grid-template-columns: 1fr 1fr;
+			  gap: 0 !important;
+			}
+			
+			.purchase-tab-card {
+			  display: flex;
+			  min-height: 103px;
+			  padding: 24px 16px;
+			  flex-direction: column;
+			  justify-content: center;
+			  align-items: flex-start;
+			  gap: 8px;
+			  flex: 1 0 0;
+			  position: relative;
+			}
+			
+			.one-time-purchase {
+			  border-radius: 4px 0 0 0 !important;
+			  border: 1px solid #e8e8e8;
+			  background: #f8f8f8;
+			}
+			
+			.subscribe-and-save {
+			  border-radius: 0 4px 0 0 !important;
+			  border: 1px solid #e8e8e8;
+			  background: #f8f8f8;
+			}
+			
+			.purchase-tab-card.active {
+			  border-radius: 0 !important;
+			  border-top: 1px solid;
+			  border-right: 1px solid;
+			  border-left: 1px solid;
+			  border-bottom: 0 solid;
+			  border-color: #e8e8e8;
+			  background: #fff;
+			}
+			
+			.purchase-tab-card.active::before {
+			  content: "";
+			  position: absolute;
+			  width: 100.5%;
+			  height: 7px;
+			  border-radius: 8px 8px 0 0;
+			  background: #448020;
+			  top: -6px;
+			  left: 50%;
+			  transform: translateX(-50%);
+			}
+			
+			.min-tab-content {
+			  display: flex;
+			  justify-content: flex-start;
+			  align-items: flex-start;
+			  gap: 8px;
+			  align-self: stretch;
+			  position: relative;
+			}
+			
+			.tab-title-container {
+			  display: flex;
+			  flex-direction: column;
+			  align-items: flex-start;
+			  gap: 4px;
+			  flex: 1 0 0;
+			}
+			
+			.purchase-tab-title {
+			  display: flex;
+			  padding: 6px 0;
+			  flex-direction: column;
+			  justify-content: center;
+			  align-items: flex-start;
+			  align-self: stretch;
+			  color: #000;
+			  font-family: Roboto;
+			  font-size: 12px;
+			  font-style: normal;
+			  font-weight: 600;
+			  line-height: normal;
+			  letter-spacing: 0.24px;
+			  text-transform: uppercase;
+			  margin-bottom: 0;
+			}
+			
+			.purchase-tab-radio {
+			  width: 16px;
+			  height: 16px;
+			  flex-shrink: 0;
+			  aspect-ratio: 1/1;
+			  position: relative;
+			  top: 5px;
+			  background: #fff;
+			  border-radius: 50%;
+			  border: 2px solid #adadad;
+			}
+			
+			.purchase-tab-card.active .purchase-tab-radio {
+			  border: 2px solid #198754;
+			}
+			
+			.purchase-tab-card.active .purchase-tab-radio:after {
+			  content: "";
+			  position: absolute;
+			  top: 2px;
+			  left: 2px;
+			  width: 8px;
+			  height: 8px;
+			  border-radius: 50%;
+			  background: #198754;
+			}
+			
+			.purchase-tab-badge {
+			  display: flex !important;
+			  width: 63px;
+			  padding: 2px 8px;
+			  flex-direction: column;
+			  justify-content: center;
+			  align-items: center;
+			  position: absolute;
+			  right: 145.5px;
+			  top: -7px;
+			  left: 50%;
+			  transform: translateX(-50%);
+			  border-radius: 2px;
+			  background: #448020;
+			  color: #fff6f6;
+			  font-family: Roboto;
+			  font-size: 10px;
+			  font-style: normal;
+			  font-weight: 600;
+			  line-height: normal;
+			  letter-spacing: 0.5px;
+			  text-transform: uppercase;
+			  white-space: nowrap;
+			  z-index: 1;
+			}
+			
+			.purchase-tab-card.active .purchase-tab-badge {
+			  top: -10px;
+			}
+			
+			.save-badge {
+			  display: inline-flex !important;
+			  flex-direction: row !important;
+			  align-items: center;
+			  white-space: nowrap;
+			  width: auto;
+			  padding: 4px 8px;
+			  color: #e2004d;
+			  font-family: Roboto;
+			  font-size: 12px;
+			  font-style: normal;
+			  font-weight: 700;
+			  line-height: 18px;
+			  border-radius: 30px;
+			  background: #fbe6f1;
+			}
+			
+			.info-panel-price,
+			.case-price-total {
+			  color: var(--content-accent-accent-primary, #e2004d);
+			  font-family: "Noto Serif";
+			  font-size: 20px;
+			  font-style: normal;
+			  font-weight: 700;
+			  line-height: 140%;
+			  letter-spacing: 0.2px;
+			}
+			
+			.info-panel-price > .price-case,
+			.price-unit {
+			  color: var(--content-accent-accent-primary, #e2004d);
+			  font-family: Roboto;
+			  font-size: 12px;
+			  font-style: normal;
+			  font-weight: 400;
+			  line-height: 140%;
+			  letter-spacing: 0.12px;
+			}
+			
+			.strike,
+			.old-price {
+			  color: var(--colour-text-secondary, #616161);
+			  font-family: Roboto;
+			  font-size: 14px;
+			  font-style: normal;
+			  font-weight: 400;
+			  line-height: 140%;
+			  text-decoration-line: line-through;
+			}
+			
+			.purchase-info-panel {
+			  display: flex;
+			  padding: 16px;
+			  flex-direction: column;
+			  justify-content: center;
+			  align-items: flex-start;
+			  gap: 16px;
+			  align-self: stretch;
+			  border-radius: 0 0 4px 4px;
+			  border-right: 1px solid #e8e8e8;
+			  border-bottom: 1px solid #e8e8e8;
+			  border-left: 1px solid #e8e8e8;
+			  background: #fff;
+			}
+			
+			.info-panel-meta {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  width: 100%;
+			}
+			
+			.info-panel-meta span:first-child {
+			  color: #000;
+			  font-family: Roboto;
+			  font-size: 16px;
+			  font-style: normal;
+			  font-weight: 500;
+			  line-height: normal;
+			  letter-spacing: 0;
+			}
+			
+			.info-panel-subscribe-single-bottle {
+			  width: 100%;
+			}
+			
+			.subscribe-price-row {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  align-self: stretch;
+			  width: 100%;
+			}
+			
+			.subscribe-case-upsell {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  align-self: stretch;
+			  width: 100%;
+			}
+			
+			.subscribe-case-upsell > .case-upsell-title {
+			  color: #000;
+			  font-family: Roboto;
+			  font-size: 16px;
+			  font-style: normal;
+			  font-weight: 500;
+			  line-height: normal;
+			  letter-spacing: 0;
+			}
+			
+			.purchase-info-panel > .info-panel-subscribe-case {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  width: 100%;
+			}
+			
+			.info-panel-subscribe-case > .promo-sub-price {
+			  color: #000;
+			  font-family: Roboto;
+			  font-size: 16px;
+			  font-style: normal;
+			  font-weight: 500;
+			  line-height: normal;
+			  letter-spacing: 0;
+			}
+			
+			.straight-sku-wrapper {
+			  display: flex;
+			  flex-direction: column;
+			  width: 100%;
+			  gap: 8px;
+			}
+			
+			.vpp-price {
+			  color: var(--content-accent-accent-primary, #e2004d);
+			}
+			
+			.price {
+			  font-family: "Noto Serif";
+			  font-size: 24px;
+			  font-style: normal;
+			  font-weight: 700;
+			  line-height: 140%;
+			  letter-spacing: 0.24px;
+			}
+			
+			.sale-price > span {
+			  color: #000;
+			}
+			
+			.add-on-container {
+			  padding-top: 10px;
+			  color: #cf004f;
+			  margin: 10px 0;
+			  font-weight: 700;
+			}
+			
+			.purchase-info-panel > .info-panel-one-time-case {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  align-self: stretch;
+			  width: 100%;
+			}
+			
+			.info-panel-one-time-case {
+			  display: flex;
+			  justify-content: space-between;
+			  align-items: center;
+			  width: 100%;
+			  gap: 16px;
+			  flex-wrap: wrap;
+			}
+			
+			.info-panel-one-time-case .info-panel-meta {
+			  flex: 1;
+			}
+			
+			.saving-section-content {
+			  display: inline-flex;
+			  align-items: center;
+			}
+			
+			.info-panel-one-time-case .saving-section-content {
+			  display: inline-flex;
+			  align-items: center;
+			}
+			
+			.purchase-info-panel > a {
+			  display: flex;
+			  align-items: center;
+			  width: 100%;
+			}
+			
+			.purchase-info-panel .info-link {
+			  color: #000;
+			  text-align: center;
+			  font-family: Roboto;
+			  font-size: 12px;
+			  font-style: normal;
+			  font-weight: 400;
+			  line-height: normal;
+			  text-decoration-line: underline;
+			}
+			
+			.purchase-actions {
+			  display: flex;
+			  align-items: center;
+			  flex: 1 0 0;
+			  width: 100%;
+			  gap: 24px;
+			}
+			
+			.quantity-container {
+			  display: flex;
+			  align-items: center;
+			}
+			
+			.quantity-container .quantity-btn {
+			  display: flex;
+			  width: 34px;
+			  height: 34px;
+			  padding: 0.667px;
+			  justify-content: center;
+			  align-items: center;
+			  border-radius: 5px;
+			  background: #fff;
+			  font-size: 30px;
+			  cursor: pointer;
+			}
+			
+			.quantity-btn.minus {
+			  border: 1px solid #cfcfcf;
+			}
+			
+			.quantity-btn.minus:not(:disabled) {
+			  border-color: #000;
+			}
+			
+			.quantity-btn.minus:not(:disabled) svg path {
+			  fill: #000;
+			}
+			
+			.quantity-btn.minus:disabled {
+			  border-color: #cfcfcf;
+			  opacity: 0.5;
+			  cursor: not-allowed;
+			}
+			
+			.quantity-btn.minus:disabled svg path {
+			  fill: #ccc;
+			}
+			
+			.quantity-btn.plus {
+			  border: 1px solid #000;
+			}
+			
+			.quantity-btn.plus svg path {
+			  fill: #000;
+			}
+			
+			.quantity-display {
+			  display: flex;
+			  width: 40px;
+			  min-height: 34px;
+			  padding: 7px 0 8px 0;
+			  justify-content: center;
+			  align-items: center;
+			  color: #000;
+			  font-family: Roboto;
+			  font-size: 16px;
+			  font-style: normal;
+			  font-weight: 500;
+			  line-height: normal;
+			}
+			
+			.purchase-info-panel > .add-to-cart-btn,
+			.purchase-actions > .add-to-cart-btn {
+			  display: flex;
+			  padding: 12px 24px;
+			  justify-content: center;
+			  align-items: center;
+			  flex: 1 0 0;
+			  width: 100%;
+			  height: 44px;
+			  border: none;
+			  border-radius: 2px;
+			  background: #117b53;
+			  color: #fff;
+			  text-align: center;
+			  font-family: Roboto !important;
+			  font-size: 14px !important;
+			  font-style: normal;
+			  font-weight: 600;
+			  line-height: 16px !important;
+			  letter-spacing: 0.28px;
+			  text-transform: uppercase !important;
+			}
+			
+			.purchase-info-panel > .add-to-cart-btn:hover,
+			.purchase-actions > .add-to-cart-btn:hover {
+			  cursor: pointer;
+			}
+			
+			.purchase-info-panel > .add-to-cart-btn:active,
+			.purchase-actions > .add-to-cart-btn:active {
+			  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+			  transform: translateY(2px);
+			}
+			
+			.hide-original-panel .accordion-item-panel,
+			.hide-original-panel .mantine-Accordion-chevron,
+			.hide-original-panel .ss-item-content,
+			.hide-original-panel [data-testid="pricing-and-purchase-panel-wrapper"] {
+			  display: none !important;
+			}
+			
+			.css-6baa2j .see-more-description,
+			.css-6baa2j .product-layout .description-container {
+			  margin: 0 !important;
+			}
+			
+			.product-layout .layout-details > .no-print {
+			  margin-top: 36px;
+			}
+			
+			@media (max-width: 429px) {
+			  .purchase-tab-card {
+			    padding: 12px 16px;
+			  }
+			
+			  .purchase-tab-card.active::before {
+			    height: 4px;
+			    top: -4px;
+			  }
+			
+			  .purchase-tab-radio {
+			    top: 3px;
+			  }
+			
+			  .purchase-tab-title {
+			    font-size: 10px;
+			  }
+			
+			  .purchase-tab-card.active .purchase-tab-badge {
+			    top: -9px;
+			  }
+			}
     `;
 
     const styleElement = document.createElement("style");
