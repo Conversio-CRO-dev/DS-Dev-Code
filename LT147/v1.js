@@ -576,7 +576,8 @@
           "</div>" +
           '<button class="add-to-cart-btn">' +
           info.buttonText +
-          "</button>";
+          "</button>" +
+          '<span class="alertMessage">You may only purchase one subscription item.</span>';
       } else if (isCase) {
         // CASE - Subscribe & Save
         let subscribePrice = subscribePriceElement
@@ -598,7 +599,7 @@
           "<span>" +
           numberOfBottles +
           " bottles -</span>" +
-          '<span class="case-price"> ' +
+          '<span class="case-price"> £' +
           subsPrice.toFixed(2) +
           " /bottle</span>" +
           "</div>" +
@@ -609,7 +610,8 @@
           "</a>" +
           '<button class="add-to-cart-btn">' +
           info.buttonText +
-          "</button>";
+          "</button>" +
+          '<span class="alertMessage">You may only purchase one subscription item.</span>';
       } else {
         // Default fallback for subscribe
         var saveBadgeFallback = info.save
@@ -639,6 +641,35 @@
           }
         };
       }
+
+      function observeAlerts() {
+        function updateAlertMessage() {
+          const alertExists = document.querySelector(
+            '[data-test="alert"], [data-testid="alert"]',
+          );
+
+          const subscribePanel = document.querySelector(".purchase-info-panel");
+          const customAlertMessages = subscribePanel
+            ? subscribePanel.querySelectorAll(".alertMessage")
+            : document.querySelectorAll(".alertMessage");
+
+          customAlertMessages.forEach((message) => {
+            message.style.display = alertExists ? "block" : "none";
+          });
+        }
+
+        updateAlertMessage();
+
+        const observer = new MutationObserver(updateAlertMessage);
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+        });
+      }
+
+      observeAlerts();
     } else {
       // ONE TIME PURCHASE TAB
       if (isSingleBottle) {
@@ -1354,6 +1385,7 @@
 			
 			.purchase-info-panel > a {
 			  display: flex;
+			  justify-content: flex-end;
 			  align-items: center;
 			  width: 100%;
 			}
@@ -1490,6 +1522,14 @@
 			  margin-top: 36px;
 			}
 			
+			.alertMessage {
+			  padding: 12px;
+			  width: 100%;
+			  border-radius: 2px;
+			  color: rgb(215, 54, 59);
+			  background-color: rgb(251, 234, 234);
+			}
+			
 			@media (max-width: 429px) {
 			  .purchase-tab-card {
 			    padding: 12px 16px;
@@ -1510,6 +1550,11 @@
 			
 			  .purchase-tab-card.active .purchase-tab-badge {
 			    top: -9px;
+			  }
+			
+			  .alertMessage {
+			    text-align: center;
+			    font-size: 12px;
 			  }
 			}
     `;
