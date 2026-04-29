@@ -587,7 +587,27 @@
           ? savingBadgeElement.innerText.trim()
           : info.save;
 
-        subsPrice = Number(subscribePrice.substring(1)) / 12;
+        let subscribeCasePrice = null;
+        const subscribeCardPrice = document.querySelector(
+          ".subscribe-and-save .info-panel-price",
+        );
+        if (subscribeCardPrice) {
+          const priceText = subscribeCardPrice.textContent.trim();
+          const priceMatch = priceText.match(/£([\d.]+)/);
+          if (priceMatch) {
+            subscribeCasePrice = parseFloat(priceMatch[1]);
+          }
+        }
+
+        // Calculate per-bottle price based on the actual subscribe case price
+        let perBottlePrice = null;
+        if (subscribeCasePrice && numberOfBottles && numberOfBottles > 0) {
+          perBottlePrice = subscribeCasePrice / numberOfBottles;
+        } else if (subscribePrice) {
+          // Fallback to original calculation if needed
+          perBottlePrice =
+            Number(subscribePrice.substring(1)) / numberOfBottles;
+        }
 
         var saveBadgeHTML2 = savingBadge
           ? '<span class="save-badge">' + savingBadge + "</span>"
@@ -600,7 +620,7 @@
           numberOfBottles +
           " bottles -</span>" +
           '<span class="case-price"> £' +
-          subsPrice.toFixed(2) +
+          perBottlePrice.toFixed(2) +
           " /bottle</span>" +
           "</div>" +
           saveBadgeHTML2 +
@@ -1032,7 +1052,7 @@
     if (match) {
       const bottleCount = match[1];
       const price = match[2];
-      return bottleCount + " bottles - £" + price + "/bottle";
+      return bottleCount + " bottles - £" + price + " /bottle";
     }
     return metaText;
   }
@@ -1385,7 +1405,7 @@
 			
 			.purchase-info-panel > a {
 			  display: flex;
-			  justify-content: flex-end;
+			  justify-content: flex-start;
 			  align-items: center;
 			  width: 100%;
 			}
