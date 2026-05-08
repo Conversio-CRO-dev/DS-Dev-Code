@@ -893,12 +893,7 @@
         getText(section.querySelector(".sale-price .strike")),
       meta: getText(section.querySelector(".per-bottle-price")),
       save: getText(section.querySelector(".saving-badge")),
-      buttonText:
-        getText(
-          section.querySelector(
-            "[data-testid='add-to-cart-button'], .grid-addto-cart-btn",
-          ),
-        ) || "ADD TO BASKET",
+      buttonText: "ADD TO BASKET",
       sourceButton: section.querySelector(
         "[data-testid='add-to-cart-button'], .grid-addto-cart-btn",
       ),
@@ -921,12 +916,7 @@
         section.querySelector("[data-testid='case-details'], .case-details"),
       ),
       save: getText(section.querySelector("[data-testid='saving'], .saving")),
-      buttonText:
-        getText(
-          section.querySelector(
-            "[data-testid='add-to-cart-button'], .grid-addto-cart-btn",
-          ),
-        ) || "ADD TO BASKET",
+      buttonText: "ADD TO BASKET",
       sourceButton: section.querySelector(
         "[data-testid='add-to-cart-button'], .grid-addto-cart-btn",
       ),
