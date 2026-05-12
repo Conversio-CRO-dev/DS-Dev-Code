@@ -86,28 +86,30 @@ function updateRangeInputValues(minValue, maxValue) {
       {
         min: minPrice,
         max: 20,
-        label: `Up to £20`,
+        label: "Up to £20",
       },
       {
         min: 20,
         max: 50,
-        label: `£20 - £50`,
+        label: "£20 - £50",
       },
       {
         min: 50,
         max: 100,
-        label: `£50 - £100`,
+        label: "£50 - £100",
       },
       {
         min: 100,
         max: 150,
-        label: `£100 - £150`,
+        label: "£100 - £150",
       },
     ];
 
     return baseRanges
-      .filter((range) => range.min < maxPrice)
-      .map((range) => {
+      .filter(function (range) {
+        return range.min < maxPrice;
+      })
+      .map(function (range) {
         const safeMax = Math.min(range.max, maxPrice);
 
         return {
@@ -115,7 +117,7 @@ function updateRangeInputValues(minValue, maxValue) {
           max: safeMax,
           label:
             safeMax < range.max
-              ? `£${formatPrice(range.min)} - £${formatPrice(safeMax)}`
+              ? "£" + formatPrice(range.min) + " - £" + formatPrice(safeMax)
               : range.label,
         };
       });
@@ -136,7 +138,7 @@ function updateRangeInputValues(minValue, maxValue) {
     return String(value)
       .toLowerCase()
       .split(" ")
-      .map((word) => {
+      .map(function (word) {
         if (!word) return word;
         return word.charAt(0).toUpperCase() + word.slice(1);
       })
@@ -145,6 +147,7 @@ function updateRangeInputValues(minValue, maxValue) {
 
   function getSizeMeta(rawValue) {
     const sizeValue = normaliseSizeValue(rawValue);
+    const displaySizeValue = sizeValue;
 
     const infantMonthSizes = ["3-6", "6-9", "9-12", "12-18", "18-24"];
 
@@ -161,7 +164,7 @@ function updateRangeInputValues(minValue, maxValue) {
       "15-16",
     ];
 
-    const adultSizes = ["2XS", "XS", "S", "M", "L", "XL", "2XL", "3XL"];
+    const adultSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
     const numericSizes = ["8", "10", "12", "14", "16", "18"];
 
@@ -169,7 +172,7 @@ function updateRangeInputValues(minValue, maxValue) {
       return {
         groupOrder: 1,
         sizeOrder: infantMonthSizes.indexOf(sizeValue),
-        label: `${sizeValue} M`,
+        label: sizeValue + " M",
       };
     }
 
@@ -177,15 +180,15 @@ function updateRangeInputValues(minValue, maxValue) {
       return {
         groupOrder: 2,
         sizeOrder: juniorYearSizes.indexOf(sizeValue),
-        label: `${sizeValue} Y`,
+        label: sizeValue + " Y",
       };
     }
 
-    if (adultSizes.includes(sizeValue)) {
+    if (adultSizes.includes(displaySizeValue)) {
       return {
         groupOrder: 3,
-        sizeOrder: adultSizes.indexOf(sizeValue),
-        label: sizeValue,
+        sizeOrder: adultSizes.indexOf(displaySizeValue),
+        label: displaySizeValue,
       };
     }
 
@@ -208,7 +211,7 @@ function updateRangeInputValues(minValue, maxValue) {
     return {
       groupOrder: 6,
       sizeOrder: 999,
-      label: titleCaseSizeLabel(sizeValue),
+      label: displaySizeValue,
     };
   }
 
@@ -219,7 +222,7 @@ function updateRangeInputValues(minValue, maxValue) {
 
     const reorderedItems = [];
 
-    leftColumnItems.forEach((leftItem, index) => {
+    leftColumnItems.forEach(function (leftItem, index) {
       reorderedItems.push(leftItem);
 
       if (rightColumnItems[index]) {
@@ -235,14 +238,14 @@ function updateRangeInputValues(minValue, maxValue) {
 
     if (!input) return;
 
-    const textNode = Array.from(label.childNodes).find((node) => {
+    const textNode = Array.from(label.childNodes).find(function (node) {
       return node.nodeType === Node.TEXT_NODE && node.textContent.trim();
     });
 
     if (textNode) {
-      textNode.textContent = ` ${newText} `;
+      textNode.textContent = " " + newText + " ";
     } else {
-      input.insertAdjacentText("afterend", ` ${newText} `);
+      input.insertAdjacentText("afterend", " " + newText + " ");
     }
   }
 
@@ -258,7 +261,7 @@ function updateRangeInputValues(minValue, maxValue) {
     if (!sizeItems.length) return;
 
     const sortedItems = sizeItems
-      .map((item) => {
+      .map(function (item) {
         const checkbox = item.querySelector(".ais-RefinementList-checkbox");
         const label = item.querySelector(".ais-RefinementList-label");
 
@@ -268,16 +271,16 @@ function updateRangeInputValues(minValue, maxValue) {
         const sizeMeta = getSizeMeta(rawValue);
 
         return {
-          item,
-          label,
-          rawValue,
+          item: item,
+          label: label,
+          rawValue: rawValue,
           displayLabel: sizeMeta.label,
           groupOrder: sizeMeta.groupOrder,
           sizeOrder: sizeMeta.sizeOrder,
         };
       })
       .filter(Boolean)
-      .sort((a, b) => {
+      .sort(function (a, b) {
         if (a.groupOrder !== b.groupOrder) {
           return a.groupOrder - b.groupOrder;
         }
@@ -289,23 +292,27 @@ function updateRangeInputValues(minValue, maxValue) {
         return a.rawValue.localeCompare(b.rawValue);
       });
 
-    sortedItems.forEach((size) => {
+    sortedItems.forEach(function (size) {
       updateSizeLabelText(size.label, size.displayLabel);
     });
 
     const gridOrderedItems = reorderForTwoColumnGrid(sortedItems);
 
     const currentOrder = sizeItems
-      .map((item) => {
+      .map(function (item) {
         const checkbox = item.querySelector(".ais-RefinementList-checkbox");
         return checkbox ? checkbox.value : "";
       })
       .join("|");
 
-    const newOrder = gridOrderedItems.map((size) => size.rawValue).join("|");
+    const newOrder = gridOrderedItems
+      .map(function (size) {
+        return size.rawValue;
+      })
+      .join("|");
 
     if (currentOrder !== newOrder) {
-      gridOrderedItems.forEach((size) => {
+      gridOrderedItems.forEach(function (size) {
         sizeList.appendChild(size.item);
       });
     }
@@ -330,10 +337,10 @@ function updateRangeInputValues(minValue, maxValue) {
       sizeFilterObserver.disconnect();
     }
 
-    sizeFilterObserver = new MutationObserver(() => {
+    sizeFilterObserver = new MutationObserver(function () {
       clearTimeout(sizeFilterTimer);
 
-      sizeFilterTimer = setTimeout(() => {
+      sizeFilterTimer = setTimeout(function () {
         sortSizeFilterItems(sizeContainer);
       }, 50);
     });
@@ -395,7 +402,7 @@ function updateRangeInputValues(minValue, maxValue) {
 
     brandedCollectionTitle.textContent = "Collection";
 
-    clothingCollectionItems.forEach((item) => {
+    clothingCollectionItems.forEach(function (item) {
       item.classList.add("collection-filter-item--moved");
 
       if (!brandedCollectionList.contains(item)) {
@@ -408,7 +415,7 @@ function updateRangeInputValues(minValue, maxValue) {
     );
 
     allCollectionItems
-      .sort((a, b) => {
+      .sort(function (a, b) {
         const aText = a
           .querySelector(".ais-RefinementList-label")
           ?.textContent.trim()
@@ -421,7 +428,7 @@ function updateRangeInputValues(minValue, maxValue) {
 
         return (aText || "").localeCompare(bText || "");
       })
-      .forEach((item) => {
+      .forEach(function (item) {
         brandedCollectionList.appendChild(item);
       });
 
@@ -475,14 +482,14 @@ function updateRangeInputValues(minValue, maxValue) {
 
     if (!existingFilters.length) return false;
 
-    existingFilters.forEach((filter) => {
+    existingFilters.forEach(function (filter) {
       facetsContainer.appendChild(filter);
     });
 
     return true;
   }
 
-  const observer = new MutationObserver(() => {
+  const observer = new MutationObserver(function () {
     if (!isPriceInitialised) {
       const priceContainer = document.querySelector(
         '.is-widget-container-price_GBP_default[data-attr="price.GBP.default"]:not(.hidden)',
@@ -530,7 +537,7 @@ function updateRangeInputValues(minValue, maxValue) {
     subtree: true,
   });
 
-  setTimeout(() => {
+  setTimeout(function () {
     observer.disconnect();
   }, 5000);
 
@@ -558,25 +565,30 @@ function updateRangeInputValues(minValue, maxValue) {
 
     const visiblePriceRanges = buildVisiblePriceRanges(minPrice, maxPrice);
 
-    priceRangeContainer.innerHTML = `
-		  <div class="label-container">
-		    ${visiblePriceRanges
-          .map(
-            (range) => `
-		          <label class="ais-RefinementList-label">
-		            <input 
-		              type="checkbox" 
-		              class="ais-RefinementList-checkbox price-checkbox" 
-		              data-min="${range.min}" 
-		              data-max="${range.max}"
-		            > 
-		            <span>${range.label}</span>
-		          </label>
-		        `,
-          )
-          .join("")}
-		  </div>
-		`;
+    priceRangeContainer.innerHTML =
+      '<div class="label-container">' +
+      visiblePriceRanges
+        .map(function (range) {
+          return (
+            '<label class="ais-RefinementList-label">' +
+            "<input " +
+            'type="checkbox" ' +
+            'class="ais-RefinementList-checkbox price-checkbox" ' +
+            'data-min="' +
+            range.min +
+            '" ' +
+            'data-max="' +
+            range.max +
+            '"' +
+            "> " +
+            "<span>" +
+            range.label +
+            "</span>" +
+            "</label>"
+          );
+        })
+        .join("") +
+      "</div>";
 
     priceContainerBody.appendChild(priceRangeContainer);
 
@@ -598,16 +610,18 @@ function updateRangeInputValues(minValue, maxValue) {
       additionalCheckboxes.id = "additional-price-ranges";
       additionalCheckboxes.style.display = "none";
 
-      additionalCheckboxes.innerHTML = `
-        <input type="checkbox" class="ais-RefinementList-checkbox price-checkbox price-checkbox-more" data-min="150" data-max="${maxPrice}"> 
-        <span>£150 +</span>
-      `;
+      additionalCheckboxes.innerHTML =
+        '<input type="checkbox" class="ais-RefinementList-checkbox price-checkbox price-checkbox-more" data-min="150" data-max="' +
+        maxPrice +
+        '"> ' +
+        "<span>£150 +</span>";
 
       moreRangesContainer.appendChild(ctaButton);
       labelContainer.append(additionalCheckboxes, moreRangesContainer);
 
       let isExpanded = false;
-      ctaButton.addEventListener("click", () => {
+
+      ctaButton.addEventListener("click", function () {
         isExpanded = !isExpanded;
 
         if (isExpanded) {
@@ -624,9 +638,10 @@ function updateRangeInputValues(minValue, maxValue) {
           if (moreCheckbox && moreCheckbox.checked) {
             moreCheckbox.checked = false;
             updateRangeInputValues(minPrice, maxPrice);
+
             priceRangeContainer
               .querySelectorAll(".price-checkbox:not(.price-checkbox-more)")
-              .forEach((cb) => {
+              .forEach(function (cb) {
                 cb.checked = false;
               });
           }
@@ -644,9 +659,9 @@ function updateRangeInputValues(minValue, maxValue) {
   function attachCheckboxListeners(priceRangeContainer, minPrice, maxPrice) {
     const checkboxes = priceRangeContainer.querySelectorAll(".price-checkbox");
 
-    checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener("change", function (e) {
-        checkboxes.forEach((cb) => {
+    checkboxes.forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        checkboxes.forEach(function (cb) {
           if (cb !== checkbox) {
             cb.checked = false;
           }
@@ -655,10 +670,11 @@ function updateRangeInputValues(minValue, maxValue) {
         if (this.checked) {
           const minValue = parseFloat(this.getAttribute("data-min"));
           const maxValue = parseFloat(this.getAttribute("data-max"));
-          //   console.log(`Filtering: £${minValue} - £${maxValue}`);
+
+          // console.log("Filtering: £" + minValue + " - £" + maxValue);
           updateRangeInputValues(minValue, maxValue);
         } else {
-          //   console.log("Resetting to show all products");
+          // console.log("Resetting to show all products");
           updateRangeInputValues(minPrice, maxPrice);
         }
       });
