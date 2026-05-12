@@ -213,6 +213,7 @@
     let displayPrice = "";
     let displayOldPrice = "";
     let unitText = "case"; // default to case
+    let pricePerLitreHTML = "";
 
     // Check if this is a single bottle or case
     const isSingleBottle =
@@ -308,6 +309,13 @@
       oldPriceHTML = '<span class="old-price">' + displayOldPrice + "</span>";
     }
 
+    if (isSingleBottle && info.pricePerLitre) {
+      pricePerLitreHTML =
+        '<span class="price-per-litre custom-price-per-litre">' +
+        info.pricePerLitre +
+        "</span>";
+    }
+
     card.innerHTML =
       badgeHTML +
       '<div class="purchase-tab-content">' +
@@ -322,6 +330,7 @@
       '<span class="price-case"> /' +
       unitText +
       " </span>" +
+      pricePerLitreHTML +
       oldPriceHTML +
       "</div>" +
       "</div>" +
@@ -814,7 +823,9 @@
             if (originalQuantityInput) {
               originalQuantityInput.value = newQty;
               // Trigger change event on original input
-              const changeEvent = new Event("change", { bubbles: true });
+              const changeEvent = new Event("change", {
+                bubbles: true,
+              });
               originalQuantityInput.dispatchEvent(changeEvent);
             }
 
@@ -838,7 +849,9 @@
             if (originalQuantityInput) {
               originalQuantityInput.value = newQty;
               // Trigger change event on original input
-              const changeEvent = new Event("change", { bubbles: true });
+              const changeEvent = new Event("change", {
+                bubbles: true,
+              });
               originalQuantityInput.dispatchEvent(changeEvent);
             }
 
@@ -858,7 +871,9 @@
             // Sync the quantity to the original selector
             if (originalQuantityInput) {
               originalQuantityInput.value = currentQty;
-              const changeEvent = new Event("change", { bubbles: true });
+              const changeEvent = new Event("change", {
+                bubbles: true,
+              });
               originalQuantityInput.dispatchEvent(changeEvent);
             }
             // Then click the original add to cart button
@@ -888,6 +903,9 @@
       title: "SUBSCRIBE & SAVE",
       badge: "Save 20%",
       price: getText(section.querySelector(".case-price")),
+      pricePerLitre: getText(
+        section.querySelector("[data-testid='price-per-litre']"),
+      ),
       oldPrice:
         getText(section.querySelector(".case-price-savings .strike")) ||
         getText(section.querySelector(".sale-price .strike")),
@@ -909,6 +927,11 @@
       title: "ONE TIME PURCHASE",
       badge: "",
       price: getText(section.querySelector("[data-testid='price'], .price")),
+      pricePerLitre: getText(
+        section.querySelector(
+          "[data-testid='standard-price-section'] [data-testid='price-per-litre']",
+        ),
+      ),
       oldPrice: getText(
         section.querySelector("[data-testid='strike-price'], .strike"),
       ),
@@ -1532,6 +1555,18 @@
 			  margin-top: 36px;
 			}
 			
+			.info-panel-price .custom-price-per-litre {
+			  display: inline;
+			  color: #616161;
+			  font-family: Roboto;
+			  font-size: 12px;
+			  font-style: normal;
+			  font-weight: 400;
+			  line-height: 140%;
+			  letter-spacing: 0.12px;
+			  margin-left: 4px;
+			}
+			
 			.alertMessage {
 			  padding: 12px;
 			  width: 100%;
@@ -1565,6 +1600,11 @@
 			  .alertMessage {
 			    text-align: center;
 			    font-size: 12px;
+			  }
+			  
+			  .info-panel-price .custom-price-per-litre {
+			    display: block;
+			    margin-left: 0;
 			  }
 			}
     `;
