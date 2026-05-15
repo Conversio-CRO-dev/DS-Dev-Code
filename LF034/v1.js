@@ -546,7 +546,7 @@ function updateRangeInputValues(minValue, maxValue) {
     const minPrice = currentPriceRange.min;
     const maxPrice = currentPriceRange.max;
 
-    // console.log("Current PLP price range:", minPrice, maxPrice);
+    console.log("Current PLP price range:", minPrice, maxPrice);
 
     const priceContainerBody = newBodyElement.querySelector(".ais-Panel-body");
 
@@ -656,6 +656,36 @@ function updateRangeInputValues(minValue, maxValue) {
     attachCheckboxListeners(priceRangeContainer, minPrice, maxPrice);
   }
 
+  function clearCustomPriceRanges() {
+    const priceRangeContainer = document.querySelector(".custom-price-filter");
+
+    if (!priceRangeContainer) return;
+
+    priceRangeContainer
+      .querySelectorAll(".price-checkbox")
+      .forEach(function (checkbox) {
+        checkbox.checked = false;
+      });
+
+    const additionalPriceRanges = priceRangeContainer.querySelector(
+      "#additional-price-ranges",
+    );
+
+    const showMoreButton = priceRangeContainer.querySelector(
+      "#show-more-ranges-btn",
+    );
+
+    if (additionalPriceRanges) {
+      additionalPriceRanges.style.display = "none";
+    }
+
+    if (showMoreButton) {
+      showMoreButton.textContent = "Show more price ranges";
+    }
+
+    console.log("LF034 | Custom price ranges cleared");
+  }
+
   function attachCheckboxListeners(priceRangeContainer, minPrice, maxPrice) {
     const checkboxes = priceRangeContainer.querySelectorAll(".price-checkbox");
 
@@ -671,10 +701,10 @@ function updateRangeInputValues(minValue, maxValue) {
           const minValue = parseFloat(this.getAttribute("data-min"));
           const maxValue = parseFloat(this.getAttribute("data-max"));
 
-          // console.log("Filtering: £" + minValue + " - £" + maxValue);
+          console.log("Filtering: £" + minValue + " - £" + maxValue);
           updateRangeInputValues(minValue, maxValue);
         } else {
-          // console.log("Resetting to show all products");
+          console.log("Resetting to show all products");
           updateRangeInputValues(minPrice, maxPrice);
         }
       });
