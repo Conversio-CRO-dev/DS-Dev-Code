@@ -108,3 +108,14 @@
 .is-widget-container-clothing_features[data-attr="clothing_features"] {
   display: none !important;
 }
+
+@media screen and (max-width: 768px) {
+  #instant-search-facets-container
+    > div.is-widget-container-size.custom-size-filter {
+    margin-top: 18px;
+  }
+
+  .ais-RefinementList-item > div {
+    padding: 12px 12px 0 12px;
+  }
+}
