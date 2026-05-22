@@ -115,7 +115,61 @@
     margin-top: 18px;
   }
 
+  #instant-search-facets-container.filter-overlay-active {
+    padding: 10px 10px;
+  }
+
   .ais-RefinementList-item > div {
     padding: 12px 12px 0 12px;
+  }
+
+  .ais-Panel-body .custom-price-filter {
+    padding: 0 20px;
+  }
+
+  .label-container .ais-RefinementList-label {
+    padding: 10px 0;
+    border-bottom: solid 0.5px #efefef;
+  }
+
+  .custom-price-filter .price-checkbox {
+    display: none !important;
+  }
+
+  .custom-price-filter .ais-RefinementList-label {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    position: relative !important;
+    color: #000 !important;
+  }
+
+  .custom-price-filter
+    .ais-RefinementList-label:has(.price-checkbox:checked)::after {
+    content: "✔";
+    color: #374750;
+    font-size: 14px;
+    margin-left: auto !important;
+    position: relative;
+  }
+
+  .custom-price-filter .ais-RefinementList-label::before {
+    display: none !important;
+  }
+
+  .is-widget-container-size[data-attr="size"] .ais-RefinementList-label {
+    display: flex !important;
+    align-items: center !important;
+    padding-left: 0 !important;
+    padding-right: 10px;
+  }
+
+  .ais-RefinementList-item--selected {
+    background: transparent !important;
+  }
+
+  #show-more-ranges-btn {
+    display: none;
   }
 }
