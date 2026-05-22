@@ -146,12 +146,11 @@ function updateRangeInputValues(minValue, maxValue) {
   }
 
   function getSizeMeta(rawValue) {
-    const sizeValue = normaliseSizeValue(rawValue);
-    const displaySizeValue = sizeValue;
+    const val = String(rawValue).trim();
 
-    const infantMonthSizes = ["3-6", "6-9", "9-12", "12-18", "18-24"];
-
-    const juniorYearSizes = [
+    const babySizes = ["0-2", "3-5", "3-6", "6-9", "9-12", "12-18", "18-24"];
+    const juniorSizes = [
+      "2",
       "2-3",
       "3-4",
       "4-5",
@@ -163,55 +162,87 @@ function updateRangeInputValues(minValue, maxValue) {
       "13-14",
       "15-16",
     ];
+    const adultSizes = [
+      "2XS",
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "XXXL",
+      "XXXXL",
+      "XXXXXL",
+      "2XL",
+      "3XL",
+      "4XL",
+      "5XL",
+      "6XL",
+    ];
+    const numericSizes = [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "16",
+      "18",
+      "0-3",
+      "1-2",
+      "6-8",
+      "6-12",
+    ];
 
-    const adultSizes = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
-
-    const numericSizes = ["8", "10", "12", "14", "16", "18"];
-
-    if (infantMonthSizes.includes(sizeValue)) {
+    // Baby
+    if (babySizes.includes(val.replace(/M$/, ""))) {
       return {
         groupOrder: 1,
-        sizeOrder: infantMonthSizes.indexOf(sizeValue),
-        label: sizeValue + " M",
+        sizeOrder: babySizes.indexOf(val.replace(/M$/, "")),
+        label: val.endsWith("M") ? val.replace(/M$/, "") + " M" : val + " M",
       };
     }
 
-    if (juniorYearSizes.includes(sizeValue)) {
+    // Junior
+    if (juniorSizes.includes(val.replace(/Y$/, ""))) {
       return {
         groupOrder: 2,
-        sizeOrder: juniorYearSizes.indexOf(sizeValue),
-        label: sizeValue + " Y",
+        sizeOrder: juniorSizes.indexOf(val.replace(/Y$/, "")),
+        label: val.endsWith("Y") ? val.replace(/Y$/, "") + " Y" : val + " Y",
       };
     }
 
-    if (adultSizes.includes(displaySizeValue)) {
+    // Adult
+    if (adultSizes.includes(val)) {
       return {
         groupOrder: 3,
-        sizeOrder: adultSizes.indexOf(displaySizeValue),
-        label: displaySizeValue,
+        sizeOrder: adultSizes.indexOf(val),
+        label: val,
       };
     }
 
-    if (numericSizes.includes(sizeValue)) {
+    // Numeric
+    if (numericSizes.includes(val)) {
       return {
         groupOrder: 4,
-        sizeOrder: numericSizes.indexOf(sizeValue),
-        label: sizeValue,
+        sizeOrder: numericSizes.indexOf(val),
+        label: val,
       };
     }
 
-    if (isPlainNumber(sizeValue)) {
-      return {
-        groupOrder: 5,
-        sizeOrder: Number(sizeValue),
-        label: sizeValue,
-      };
-    }
-
+    // Fallback
     return {
-      groupOrder: 6,
+      groupOrder: 5,
       sizeOrder: 999,
-      label: displaySizeValue,
+      label: val,
     };
   }
 
@@ -251,105 +282,89 @@ function updateRangeInputValues(minValue, maxValue) {
 
   function sortSizeFilterItems(sizeContainer) {
     const sizeList = sizeContainer.querySelector(".ais-RefinementList-list");
-
     if (!sizeList) return;
 
     const sizeItems = Array.from(
       sizeList.querySelectorAll(".ais-RefinementList-item"),
     );
-
     if (!sizeItems.length) return;
 
     const sortedItems = sizeItems
-      .map(function (item) {
+      .map((item) => {
         const checkbox = item.querySelector(".ais-RefinementList-checkbox");
         const label = item.querySelector(".ais-RefinementList-label");
-
         if (!checkbox || !label) return null;
 
         const rawValue = checkbox.value;
-        const sizeMeta = getSizeMeta(rawValue);
+        const meta = getSizeMeta(rawValue);
 
         return {
-          item: item,
-          label: label,
-          rawValue: rawValue,
-          displayLabel: sizeMeta.label,
-          groupOrder: sizeMeta.groupOrder,
-          sizeOrder: sizeMeta.sizeOrder,
+          item,
+          label,
+          rawValue,
+          displayLabel: meta.label,
+          groupOrder: meta.groupOrder,
+          sizeOrder: meta.sizeOrder,
         };
       })
       .filter(Boolean)
-      .sort(function (a, b) {
-        if (a.groupOrder !== b.groupOrder) {
-          return a.groupOrder - b.groupOrder;
-        }
-
-        if (a.sizeOrder !== b.sizeOrder) {
-          return a.sizeOrder - b.sizeOrder;
-        }
-
+      .sort((a, b) => {
+        if (a.groupOrder !== b.groupOrder) return a.groupOrder - b.groupOrder;
+        if (a.sizeOrder !== b.sizeOrder) return a.sizeOrder - b.sizeOrder;
         return a.rawValue.localeCompare(b.rawValue);
       });
 
-    sortedItems.forEach(function (size) {
-      updateSizeLabelText(size.label, size.displayLabel);
+    // Update label text
+    sortedItems.forEach((size) => {
+      const input = size.label.querySelector(".ais-RefinementList-checkbox");
+      if (!input) return;
+      const textNode = Array.from(size.label.childNodes).find(
+        (node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim(),
+      );
+      if (textNode) textNode.textContent = " " + size.displayLabel + " ";
+      else input.insertAdjacentText("afterend", " " + size.displayLabel + " ");
     });
 
-    const gridOrderedItems = reorderForTwoColumnGrid(sortedItems);
+    // Apply two-column grid ordering
+    const midpoint = Math.ceil(sortedItems.length / 2);
+    const leftCol = sortedItems.slice(0, midpoint);
+    const rightCol = sortedItems.slice(midpoint);
 
+    const reorderedItems = [];
+    leftCol.forEach((leftItem, i) => {
+      reorderedItems.push(leftItem.item);
+      if (rightCol[i]) reorderedItems.push(rightCol[i].item);
+    });
+
+    // Apply new DOM order
     const currentOrder = sizeItems
-      .map(function (item) {
-        const checkbox = item.querySelector(".ais-RefinementList-checkbox");
-        return checkbox ? checkbox.value : "";
-      })
+      .map((item) => item.querySelector(".ais-RefinementList-checkbox")?.value)
       .join("|");
-
-    const newOrder = gridOrderedItems
-      .map(function (size) {
-        return size.rawValue;
-      })
+    const newOrder = reorderedItems
+      .map((item) => item.querySelector(".ais-RefinementList-checkbox")?.value)
       .join("|");
 
     if (currentOrder !== newOrder) {
-      gridOrderedItems.forEach(function (size) {
-        sizeList.appendChild(size.item);
-      });
+      reorderedItems.forEach((item) => sizeList.appendChild(item));
     }
 
     sizeContainer.classList.add("custom-size-filter");
   }
 
   function initSizeFilter() {
-    const sizeContainer = document.querySelector(
+    const container = document.querySelector(
       '.is-widget-container-size[data-attr="size"]',
     );
+    if (!container) return false;
 
-    if (!sizeContainer) return false;
+    sortSizeFilterItems(container);
 
-    const sizeList = sizeContainer.querySelector(".ais-RefinementList-list");
-
-    if (!sizeList) return false;
-
-    sortSizeFilterItems(sizeContainer);
-
-    if (sizeFilterObserver) {
-      sizeFilterObserver.disconnect();
-    }
-
-    sizeFilterObserver = new MutationObserver(function () {
-      clearTimeout(sizeFilterTimer);
-
-      sizeFilterTimer = setTimeout(function () {
-        sortSizeFilterItems(sizeContainer);
-      }, 50);
+    // Observe changes for dynamic updates
+    const observer = new MutationObserver(() => {
+      setTimeout(() => sortSizeFilterItems(container), 50);
     });
 
-    sizeFilterObserver.observe(sizeContainer, {
-      childList: true,
-      subtree: true,
-    });
-
+    observer.observe(container, { childList: true, subtree: true });
     return true;
   }
 
@@ -540,6 +555,8 @@ function updateRangeInputValues(minValue, maxValue) {
   setTimeout(function () {
     observer.disconnect();
   }, 5000);
+
+  trackEvents();
 
   function priceFilter(newBodyElement) {
     const currentPriceRange = getCurrentPriceRange();
