@@ -1,5 +1,9 @@
-.hide-popup .mantine-Popover-dropdown {
-  display: none;
+.mantine-Popover-dropdown {
+  display: none !important;
+}
+
+.mantine-Popover-dropdown.cv-open {
+  display: block !important;
 }
 
 /* new custom quantity and ADD styles */
@@ -251,6 +255,7 @@
   display: none;
 }
 
+/* David | Mobile: 2-column product grid layout */
 @media (max-width: 767px) {
   body,
   html {
@@ -314,7 +319,8 @@
     line-height: var(
       --typography-label-Medium-Bold-line-height,
       20px
-    ) !important; /* 111.111% */
+    ) !important;
+    /* 111.111% */
     letter-spacing: var(
       --typography-label-Medium-Bold-letter-spacing,
       0
@@ -331,7 +337,8 @@
   .ais-Hits-item .image-container {
     position: relative !important;
     width: 100% !important;
-    padding-bottom: 100% !important; /* Creates square aspect ratio */
+    padding-bottom: 100% !important;
+    /* Creates square aspect ratio */
     overflow: hidden !important;
     background: #f8f5ef !important;
     display: block !important;
@@ -427,7 +434,6 @@
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    flex-wrap: !important;
   }
 
   /* Rating stars container */
@@ -497,8 +503,6 @@
   }
 
   .maxSavingsContainer {
-    display: flex !important;
-    justify-content: flex-start !important;
     margin: 10px 0 !important;
   }
 
@@ -566,7 +570,7 @@
     a
     span
     svg {
-    margin-right: 0 !important ;
+    margin-right: 0 !important;
   }
 
   .image-container > .quick-links-container,
@@ -574,15 +578,17 @@
     display: none;
   }
 
-  .lowestPricepossible,
-  .lowestPricePossibleOnOffer {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: flex-start !important;
-    flex-flow: wrap !important;
+  .plp-offer-info {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
-  .ais-Hits-item .lowestPricepossible {
+  div.css-ija0x4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   /* Position all content inside hit-content to the left */
@@ -611,6 +617,22 @@
   .hit-content.align-top .grapeVariety-container,
   .hit-content.align-top .country-container {
     justify-content: flex-start !important;
+  }
+
+  .css-bd5p8m.grid-view .ais-Hits-list .ais-Hits-item {
+    box-shadow: none !important; /* Add if not overriding */
+  }
+
+  .css-ija0x4 .top-price-section .price-section .price {
+    font-size: 18px;
+    line-height: 25.2px;
+  }
+
+  .mantine-Popover-dropdown > .mantine-Popover-arrow {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    bottom: -0.65rem !important;
+    left: 135.5px !important;
   }
 }
 
