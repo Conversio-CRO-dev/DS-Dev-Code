@@ -1,0 +1,198 @@
+/* =========================================================================
+ * FN093 | Variation 1  (plain CSS)
+ * Hide the native cart drawer + style the custom "added to cart" popup.
+ * ========================================================================= */
+
+/* Hide ONLY the slide-in mini-bag (replaced by the custom popup).
+ * The /cart page reuses #cart-drawer for its own content, so we must not
+ * hide that — the mini-bag is the one that contains a .menu-drawer panel. */
+#cart-drawer:has(.menu-drawer) {
+  display: none !important;
+}
+
+/* Dark backdrop — hidden on desktop, shown on mobile behind the centered card. */
+.fn092-atc-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147482999;
+  background: rgba(10, 15, 44, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.fn092-atc-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fn092-atc-popup {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2147483000;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #e3e5e8;
+  box-shadow: 0 6px 24px rgba(10, 15, 44, 0.14);
+  padding: 16px;
+  font-family: inherit;
+  color: #1c2733;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease;
+}
+
+.fn092-atc-popup * {
+  box-sizing: border-box;
+}
+
+.fn092-atc-popup.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.fn092-atc-popup__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.fn092-atc-popup__status {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #4a5567;
+}
+
+.fn092-atc-popup__check {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: #1c2733;
+  flex-shrink: 0;
+}
+
+.fn092-atc-popup__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #1c2733;
+  cursor: pointer;
+}
+
+.fn092-atc-popup__close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.fn092-atc-popup__body {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.fn092-atc-popup__image {
+  width: 64px;
+  height: 84px;
+  flex-shrink: 0;
+  object-fit: cover;
+  background: #f2f3f5;
+}
+
+.fn092-atc-popup__details {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.fn092-atc-popup__title {
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.fn092-atc-popup__price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.fn092-atc-popup__price-was {
+  color: #6b7280;
+  text-decoration: line-through;
+}
+
+.fn092-atc-popup__price-now {
+  color: #384972;
+}
+
+.fn092-atc-popup__option {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #4a5567;
+}
+
+.fn092-atc-popup__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 46px;
+  background: #000000;
+  color: #ffffff;
+  font-size: 15px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.fn092-atc-popup__cta:hover {
+  background: #1c2733;
+}
+
+@media screen and (max-width: 767px) {
+  .fn092-atc-backdrop {
+    display: block;
+  }
+
+  /* Lock page scroll while the popup is open (mobile only). */
+  body.fn092-atc-lock {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  /* Center the card over the dark backdrop. */
+  .fn092-atc-popup {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    width: calc(100vw - 32px);
+    max-width: 400px;
+    transform: translate(-50%, calc(-50% - 8px));
+  }
+
+  .fn092-atc-popup.is-visible {
+    transform: translate(-50%, -50%);
+  }
+}
