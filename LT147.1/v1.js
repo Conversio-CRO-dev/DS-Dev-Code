@@ -91,7 +91,7 @@
 
     // Figure out which one is currently selected
     // const isSubscribeActive =
-    //   subscribeSection.getAttribute("data-active") === "true";
+    //     subscribeSection.getAttribute("data-active") === "true";
     // const activeType = isSubscribeActive ? "subscribe" : "one-time";
     const activeType = "one-time";
 
@@ -510,8 +510,13 @@
           : info.price;
 
         let oneTimePricePerBottle = null;
-        if (cachedPriceData && cachedPriceData.salePrice) {
-          oneTimePricePerBottle = cachedPriceData.salePrice;
+        if (cachedPriceData) {
+          if (cachedPriceData.vppApplier && cachedPriceData.vppPrice) {
+            // Use the "mix 12+" discounted price, not the standalone sale price
+            oneTimePricePerBottle = cachedPriceData.vppPrice;
+          } else if (cachedPriceData.salePrice) {
+            oneTimePricePerBottle = cachedPriceData.salePrice;
+          }
         }
 
         let subscribePriceValue = null;
@@ -529,10 +534,28 @@
         let subscribeCaseTotal = "";
         let oneTimeCaseTotal = "";
         let savingAmount = "";
+        let subscribeCaseTotalValue = null;
 
-        if (subscribePriceValue && !isNaN(subscribePriceValue)) {
-          subscribeCaseTotal =
-            "£" + (subscribePriceValue * caseSize).toFixed(2);
+        // Prefer the precise case total already rendered on the page over
+        // re-deriving it from the rounded per-bottle price (e.g. £7.99 x 12
+        // drifts to £95.88 instead of the true £95.90)
+        if (subscribePerBottleElement) {
+          const parsedTotal = parseFloat(
+            subscribePerBottleElement.innerText.replace("£", ""),
+          );
+          if (!isNaN(parsedTotal)) {
+            subscribeCaseTotalValue = parsedTotal;
+          }
+        }
+
+        if (subscribeCaseTotalValue === null) {
+          if (subscribePriceValue && !isNaN(subscribePriceValue)) {
+            subscribeCaseTotalValue = subscribePriceValue * caseSize;
+          }
+        }
+
+        if (subscribeCaseTotalValue !== null) {
+          subscribeCaseTotal = "£" + subscribeCaseTotalValue.toFixed(2);
         }
 
         if (oneTimePriceValue && !isNaN(oneTimePriceValue)) {
@@ -540,13 +563,11 @@
         }
 
         if (
-          subscribePriceValue &&
+          subscribeCaseTotalValue !== null &&
           oneTimePriceValue &&
-          !isNaN(subscribePriceValue) &&
           !isNaN(oneTimePriceValue)
         ) {
-          const saving =
-            oneTimePriceValue * caseSize - subscribePriceValue * caseSize;
+          const saving = oneTimePriceValue * caseSize - subscribeCaseTotalValue;
           if (saving > 0) {
             savingAmount = "£" + saving.toFixed(2);
           }
@@ -1039,6 +1060,8 @@
         listPrice: firstSku.listPrice,
         salePricePerBottle: firstSku.salePricePerBottle,
         numberOfBottles: firstSku.numberOfBottles,
+        vppPrice: firstSku.vppPrice,
+        vppApplier: firstSku.vppApplier,
       };
     }
 
@@ -1077,542 +1100,542 @@
     if (document.getElementById("purchase-tabs-styles")) return;
 
     const styles = `
-			.custom-purchase-tabs {
-			  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-			  border-radius: 4px;
-			}
-			
-			.custom-tab-buttons {
-			  display: grid;
-			  grid-template-columns: 1fr 1fr;
-			  gap: 0 !important;
-			}
-			
-			.purchase-tab-card {
-			  display: flex;
-			  min-height: 103px;
-			  padding: 24px 16px;
-			  flex-direction: column;
-			  justify-content: center;
-			  align-items: flex-start;
-			  gap: 8px;
-			  flex: 1 0 0;
-			  position: relative;
-			}
-			
-			.one-time-purchase {
-			  border-radius: 4px 0 0 0 !important;
-			  border: 1px solid #e8e8e8;
-			  background: #f8f8f8;
-			}
-			
-			.subscribe-and-save {
-			  border-radius: 0 4px 0 0 !important;
-			  border: 1px solid #e8e8e8;
-			  background: #f8f8f8;
-			}
-			
-			.purchase-tab-card.active {
-			  border-radius: 0 !important;
-			  border-top: 1px solid;
-			  border-right: 1px solid;
-			  border-left: 1px solid;
-			  border-bottom: 0 solid;
-			  border-color: #e8e8e8;
-			  background: #fff;
-			}
-			
-			.purchase-tab-card.active::before {
-			  content: "";
-			  position: absolute;
-			  width: 100.5%;
-			  height: 7px;
-			  border-radius: 8px 8px 0 0;
-			  background: #448020;
-			  top: -6px;
-			  left: 50%;
-			  transform: translateX(-50%);
-			}
-			
-			.min-tab-content {
-			  display: flex;
-			  justify-content: flex-start;
-			  align-items: flex-start;
-			  gap: 8px;
-			  align-self: stretch;
-			  position: relative;
-			}
-			
-			.tab-title-container {
-			  display: flex;
-			  flex-direction: column;
-			  align-items: flex-start;
-			  gap: 4px;
-			  flex: 1 0 0;
-			}
-			
-			.purchase-tab-title {
-			  display: flex;
-			  padding: 6px 0;
-			  flex-direction: column;
-			  justify-content: center;
-			  align-items: flex-start;
-			  align-self: stretch;
-			  color: #000;
-			  font-family: Roboto;
-			  font-size: 12px;
-			  font-style: normal;
-			  font-weight: 600;
-			  line-height: normal;
-			  letter-spacing: 0.24px;
-			  text-transform: uppercase;
-			  margin-bottom: 0;
-			}
-			
-			.purchase-tab-radio {
-			  width: 16px;
-			  height: 16px;
-			  flex-shrink: 0;
-			  aspect-ratio: 1/1;
-			  position: relative;
-			  top: 5px;
-			  background: #fff;
-			  border-radius: 50%;
-			  border: 2px solid #adadad;
-			}
-			
-			.purchase-tab-card.active .purchase-tab-radio {
-			  border: 2px solid #198754;
-			}
-			
-			.purchase-tab-card.active .purchase-tab-radio:after {
-			  content: "";
-			  position: absolute;
-			  top: 2px;
-			  left: 2px;
-			  width: 8px;
-			  height: 8px;
-			  border-radius: 50%;
-			  background: #198754;
-			}
-			
-			.purchase-tab-badge {
-			  display: flex !important;
-			  width: 63px;
-			  padding: 2px 8px;
-			  flex-direction: column;
-			  justify-content: center;
-			  align-items: center;
-			  position: absolute;
-			  right: 145.5px;
-			  top: -7px;
-			  left: 50%;
-			  transform: translateX(-50%);
-			  border-radius: 2px;
-			  background: #448020;
-			  color: #fff6f6;
-			  font-family: Roboto;
-			  font-size: 10px;
-			  font-style: normal;
-			  font-weight: 600;
-			  line-height: normal;
-			  letter-spacing: 0.5px;
-			  text-transform: uppercase;
-			  white-space: nowrap;
-			  z-index: 1;
-			}
-			
-			.purchase-tab-card.active .purchase-tab-badge {
-			  top: -10px;
-			}
-			
-			.save-badge {
-			  display: inline-flex !important;
-			  flex-direction: row !important;
-			  align-items: center;
-			  white-space: nowrap;
-			  width: auto;
-			  padding: 4px 8px;
-			  color: #e2004d;
-			  font-family: Roboto;
-			  font-size: 12px;
-			  font-style: normal;
-			  font-weight: 700;
-			  line-height: 18px;
-			  border-radius: 30px;
-			  background: #fbe6f1;
-			}
-			
-			.info-panel-price,
-			.case-price-total {
-			  color: var(--content-accent-accent-primary, #e2004d);
-			  font-family: "Noto Serif";
-			  font-size: 20px;
-			  font-style: normal;
-			  font-weight: 700;
-			  line-height: 140%;
-			  letter-spacing: 0.2px;
-			}
-			
-			.info-panel-price > .price-case,
-			.price-unit {
-			  color: var(--content-accent-accent-primary, #e2004d);
-			  font-family: Roboto;
-			  font-size: 12px;
-			  font-style: normal;
-			  font-weight: 400;
-			  line-height: 140%;
-			  letter-spacing: 0.12px;
-			}
-			
-			.strike,
-			.old-price {
-			  color: var(--colour-text-secondary, #616161);
-			  font-family: Roboto;
-			  font-size: 14px;
-			  font-style: normal;
-			  font-weight: 400;
-			  line-height: 140%;
-			  text-decoration-line: line-through;
-			}
-			
-			.purchase-info-panel {
-			  display: flex;
-			  padding: 16px;
-			  flex-direction: column;
-			  justify-content: center;
-			  align-items: flex-start;
-			  gap: 16px;
-			  align-self: stretch;
-			  border-radius: 0 0 4px 4px;
-			  border-right: 1px solid #e8e8e8;
-			  border-bottom: 1px solid #e8e8e8;
-			  border-left: 1px solid #e8e8e8;
-			  background: #fff;
-			}
-			
-			.info-panel-meta {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  width: 100%;
-			}
-			
-			.info-panel-meta span:first-child {
-			  color: #000;
-			  font-family: Roboto;
-			  font-size: 16px;
-			  font-style: normal;
-			  font-weight: 500;
-			  line-height: normal;
-			  letter-spacing: 0;
-			}
-			
-			.info-panel-subscribe-single-bottle {
-			  width: 100%;
-			}
-			
-			.subscribe-price-row {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  align-self: stretch;
-			  width: 100%;
-			}
-			
-			.subscribe-case-upsell {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  align-self: stretch;
-			  width: 100%;
-			}
-			
-			.subscribe-case-upsell > .case-upsell-title {
-			  color: #000;
-			  font-family: Roboto;
-			  font-size: 16px;
-			  font-style: normal;
-			  font-weight: 500;
-			  line-height: normal;
-			  letter-spacing: 0;
-			}
-			
-			.purchase-info-panel > .info-panel-subscribe-case {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  width: 100%;
-			}
-			
-			.info-panel-subscribe-case > .promo-sub-price {
-			  color: #000;
-			  font-family: Roboto;
-			  font-size: 16px;
-			  font-style: normal;
-			  font-weight: 500;
-			  line-height: normal;
-			  letter-spacing: 0;
-			}
-			
-			.straight-sku-wrapper {
-			  display: flex;
-			  flex-direction: column;
-			  width: 100%;
-			  gap: 8px;
-			}
-			
-			.vpp-price {
-			  color: var(--content-accent-accent-primary, #e2004d);
-			}
-			
-			.price {
-			  font-family: "Noto Serif";
-			  font-size: 24px;
-			  font-style: normal;
-			  font-weight: 700;
-			  line-height: 140%;
-			  letter-spacing: 0.24px;
-			}
-			
-			.sale-price > span {
-			  color: #000;
-			}
-			
-			.add-on-container {
-			  padding-top: 10px;
-			  color: #cf004f;
-			  margin: 10px 0;
-			  font-weight: 700;
-			}
-			
-			.purchase-info-panel > .info-panel-one-time-case {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  align-self: stretch;
-			  width: 100%;
-			}
-			
-			.info-panel-one-time-case {
-			  display: flex;
-			  justify-content: space-between;
-			  align-items: center;
-			  width: 100%;
-			  gap: 16px;
-			  flex-wrap: wrap;
-			}
-			
-			.info-panel-one-time-case .info-panel-meta {
-			  flex: 1;
-			}
-			
-			.saving-section-content {
-			  display: inline-flex;
-			  align-items: center;
-			}
-			
-			.info-panel-one-time-case .saving-section-content {
-			  display: inline-flex;
-			  align-items: center;
-			}
-			
-			.purchase-info-panel > a {
-			  display: flex;
-			  justify-content: flex-start;
-			  align-items: center;
-			  width: 100%;
-			}
-			
-			.purchase-info-panel .info-link {
-			  color: #000;
-			  text-align: center;
-			  font-family: Roboto;
-			  font-size: 12px;
-			  font-style: normal;
-			  font-weight: 400;
-			  line-height: normal;
-			  text-decoration-line: underline;
-			}
-			
-			.purchase-actions {
-			  display: flex;
-			  align-items: center;
-			  flex: 1 0 0;
-			  width: 100%;
-			  gap: 24px;
-			}
-			
-			.quantity-container {
-			  display: flex;
-			  align-items: center;
-			}
-			
-			.quantity-container .quantity-btn {
-			  display: flex;
-			  width: 34px;
-			  height: 34px;
-			  padding: 0.667px;
-			  justify-content: center;
-			  align-items: center;
-			  border-radius: 5px;
-			  background: #fff;
-			  font-size: 30px;
-			  cursor: pointer;
-			}
-			
-			.quantity-btn.minus {
-			  border: 1px solid #cfcfcf;
-			}
-			
-			.quantity-btn.minus:not(:disabled) {
-			  border-color: #000;
-			}
-			
-			.quantity-btn.minus:not(:disabled) svg path {
-			  fill: #000;
-			}
-			
-			.quantity-btn.minus:disabled {
-			  border-color: #cfcfcf;
-			  opacity: 0.5;
-			  cursor: not-allowed;
-			}
-			
-			.quantity-btn.minus:disabled svg path {
-			  fill: #ccc;
-			}
-			
-			.quantity-btn.plus {
-			  border: 1px solid #000;
-			}
-			
-			.quantity-btn.plus svg path {
-			  fill: #000;
-			}
-			
-			.quantity-display {
-			  display: flex;
-			  width: 40px;
-			  min-height: 34px;
-			  padding: 7px 0 8px 0;
-			  justify-content: center;
-			  align-items: center;
-			  color: #000;
-			  font-family: Roboto;
-			  font-size: 16px;
-			  font-style: normal;
-			  font-weight: 500;
-			  line-height: normal;
-			}
-			
-			.purchase-info-panel > .add-to-cart-btn,
-			.purchase-actions > .add-to-cart-btn {
-			  display: flex;
-			  padding: 12px 24px;
-			  justify-content: center;
-			  align-items: center;
-			  flex: 1 0 0;
-			  width: 100%;
-			  height: 44px;
-			  border: none;
-			  border-radius: 2px;
-			  background: #117b53;
-			  color: #fff;
-			  text-align: center;
-			  font-family: Roboto !important;
-			  font-size: 14px !important;
-			  font-style: normal;
-			  font-weight: 600;
-			  line-height: 16px !important;
-			  letter-spacing: 0.28px;
-			  text-transform: uppercase !important;
-			}
-			
-			.purchase-info-panel > .add-to-cart-btn:hover,
-			.purchase-actions > .add-to-cart-btn:hover {
-			  cursor: pointer;
-			}
-			
-			.purchase-info-panel > .add-to-cart-btn:active,
-			.purchase-actions > .add-to-cart-btn:active {
-			  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-			  transform: translateY(2px);
-			}
-			
-			.hide-original-panel .accordion-item-panel,
-			.hide-original-panel .mantine-Accordion-chevron,
-			.hide-original-panel .ss-item-content,
-			.hide-original-panel [data-testid="pricing-and-purchase-panel-wrapper"] {
-			  display: none !important;
-			}
-			
-			.css-6baa2j .see-more-description,
-			.css-6baa2j .product-layout .description-container {
-			  margin: 0 !important;
-			}
-			
-			.product-layout .layout-details > .no-print {
-			  margin-top: 36px;
-			}
-			
-			.info-panel-price .custom-price-per-litre {
-			  display: inline;
-			  color: #616161;
-			  font-family: Roboto;
-			  font-size: 12px;
-			  font-style: normal;
-			  font-weight: 400;
-			  line-height: 140%;
-			  letter-spacing: 0.12px;
-			  margin-left: 4px;
-			}
-			
-			.alertMessage {
-			  padding: 12px;
-			  width: 100%;
-			  border-radius: 2px;
-			  color: rgb(215, 54, 59);
-			  background-color: rgb(251, 234, 234);
-			}
-			
-			.straight-sku-wrapper > .top-price-section {
-				display: none !important;
-			}
-			
-			@media (max-width: 429px) {
-			  .purchase-tab-card {
-			    padding: 12px 16px;
-			  }
-			
-			  .purchase-tab-card.active::before {
-			    height: 4px;
-			    top: -4px;
-			  }
-			
-			  .purchase-tab-radio {
-			    top: 3px;
-			  }
-			
-			  .purchase-tab-title {
-			    font-size: 10px;
-			  }
-			
-			  .purchase-tab-card.active .purchase-tab-badge {
-			    top: -9px;
-			  }
-			
-			  .alertMessage {
-			    text-align: center;
-			    font-size: 12px;
-			  }
-			  
-			  .info-panel-price .custom-price-per-litre {
-			    display: block;
-			    margin-left: 0;
-			  }
-			}
-    `;
+.custom-purchase-tabs {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  border-radius: 4px;
+}
+
+.custom-tab-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 !important;
+}
+
+.purchase-tab-card {
+  display: flex;
+  min-height: 103px;
+  padding: 24px 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1 0 0;
+  position: relative;
+}
+
+.one-time-purchase {
+  border-radius: 4px 0 0 0 !important;
+  border: 1px solid #e8e8e8;
+  background: #f8f8f8;
+}
+
+.subscribe-and-save {
+  border-radius: 0 4px 0 0 !important;
+  border: 1px solid #e8e8e8;
+  background: #f8f8f8;
+}
+
+.purchase-tab-card.active {
+  border-radius: 0 !important;
+  border-top: 1px solid;
+  border-right: 1px solid;
+  border-left: 1px solid;
+  border-bottom: 0 solid;
+  border-color: #e8e8e8;
+  background: #fff;
+}
+
+.purchase-tab-card.active::before {
+  content: "";
+  position: absolute;
+  width: 100.5%;
+  height: 7px;
+  border-radius: 8px 8px 0 0;
+  background: #448020;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.min-tab-content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+  align-self: stretch;
+  position: relative;
+}
+
+.tab-title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  flex: 1 0 0;
+}
+
+.purchase-tab-title {
+  display: flex;
+  padding: 6px 0;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  align-self: stretch;
+  color: #000;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.24px;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+
+.purchase-tab-radio {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  aspect-ratio: 1/1;
+  position: relative;
+  top: 5px;
+  background: #fff;
+  border-radius: 50%;
+  border: 2px solid #adadad;
+}
+
+.purchase-tab-card.active .purchase-tab-radio {
+  border: 2px solid #198754;
+}
+
+.purchase-tab-card.active .purchase-tab-radio:after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #198754;
+}
+
+.purchase-tab-badge {
+  display: flex !important;
+  width: 63px;
+  padding: 2px 8px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 145.5px;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 2px;
+  background: #448020;
+  color: #fff6f6;
+  font-family: Roboto;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.purchase-tab-card.active .purchase-tab-badge {
+  top: -10px;
+}
+
+.save-badge {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  white-space: nowrap;
+  width: auto;
+  padding: 4px 8px;
+  color: #e2004d;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 18px;
+  border-radius: 30px;
+  background: #fbe6f1;
+}
+
+.info-panel-price,
+.case-price-total {
+  color: var(--content-accent-accent-primary, #e2004d);
+  font-family: "Noto Serif";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: 0.2px;
+}
+
+.info-panel-price > .price-case,
+.price-unit {
+  color: var(--content-accent-accent-primary, #e2004d);
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0.12px;
+}
+
+.strike,
+.old-price {
+  color: var(--colour-text-secondary, #616161);
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  text-decoration-line: line-through;
+}
+
+.purchase-info-panel {
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+  align-self: stretch;
+  border-radius: 0 0 4px 4px;
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
+  border-left: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.info-panel-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.info-panel-meta span:first-child {
+  color: #000;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+.info-panel-subscribe-single-bottle {
+  width: 100%;
+}
+
+.subscribe-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+}
+
+.subscribe-case-upsell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+}
+
+.subscribe-case-upsell > .case-upsell-title {
+  color: #000;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+.purchase-info-panel > .info-panel-subscribe-case {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.info-panel-subscribe-case > .promo-sub-price {
+  color: #000;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+.straight-sku-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.vpp-price {
+  color: var(--content-accent-accent-primary, #e2004d);
+}
+
+.price {
+  font-family: "Noto Serif";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%;
+  letter-spacing: 0.24px;
+}
+
+.sale-price > span {
+  color: #000;
+}
+
+.add-on-container {
+  padding-top: 10px;
+  color: #cf004f;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+.purchase-info-panel > .info-panel-one-time-case {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+}
+
+.info-panel-one-time-case {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.info-panel-one-time-case .info-panel-meta {
+  flex: 1;
+}
+
+.saving-section-content {
+  display: inline-flex;
+  align-items: center;
+}
+
+.info-panel-one-time-case .saving-section-content {
+  display: inline-flex;
+  align-items: center;
+}
+
+.purchase-info-panel > a {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+
+.purchase-info-panel .info-link {
+  color: #000;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: underline;
+}
+
+.purchase-actions {
+  display: flex;
+  align-items: center;
+  flex: 1 0 0;
+  width: 100%;
+  gap: 24px;
+}
+
+.quantity-container {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-container .quantity-btn {
+  display: flex;
+  width: 34px;
+  height: 34px;
+  padding: 0.667px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background: #fff;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.quantity-btn.minus {
+  border: 1px solid #cfcfcf;
+}
+
+.quantity-btn.minus:not(:disabled) {
+  border-color: #000;
+}
+
+.quantity-btn.minus:not(:disabled) svg path {
+  fill: #000;
+}
+
+.quantity-btn.minus:disabled {
+  border-color: #cfcfcf;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-btn.minus:disabled svg path {
+  fill: #ccc;
+}
+
+.quantity-btn.plus {
+  border: 1px solid #000;
+}
+
+.quantity-btn.plus svg path {
+  fill: #000;
+}
+
+.quantity-display {
+  display: flex;
+  width: 40px;
+  min-height: 34px;
+  padding: 7px 0 8px 0;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.purchase-info-panel > .add-to-cart-btn,
+.purchase-actions > .add-to-cart-btn {
+  display: flex;
+  padding: 12px 24px;
+  justify-content: center;
+  align-items: center;
+  flex: 1 0 0;
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 2px;
+  background: #117b53;
+  color: #fff;
+  text-align: center;
+  font-family: Roboto !important;
+  font-size: 14px !important;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px !important;
+  letter-spacing: 0.28px;
+  text-transform: uppercase !important;
+}
+
+.purchase-info-panel > .add-to-cart-btn:hover,
+.purchase-actions > .add-to-cart-btn:hover {
+  cursor: pointer;
+}
+
+.purchase-info-panel > .add-to-cart-btn:active,
+.purchase-actions > .add-to-cart-btn:active {
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  transform: translateY(2px);
+}
+
+.hide-original-panel .accordion-item-panel,
+.hide-original-panel .mantine-Accordion-chevron,
+.hide-original-panel .ss-item-content,
+.hide-original-panel [data-testid="pricing-and-purchase-panel-wrapper"] {
+  display: none !important;
+}
+
+.css-6baa2j .see-more-description,
+.css-6baa2j .product-layout .description-container {
+  margin: 0 !important;
+}
+
+.product-layout .layout-details > .no-print {
+  margin-top: 36px;
+}
+
+.info-panel-price .custom-price-per-litre {
+  display: inline;
+  color: #616161;
+  font-family: Roboto;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+  letter-spacing: 0.12px;
+  margin-left: 4px;
+}
+
+.alertMessage {
+  padding: 12px;
+  width: 100%;
+  border-radius: 2px;
+  color: rgb(215, 54, 59);
+  background-color: rgb(251, 234, 234);
+}
+
+      .straight-sku-wrapper > .top-price-section {
+	  display: none !important;
+}
+
+@media (max-width: 429px) {
+  .purchase-tab-card {
+    padding: 12px 16px;
+  }
+
+  .purchase-tab-card.active::before {
+    height: 4px;
+    top: -4px;
+  }
+
+  .purchase-tab-radio {
+    top: 3px;
+  }
+
+  .purchase-tab-title {
+    font-size: 10px;
+  }
+
+  .purchase-tab-card.active .purchase-tab-badge {
+    top: -9px;
+  }
+
+  .alertMessage {
+    text-align: center;
+    font-size: 12px;
+  }
+  
+  .info-panel-price .custom-price-per-litre {
+    display: block;
+    margin-left: 0;
+  }
+}
+`;
 
     const styleElement = document.createElement("style");
     styleElement.id = "purchase-tabs-styles";
@@ -1647,23 +1670,37 @@ function checkSubscriptionPresence() {
     if (subscriptionFound || attempts >= maxAttempts) {
       clearInterval(checkInterval);
       if (subscriptionFound) {
-        console.log("==============================");
-        console.log("Subscription is present on PDP");
-        console.log("==============================");
+        window.adobeDataLayer = window.adobeDataLayer || [];
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText:
+                "LT147.1 (Variation 1) | Subscription is present on PDP",
+            },
+          },
+        });
+
+        // console.log("Subscription is present on PDP");
       }
     }
   }, 250);
 }
 
 function onSuccessfulATB(callback) {
-  var observer = new MutationObserver(function (mutations, obs) {
+  let observer = new MutationObserver(function (mutaions, obs) {
     if (document.querySelector(".mini-cart-header")) {
       obs.disconnect();
       callback();
     }
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 
   setTimeout(function () {
     observer.disconnect();
@@ -1676,12 +1713,35 @@ function trackEvents() {
     document.addEventListener("click", (e) => {
       // 2 Clicks in Subscribe & Save panel
       if (e.target.closest(".subscribe-and-save")) {
-        console.log("Subscribe & Save tab clicked");
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText:
+                "LT147.1 (Variation 1) | Clicks in Subscribe & Save panel",
+            },
+          },
+        });
+
+        // console.log("Subscribe & Save tab clicked");
       }
 
       // 3. Clicks in OTP panel (one time purchase tab)
       if (e.target.closest(".one-time-purchase")) {
-        console.log("OTP tab clicked");
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText: "LT147.1 (Variation 1) | Clicks in OTP panel",
+            },
+          },
+        });
+
+        // console.log("OTP tab clicked");
       }
 
       // 4. ATB from OTP panel - fires only on successful ATB
@@ -1692,7 +1752,18 @@ function trackEvents() {
         e.target.closest(".purchase-actions .add-to-cart-btn")
       ) {
         onSuccessfulATB(function () {
-          console.log("ATB from OTP panel clicked");
+          adobeDataLayer.push({
+            event: "targetClickEvent",
+            eventData: {
+              click: {
+                clickLocation: "Conversio CRO",
+                clickAction: "LT147.1 | Event Tracking",
+                clickText: "LT147.1 (Variation 1) | ATB from OTP panel",
+              },
+            },
+          });
+
+          // console.log("ATB from OTP panel clicked");
         });
       }
 
@@ -1704,18 +1775,52 @@ function trackEvents() {
         e.target.closest(".purchase-info-panel > .add-to-cart-btn")
       ) {
         onSuccessfulATB(function () {
-          console.log("ATB from Subscribe & Save panel clicked");
+          adobeDataLayer.push({
+            event: "targetClickEvent",
+            eventData: {
+              click: {
+                clickLocation: "Conversio CRO",
+                clickAction: "LT147.1 | Event Tracking",
+                clickText:
+                  "LT147.1 (Variation 1) | ATB from Subscribe & Save panel",
+              },
+            },
+          });
+
+          // console.log("ATB from Subscribe & Save panel clicked");
         });
       }
 
       // 6. Increases quantity (plus button)
       if (e.target.closest(".quantity-btn.plus")) {
-        console.log("Quantity increased");
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText: "LT147.1 (Variation 1) | Increase quantity",
+            },
+          },
+        });
+
+        // console.log("Quantity increased");
       }
 
       // 7. Decreases quantity (minus button)
       if (e.target.closest(".quantity-btn.minus")) {
-        console.log("Quantity decreased");
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText: "LT147.1 (Variation 1) | Decrease quantity",
+            },
+          },
+        });
+
+        // console.log("Quantity decreased");
       }
 
       // 8. Clicks 'How it works' modal
@@ -1723,13 +1828,36 @@ function trackEvents() {
         e.target.closest(".subscribe-case-upsell .info-link") ||
         e.target.closest(".purchase-info-panel .info-link")
       ) {
-        console.log("How it works link clicked");
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT147.1 | Event Tracking",
+              clickText: "LT147.1 (Variation 1) | Clicks 'How it works' modal",
+            },
+          },
+        });
+
+        // console.log("How it works link clicked");
       }
 
       // 9. ATB from 'How it works' modal - fires only on successful ATB
       if (e.target.closest(".how-it-works-footer > .how-it-works-button")) {
         onSuccessfulATB(function () {
-          console.log("ATB from How it works modal clicked");
+          adobeDataLayer.push({
+            event: "targetClickEvent",
+            eventData: {
+              click: {
+                clickLocation: "Conversio CRO",
+                clickAction: "LT147.1 | Event Tracking",
+                clickText:
+                  "LT147.1 (Variation 1) | ATB from 'How it works' modal",
+              },
+            },
+          });
+
+          // console.log("ATB from How it works modal clicked");
         });
       }
     });
