@@ -64,57 +64,39 @@ function waitForDataLayer(callback) {
   };
 })();
 
-function elementReady(selector) {
-  return new Promise((resolve, reject) => {
-    let el = document.querySelector(selector);
-
-    if (el) {
-      resolve(el);
-      return;
+function removeBreaksFromHotelHub() {
+  // Desktop hotel hub nav (pageHeaderHotelNavRow), only present on hotel pages
+  Array.from(
+    document.querySelectorAll("ul.hotelNavList li.hotelNavItem a.hotelNavLink"),
+  ).forEach((item) => {
+    if (item.textContent.toLowerCase().trim() === "breaks") {
+      item.parentNode.remove();
     }
+  });
 
-    new MutationObserver((mutationRecords, observer) => {
-      Array.from(document.querySelectorAll(selector)).forEach((element) => {
-        resolve(element);
-        observer.disconnect();
-      });
-    }).observe(document.documentElement, {
-      childList: true,
-      subtree: true,
-    });
+  // Hamburger menu, hotel hub submenu (shares markup with the generic burger submenus)
+  Array.from(
+    document.querySelectorAll(
+      "li.burgerNavSubmenuItem div.burgerNavSubmenuItemInner > a.burgerNavSubmenuLink",
+    ),
+  ).forEach((item) => {
+    if (item.textContent.toLowerCase().trim() === "breaks") {
+      item.parentNode.remove();
+    }
   });
 }
 
-elementReady("ul.burgerNavTopLevelList").then((hamburgerNavMenuList) => {
-  if (hamburgerNavMenuList) {
-    Array.from(
-      document.querySelectorAll(
-        "li.burgerNavSubmenuItem div.burgerNavSubmenuItemInner > a.burgerNavSubmenuLink",
-      ),
-    ).forEach((item) => {
-      const text = item.textContent.toLowerCase().trim();
-      if (text === "breaks") {
-        item.parentNode.remove();
-        // console.log('Target found and removed from hamburger menu list...');
-      }
-    });
-  }
-});
+// Run immediately in case the hotel hub nav is already in the DOM.
+removeBreaksFromHotelHub();
 
-elementReady("ul.hotelNavList ").then((deskNavMenuList) => {
-  if (deskNavMenuList) {
-    Array.from(
-      document.querySelectorAll(
-        "ul.hotelNavList li.hotelNavItem a.hotelNavLink",
-      ),
-    ).forEach((item) => {
-      const text = item.textContent.toLowerCase().trim();
-      if (text === "breaks") {
-        item.parentNode.remove();
-        // console.log('Target found and removed from desk nav menu list...');
-      }
-    });
-  }
+// Next.js swaps the header's nav content client-side (no full page reload) whenever
+// the visitor lands on or leaves a hotel page, so this must keep watching and re-run
+// on every DOM change, not just once, otherwise BREAKS reappears after navigation.
+new MutationObserver(() => {
+  removeBreaksFromHotelHub();
+}).observe(document.documentElement, {
+  childList: true,
+  subtree: true,
 });
 
 function locationNavLinkClick(location) {
@@ -141,143 +123,41 @@ function debugShow(label) {
   }, 2000);
 }
 
+// Known hub nav labels and their assigned segment codes. Anything clicked that
+// isn't listed here (a hotel showing an item we haven't seen yet, e.g. Activities)
+// still gets tracked, just under the shared fallback code below.
+const hubNavSegments = {
+  ROOMS: "WN008EV1I",
+  DINING: "WN008EV1J",
+  SPA: "WN008EV1K",
+  ENTERTAINMENT: "WN008EV1L",
+  EXPERIENCES: "WN008EV1M",
+  "WHAT'S NEARBY": "WN008EV1N",
+};
+const hubNavFallbackSegment = "WN008EV1Q";
+
+function trackHubNavClick(label, href) {
+  const segment = hubNavSegments[label] || hubNavFallbackSegment;
+
+  window.dataLayer.push({
+    event: "conversioEvent",
+    conversio: {
+      event_category: "Conversio CRO",
+      event_action: "WN008 | Event Tracking",
+      event_label: "WN008 | (Variation 1) | " + label + " Nav Link Click",
+      event_segment: segment,
+    },
+  });
+
+  // debugShow(label + " Click");
+  setTimeout(() => {
+    window.location.href = href;
+  }, 300);
+}
+
 function trackEvents() {
   if (!document.querySelector("body").classList.contains("TS036")) {
     document.querySelector("body").classList.add("TS036");
-    // Hamburger Menu List
-    Array.from(document.querySelectorAll("a.burgerNavSubmenuLink")).forEach(
-      (item) => {
-        if (item.textContent.toLowerCase().trim() === "rooms") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1I */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label: "WN008 | (Variation 1) | Rooms Nav Link Click",
-                event_segment: "WN008EV1I",
-              },
-            });
-
-            debugShow("rooms hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        } else if (item.textContent.toLowerCase().trim() === "dining") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1J */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label: "WN008 | (Variation 1) | Dining Nav Link Click",
-                event_segment: "WN008EV1J",
-              },
-            });
-
-            debugShow("dining hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        } else if (item.textContent.toLowerCase().trim() === "spa") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1K */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label: "WN008 | (Variation 1) | SPA Nav Link Click",
-                event_segment: "WN008EV1K",
-              },
-            });
-
-            debugShow("SPA hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        } else if (item.textContent.toLowerCase().trim() === "entertainment") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1L */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label:
-                  "WN008 | (Variation 1) | Entertainment Nav Link Click",
-                event_segment: "WN008EV1L",
-              },
-            });
-
-            debugShow("entertainment hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        } else if (item.textContent.toLowerCase().trim() === "experiences") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1M */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label:
-                  "WN008 | (Variation 1) | Experiences Nav Link Click",
-                event_segment: "WN008EV1M",
-              },
-            });
-
-            debugShow("experiences hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        } else if (item.textContent.toLowerCase().trim() === "what's nearby") {
-          item.addEventListener("click", (e) => {
-            e.preventDefault();
-            const href = item.href;
-
-            /* Event snippet — segment: WN008EV1N */
-            window.dataLayer.push({
-              event: "conversioEvent",
-              conversio: {
-                event_category: "Conversio CRO",
-                event_action: "WN008 | Event Tracking",
-                event_label: "WN008 | (Variation 1) | Whats Nearby Link Click",
-                event_segment: "WN008EV1N",
-              },
-            });
-
-            debugShow("What's nearby hamburger nav click");
-            setTimeout(() => {
-              window.location.href = href;
-            }, 300);
-          });
-        }
-      },
-    );
 
     document.addEventListener("click", (e) => {
       // 1 Burger Nav Opened
@@ -293,87 +173,18 @@ function trackEvents() {
           },
         });
 
-        debugShow("Burger Nav Opened");
+        // debugShow("Burger Nav Opened");
       }
 
-      // 2a Desktop hover location links
-      const reserveByWarner = e.target.closest(
-        ".globalNavDropdownMulticolumnMenu .subMenuColumn.themeReserve a",
-      );
-      if (reserveByWarner) {
-        e.preventDefault();
-        const href = reserveByWarner.href;
-        locationNavLinkClick(reserveByWarner.textContent.trim());
-        debugShow("Location Click - " + reserveByWarner.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
-      }
+      // Hamburger Menu List — hotel hub submenu (only rendered when a hotel is selected)
+      const hamburgerHubLink = e.target.closest("a.burgerNavSubmenuLink");
+      if (hamburgerHubLink && document.querySelector("ul.hotelNavList")) {
+        const label = hamburgerHubLink.textContent.trim().toUpperCase();
 
-      const warnerHotels = e.target.closest(
-        ".globalNavDropdownMulticolumnMenu .subMenuColumn.themeWarner a",
-      );
-      if (warnerHotels) {
-        e.preventDefault();
-        const href = warnerHotels.href;
-        locationNavLinkClick(warnerHotels.textContent.trim());
-        debugShow("Location Click - " + warnerHotels.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
-      }
-
-      const warnerComfort = e.target.closest(
-        ".globalNavDropdownMulticolumnMenu .subMenuColumn.themeComfort a",
-      );
-      if (warnerComfort) {
-        e.preventDefault();
-        const href = warnerComfort.href;
-        locationNavLinkClick(warnerComfort.textContent.trim());
-        debugShow("Location Click - " + warnerComfort.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
-      }
-
-      // 2b Mobile Nav location links
-      const mobileHotelLink = e.target.closest(
-        ".burgerNavMobileLevel ul.burgerNavSubmenuList.themeReserve a.burgerNavSubmenuLink",
-      );
-      if (mobileHotelLink) {
-        e.preventDefault();
-        const href = mobileHotelLink.href;
-        locationNavLinkClick(mobileHotelLink.textContent.trim());
-        debugShow("Mobile Reserve - " + mobileHotelLink.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
-      }
-
-      const mobileWarnerLink = e.target.closest(
-        ".burgerNavMobileLevel ul.burgerNavSubmenuList.themeWarner a.burgerNavSubmenuLink",
-      );
-      if (mobileWarnerLink) {
-        e.preventDefault();
-        const href = mobileWarnerLink.href;
-        locationNavLinkClick(mobileWarnerLink.textContent.trim());
-        debugShow("Mobile Warner - " + mobileWarnerLink.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
-      }
-
-      const mobileComfortLink = e.target.closest(
-        ".burgerNavMobileLevel ul.burgerNavSubmenuList.themeComfort a.burgerNavSubmenuLink",
-      );
-      if (mobileComfortLink) {
-        e.preventDefault();
-        const href = mobileComfortLink.href;
-        locationNavLinkClick(mobileComfortLink.textContent.trim());
-        debugShow("Mobile Comfort - " + mobileComfortLink.textContent.trim());
-        setTimeout(() => {
-          window.location.href = href;
-        }, 300);
+        if (label) {
+          e.preventDefault();
+          trackHubNavClick(label, hamburgerHubLink.href);
+        }
       }
 
       // Desk&Mobile Menu List
@@ -382,131 +193,22 @@ function trackEvents() {
           "ul.hotelNavList li.hotelNavItem a.hotelNavLink",
         ),
       ).forEach((item) => {
-        if (item.contains(e.target) && item.dataset.text === "ROOMS") {
+        if (!item.contains(e.target)) return;
+
+        if (item.classList.contains("hotelNavLink--home")) {
           e.preventDefault();
-          const href = item.href;
+          const hotelName = item.textContent.trim();
 
-          /* Event snippet — segment: WN008EV1I */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label: "WN008 | (Variation 1) | Rooms Nav Link Click",
-              event_segment: "WN008EV1I",
-            },
-          });
-
-          debugShow("ROOMS Click");
+          locationNavLinkClick(hotelName);
+          // debugShow("Hotel Home Link Click - " + hotelName);
           setTimeout(() => {
-            window.location.href = href;
+            window.location.href = item.href;
           }, 300);
-        } else if (item.contains(e.target) && item.dataset.text === "DINING") {
-          e.preventDefault();
-          const href = item.href;
-
-          /* Event snippet — segment: WN008EV1J */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label: "WN008 | (Variation 1) | Dining Nav Link Click",
-              event_segment: "WN008EV1J",
-            },
-          });
-
-          debugShow("DINING Click");
-          setTimeout(() => {
-            window.location.href = href;
-          }, 300);
-        } else if (item.contains(e.target) && item.dataset.text === "SPA") {
-          e.preventDefault();
-          const href = item.href;
-
-          /* Event snippet — segment: WN008EV1K */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label: "WN008 | (Variation 1) | SPA Nav Link Click",
-              event_segment: "WN008EV1K",
-            },
-          });
-
-          debugShow("SPA Click");
-          setTimeout(() => {
-            window.location.href = href;
-          }, 300);
-        } else if (
-          item.contains(e.target) &&
-          item.dataset.text === "ENTERTAINMENT"
-        ) {
-          e.preventDefault();
-          const href = item.href;
-
-          /* Event snippet — segment: WN008EV1L */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label:
-                "WN008 | (Variation 1) | Entertainment Nav Link Click",
-              event_segment: "WN008EV1L",
-            },
-          });
-
-          debugShow("ENTERTAINMENT Click");
-          setTimeout(() => {
-            window.location.href = href;
-          }, 300);
-        } else if (
-          item.contains(e.target) &&
-          item.dataset.text === "EXPERIENCES"
-        ) {
-          e.preventDefault();
-          const href = item.href;
-
-          /* Event snippet — segment: WN008EV1M */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label: "WN008 | (Variation 1) | Experiences Nav Link Click",
-              event_segment: "WN008EV1M",
-            },
-          });
-
-          debugShow("EXPERIENCES Click");
-          setTimeout(() => {
-            window.location.href = href;
-          }, 300);
-        } else if (
-          item.contains(e.target) &&
-          item.dataset.text === "WHAT'S NEARBY"
-        ) {
-          e.preventDefault();
-          const href = item.href;
-
-          /* Event snippet — segment: WN008EV1N */
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              event_category: "Conversio CRO",
-              event_action: "WN008 | Event Tracking",
-              event_label: "WN008 | (Variation 1) | Whats Nearby Link Click",
-              event_segment: "WN008EV1N",
-            },
-          });
-
-          debugShow("WHAT'S NEARBY");
-          setTimeout(() => {
-            window.location.href = href;
-          }, 300);
+          return;
         }
+
+        e.preventDefault();
+        trackHubNavClick(item.dataset.text, item.href);
       });
 
       // 10 Header Book CTA Click
@@ -522,7 +224,7 @@ function trackEvents() {
           },
         });
 
-        debugShow("Header Book CTA Click");
+        // debugShow("Header Book CTA Click");
       }
     });
   }
