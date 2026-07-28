@@ -1,14 +1,28 @@
-console.log("David Silva | TS034 | Variation 2: Booking Copy");
+// console.log("David Silva | TS034 | Variation 2: Booking Copy");
+
+let flag = 0;
 
 function showModule() {
   createModule();
-  console.log("Show Module in this page");
+
+  if (!window._ts034ShownTracked) {
+    window._ts034ShownTracked = true;
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "TS034 | Event Tracking",
+        eventLabel: "TS034 | (Variation 2) | Module shown",
+        eventSegment: "TS034EV2Q",
+      },
+    });
+  }
 }
 
 function hideModule() {
   const module = document.getElementById("booking-search-module");
   if (module) module.remove();
-  console.log("Don't show Module");
+  // console.log("Don't show Module");
 }
 
 // A timer variable to hold our debounce
@@ -37,8 +51,12 @@ function checkUrl() {
       localStorage.setItem("lastBookingSearch", JSON.stringify(searchData));
       localStorage.setItem("lastBookingUrl", url);
       hideModule();
-    } else {
-      showModule();
+    } else if (localStorage.getItem("lastBookingSearch")) {
+      const dismissed = sessionStorage.getItem("ts034DismissedSearch");
+      const currentSearch = localStorage.getItem("lastBookingSearch");
+      if (dismissed !== currentSearch) {
+        showModule();
+      }
     }
   }, 300);
 }
@@ -250,6 +268,10 @@ function createModule() {
   document.body.appendChild(card);
 
   closeBtn.addEventListener("click", () => {
+    sessionStorage.setItem(
+      "ts034DismissedSearch",
+      localStorage.getItem("lastBookingSearch"),
+    );
     card.classList.add("fade-out");
     card.addEventListener("transitionend", () => card.remove(), { once: true });
   });
@@ -275,35 +297,84 @@ function trackEvents() {
   if (!document.querySelector("body").classList.contains("TS034")) {
     document.querySelector("body").classList.add("TS034");
 
+    // 'Search' Click - Mobile Search Modal
+    // Attached directly to the dialog, whenever it shows up in the DOM, instead of
+    // delegated on document: the modal stops click propagation before it would
+    // reach document, so a listener sitting on the dialog itself still catches it.
+    // The dialog is destroyed and recreated (a new DOM node) each time it's
+    // opened, so we track which specific node instances already have a
+    // listener rather than attaching once and disconnecting.
+    const trackedBookingModals = new WeakSet();
+
+    function attachMobileSearchTracking(modal) {
+      if (trackedBookingModals.has(modal)) return;
+      trackedBookingModals.add(modal);
+
+      modal.addEventListener("click", (e) => {
+        if (e.target.closest('button[type="submit"]')) {
+          window.dataLayer.push({
+            event: "conversioEvent",
+            conversio: {
+              eventCategory: "Conversio CRO",
+              eventAction: "TS034 | Event Tracking",
+              eventLabel: "TS034 | (Variation 2) |  'Search' Click ",
+              eventSegment: "TS034EV2H",
+            },
+          });
+
+          // console.log("SEARCH Btn Click");
+        }
+      });
+    }
+
+    const existingBookingModal = document.getElementById("BookingModalDialog");
+    if (existingBookingModal) {
+      attachMobileSearchTracking(existingBookingModal);
+    }
+
+    const bookingModalObserver = new MutationObserver(() => {
+      const modal = document.getElementById("BookingModalDialog");
+      if (modal) {
+        attachMobileSearchTracking(modal);
+      }
+    });
+    bookingModalObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
     document.addEventListener("click", (e) => {
-      // 'Search' Click - Mobile Search Modal Desktop Search Bar
-      if (e.target.closest('button[type="submit"]')) {
+      // 'Search' Click - Desktop Search Bar
+      if (
+        e.target.closest('button[type="submit"]') &&
+        !e.target.closest("#BookingModalDialog")
+      ) {
         window.dataLayer.push({
           event: "conversioEvent",
           conversio: {
             eventCategory: "Conversio CRO",
             eventAction: "TS034 | Event Tracking",
-            eventLabel: "TS034 | (Variation 1) |  'Search' Click ",
-            eventSegment: "TS034EV1H",
+            eventLabel: "TS034 | (Variation 2) |  'Search' Click ",
+            eventSegment: "TS034EV2H",
           },
         });
 
-        console.log("SEARCH Btn Click");
+        // console.log("SEARCH Btn Click");
       }
 
-      // "New Search" / Book Click (mobile only)
+      // "New Search" Click (mobile)
       if (e.target.closest(".module-newsearch-btn")) {
         window.dataLayer.push({
           event: "conversioEvent",
           conversio: {
             eventCategory: "Conversio CRO",
             eventAction: "TS034 | Event Tracking",
-            eventLabel: "TS034 | (Variation 1) | 'New Search' / Book Click",
-            eventSegment: "TS034EV1G",
+            eventLabel: "TS034 | (Variation 2) | New Search Click (mobile)",
+            eventSegment: "TS034EV2K",
           },
         });
 
-        console.log("NEW SEARCH Btn Click");
+        // console.log("NEW SEARCH Btn Click");
       }
 
       // "RESUME" Click
@@ -313,12 +384,12 @@ function trackEvents() {
           conversio: {
             eventCategory: "Conversio CRO",
             eventAction: "TS034 | Event Tracking",
-            eventLabel: "TS034 | (Variation 1) | 'RESUME' Click",
-            eventSegment: "TS034EV1I",
+            eventLabel: 'TS034 | (Variation 2) | "RESUME" Click',
+            eventSegment: "TS034EV2I",
           },
         });
 
-        console.log("RESUME Btn Click");
+        // console.log("RESUME Btn Click");
       }
 
       // Saved Search Module Close 'x'
@@ -328,12 +399,27 @@ function trackEvents() {
           conversio: {
             eventCategory: "Conversio CRO",
             eventAction: "TS034 | Event Tracking",
-            eventLabel: "TS034 | (Variation 1) | Saved Search Module Close 'x'",
-            eventSegment: "TS034EV1J",
+            eventLabel: "TS034 | (Variation 2) | Saved Search Module Close 'x'",
+            eventSegment: "TS034EV2J",
           },
         });
 
-        console.log("Module Close Btn click");
+        // console.log("Module Close Btn click");
+      }
+
+      // "BOOK NOW" Click (mobile) - isTrusted excludes the synthetic click NEW SEARCH triggers on this same button
+      if (e.isTrusted && e.target.closest(".show-mobile-form")) {
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "TS034 | Event Tracking",
+            eventLabel: "TS034 | (Variation 2) | Book Click",
+            eventSegment: "TS034EV2G",
+          },
+        });
+
+        // console.log("BOOK NOW Btn click");
       }
     });
   }
