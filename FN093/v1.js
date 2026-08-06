@@ -116,6 +116,14 @@
     }
   }
 
+  /* Matches the theme's md breakpoint (768px) — below it is "mobile". */
+  function isMobileViewport() {
+    return (
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(max-width: 767px)").matches
+    );
+  }
+
   /* ---------------------------------------------------------------------
    * Custom popup
    * ------------------------------------------------------------------- */
@@ -123,6 +131,11 @@
   var backdropEl = null;
   var autoCloseTimer = null;
   var openedAt = 0;
+
+  /* Mini-basket drawer hand-off state (mobile only — see bindBasketIcon /
+   * openMiniBasket below). allowDrawerOpen tells neutralizeDrawer's observer
+   * to leave a sanctioned open alone instead of auto-closing it. */
+  var allowDrawerOpen = false;
 
   function ensurePopup() {
     if (popupEl) return popupEl;
@@ -239,11 +252,19 @@
     );
     el.querySelector(".fn092-atc-popup__cta").addEventListener(
       "click",
-      function () {
+      function (event) {
         pushConversioEvent(
           "FN093 | (Variation 1) | Post ATB Overlay: View Basket Click",
           "FN093EV1H",
         );
+
+        if (isMobileViewport()) {
+          /* Show the native mini-basket instead of navigating to /cart —
+           * it's better optimised for mobile. */
+          event.preventDefault();
+          closePopup();
+          openMiniBasket();
+        }
       },
     );
 
@@ -274,6 +295,18 @@
     if (!data) return;
     var item = data.items ? data.items[data.items.length - 1] : data;
     if (!item || !item.id) return;
+
+    /* Always show the custom overlay for a fresh add, even if the mini-basket
+     * happens to be open already (e.g. user opened it, then added another
+     * item from elsewhere) — close it first via its own native method. */
+    if (allowDrawerOpen) {
+      allowDrawerOpen = false;
+      var drawer = document.getElementById("cart-drawer");
+      if (drawer && typeof drawer.closeDrawer === "function") {
+        drawer.closeDrawer();
+      }
+    }
+
     ready(function () {
       showPopup(item);
     });
@@ -333,6 +366,37 @@
     return nativeSend.apply(this, arguments);
   };
 
+  /* Re-hides the drawer only after its own slide-out transition finishes —
+   * re-applying display:none immediately would cut the CSS transform
+   * transition short, so the panel would vanish instead of sliding out. */
+  function hideDrawerAfterTransition(drawer) {
+    var panel = drawer.querySelector(".menu-drawer");
+    var finished = false;
+
+    var finish = function () {
+      if (finished) return;
+      finished = true;
+      if (panel) panel.removeEventListener("transitionend", onTransitionEnd);
+      /* Bail if the drawer was reopened while we were waiting (re-reads the
+       * live flag, not a stale value from when this call started). */
+      if (allowDrawerOpen) return;
+      drawer.classList.remove("fn093-drawer-visible");
+      drawer.style.setProperty("display", "none", "important");
+    };
+
+    var onTransitionEnd = function (event) {
+      if (event.target === panel) finish();
+    };
+
+    if (panel) {
+      panel.addEventListener("transitionend", onTransitionEnd);
+    }
+
+    /* Fallback in case transitionend never fires (no transition defined,
+     * property name mismatch, etc.) so we don't get stuck open forever. */
+    setTimeout(finish, 500);
+  }
+
   /* ---------------------------------------------------------------------
    * Neutralise the native cart drawer
    * (CSS hides it; here we reuse its own close routine so the theme
@@ -352,7 +416,27 @@
 
       var closeIfOpen = function () {
         var openPanel = drawer.querySelector(".drawer-open-right");
-        if (!openPanel) return;
+
+        if (!openPanel) {
+          if (allowDrawerOpen) {
+            /* The manually-opened drawer was dismissed (native close button,
+             * outside click, etc. — all handled natively since we opened it
+             * via the real openDrawer() method). Let its slide-out play,
+             * then re-arm neutralisation for the next automatic (post
+             * add-to-cart) open attempt. */
+            allowDrawerOpen = false;
+            hideDrawerAfterTransition(drawer);
+          }
+          return;
+        }
+
+        if (allowDrawerOpen) {
+          /* We opened this on purpose (openMiniBasket) — leave it alone.
+           * No writes here: this must stay a pure read, or every internal
+           * re-render of the drawer's own contents (recs carousel, quantity
+           * updates, etc.) would re-trigger this observer in a loop. */
+          return;
+        }
 
         var closeBtn = drawer.querySelector(".close-btn");
         if (closeBtn) {
@@ -374,8 +458,28 @@
   }
 
   /* ---------------------------------------------------------------------
-   * Basket icon -> cart page
+   * Basket icon -> cart page (desktop) / native mini-basket (mobile)
    * ------------------------------------------------------------------- */
+
+  /* Opens the mini-basket via the <cart-drawer> element's own openDrawer()
+   * method — the same call the theme's header trigger makes. This matters:
+   * the component tracks its own internal `isOpen` state, and its close
+   * button / outside-click handlers only act `if (this.isOpen)`. Toggling
+   * the CSS class ourselves left that state out of sync, so the close
+   * button silently did nothing. Calling the method directly (rather than
+   * dispatching a synthetic click, which is what caused the earlier freeze)
+   * keeps this a plain, predictable function call instead of running
+   * through the page's full click-handling graph. */
+  function openMiniBasket() {
+    var drawer = document.getElementById("cart-drawer");
+    if (!drawer || typeof drawer.openDrawer !== "function") return;
+
+    allowDrawerOpen = true;
+    drawer.classList.add("fn093-drawer-visible");
+    drawer.style.removeProperty("display");
+    drawer.openDrawer();
+  }
+
   function bindBasketIcon() {
     document.addEventListener(
       "click",
@@ -401,6 +505,12 @@
           "FN093 | (Variation 1) | Header Basket Icon Click",
           "FN093EV1J",
         );
+
+        if (isMobileViewport()) {
+          openMiniBasket();
+          return;
+        }
+
         window.location.href = CART_URL;
       },
       true,
