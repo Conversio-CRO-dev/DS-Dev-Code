@@ -1,0 +1,125 @@
+/* Hide the theme's native mobile sticky add-to-basket bar */
+variants-mobile-sticky {
+  display: none !important;
+}
+
+/* Sticky Recommendations Styles */
+.sticky-recs-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: white;
+  max-height: 60vh;
+  overflow-y: auto;
+  width: 100%;
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Only enabled by JS for the duration of a manual arrow-click toggle, so
+   scroll-driven stick/unstick and the initial page-load state never
+   animate or fade. */
+.sticky-recs-container.animate-toggle {
+  transition:
+    height 300ms ease-in-out,
+    padding-top 300ms ease-in-out,
+    padding-bottom 300ms ease-in-out;
+}
+
+.sticky-recs-container.unstuck {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  background-color: transparent;
+  max-height: none;
+  overflow-y: visible;
+  width: auto;
+  margin: 0;
+  top: auto;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Sticky Anchor */
+.sticky-recs-anchor {
+  position: relative;
+  width: 100%;
+  display: flow-root;
+  background-color: transparent;
+}
+
+.sticky-recs-container .swiper-slide {
+  touch-action: pan-y;
+}
+
+.sticky-recs-container:not(.unstuck) .max-w-screen-2xl {
+  margin-bottom: 0;
+}
+
+.sticky-recs-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sticky-recs-arrow {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-arrow {
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  margin-right: 18px;
+}
+
+.sticky-recs-arrow svg {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+
+.sticky-recs-container:not(.unstuck) .h2 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.1rem;
+  line-height: 20px;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.sticky-recs-container.collapsed {
+  height: 41px;
+  padding-top: 10.5px;
+  padding-bottom: 10.5px;
+  overflow: hidden;
+}
+
+.sticky-recs-container:not(.unstuck) .h2 {
+  opacity: 1;
+}
+
+.sticky-recs-container.collapsed .h2 {
+  text-align: left;
+}
+
+.sticky-recs-container.collapsed .sticky-recs-title-row {
+  margin-bottom: 0;
+}
+
+.sticky-recs-container:not(.unstuck) .page-margin-slider {
+  opacity: 1;
+}
+
+.sticky-recs-container.collapsed .page-margin-slider {
+  opacity: 0;
+  pointer-events: none;
+}
