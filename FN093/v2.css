@@ -5,8 +5,10 @@
 
 /* Hide ONLY the slide-in mini-bag (replaced by the custom popup).
  * The /cart page reuses #cart-drawer for its own content, so we must not
- * hide that — the mini-bag is the one that contains a .menu-drawer panel. */
-#cart-drawer:has(.menu-drawer) {
+ * hide that — the mini-bag is the one that contains a .menu-drawer panel.
+ * The .fn093-drawer-visible exception lets v2.js show it on demand (mobile
+ * View Basket / header basket icon) instead of redirecting to /cart. */
+#cart-drawer:has(.menu-drawer):not(.fn093-drawer-visible) {
   display: none !important;
 }
 
@@ -16,7 +18,7 @@
   position: fixed;
   inset: 0;
   z-index: 2147482999;
-  background: rgba(10, 15, 44, 0.55);
+  background: #000000a6; /* matches the theme's native .grey-overlay */
   opacity: 0;
   visibility: hidden;
   transition:
