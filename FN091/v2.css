@@ -1,0 +1,184 @@
+/* Hide the theme's native mobile sticky add-to-basket bar */
+variants-mobile-sticky {
+  display: none !important;
+}
+
+.sticky-recs-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background-color: white;
+  max-height: 60vh;
+  overflow-y: auto;
+  width: 100%;
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+  box-sizing: border-box;
+}
+
+/* Only enabled by JS for the duration of a manual arrow-click toggle, so
+   scroll-driven stick/unstick and the initial page-load state never
+   animate or fade. */
+.sticky-recs-container.animate-toggle {
+  transition:
+    height 300ms ease-in-out,
+    padding-top 300ms ease-in-out,
+    padding-bottom 300ms ease-in-out;
+}
+
+.sticky-recs-container.unstuck {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  z-index: auto;
+  background-color: transparent;
+  max-height: none;
+  overflow-y: visible;
+  width: auto;
+  margin: 0;
+  top: auto;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.sticky-recs-anchor {
+  position: relative;
+  width: 100%;
+  display: flow-root;
+  background-color: transparent;
+}
+
+.sticky-recs-container .swiper-slide {
+  touch-action: pan-y;
+}
+
+.sticky-recs-container:not(.unstuck) .max-w-screen-2xl {
+  margin-bottom: 0;
+}
+
+.sticky-recs-title-row {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.sticky-recs-arrow {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-arrow {
+  display: inline-flex;
+  align-items: center;
+  height: 14px;
+  margin-top: 4px;
+  margin-right: 24px;
+}
+
+.sticky-recs-arrow svg {
+  display: block;
+  height: 100%;
+  width: auto;
+}
+
+.sticky-recs-container.collapsed {
+  height: 41px;
+  padding-top: 10.5px;
+  padding-bottom: 10.5px;
+  overflow: hidden;
+}
+
+.sticky-recs-tabs {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-tabs {
+  display: flex;
+  flex: 1;
+  gap: 24px;
+  justify-content: flex-start;
+}
+
+.sticky-recs-container.collapsed .sticky-recs-tabs {
+  justify-content: flex-start;
+}
+
+.sticky-recs-container:not(.unstuck) .h2 {
+  display: none;
+}
+
+.sticky-recs-tab {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 1.1rem;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: inherit;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0 0 8px 0;
+  opacity: 1;
+  transition: border-bottom-color 200ms ease-in-out;
+}
+
+.sticky-recs-tab.active {
+  border-bottom-color: black;
+}
+
+.sticky-recs-container.collapsed .sticky-recs-tab[data-tab="explore"] {
+  display: none;
+}
+
+.sticky-recs-container.collapsed .sticky-recs-tab {
+  border-bottom-color: transparent;
+}
+
+.sticky-recs-container.collapsed .sticky-recs-title-row {
+  margin-bottom: 0;
+}
+
+/* Panels stack for the cross-fade only once actually stuck; desktop and
+   unstuck/native rendering are untouched (slider stays in normal flow). */
+.sticky-recs-content-stack {
+  position: relative;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-content-stack {
+  overflow: hidden;
+}
+
+.sticky-recs-explore-panel {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider,
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .sticky-recs-explore-panel {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms ease-in-out;
+}
+
+.sticky-recs-container[data-active-tab="recs"]:not(.unstuck):not(.collapsed)
+  .sticky-recs-content-stack
+  > .page-margin-slider,
+.sticky-recs-container[data-active-tab="explore"]:not(.unstuck):not(.collapsed)
+  .sticky-recs-content-stack
+  > .sticky-recs-explore-panel {
+  opacity: 1;
+  pointer-events: auto;
+}
