@@ -439,18 +439,24 @@ function addTitleTabs(container) {
   recsTab.addEventListener("click", function () {
     setActiveTab("recs");
 
-    // 7 Clicks "You might also like" tab
-    window.dataLayer.push({
-      event: "conversioEvent",
-      conversio: {
-        eventCategory: "Conversio CRO",
-        eventAction: "FN091 | Event Tracking",
-        eventLabel: "FN091 | (Variation 2) | Clicks 'You might also like' tab",
-        eventSegment: "FN091EV2M",
-      },
-    });
+    // recsTab stays visible (as the collapsed title label) even while
+    // collapsed, when no tabs are actually being displayed to switch
+    // between, so only count this as a genuine tab click while expanded.
+    if (!container.classList.contains("collapsed")) {
+      // 7 Clicks "You might also like" tab
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel:
+            "FN091 | (Variation 2) | Clicks 'You might also like' tab",
+          eventSegment: "FN091EV2M",
+        },
+      });
 
-    // console.log('Clicks "You might also like" tab');
+      // console.log('Clicks "You might also like" tab');
+    }
   });
   exploreTab.addEventListener("click", function () {
     setActiveTab("explore");
@@ -486,6 +492,11 @@ function applySticky(container) {
     return;
   }
 
+  // Scopes the CSS rule that hides the theme's native mobile sticky ATB
+  // bar to just this page view, so PDPs where the module doesn't render
+  // (e.g. a later PDP visit this session) keep their native bar.
+  document.body.classList.add("fn091-sticky-active");
+
   // Reserves the container's natural slot and is the stable target we
   // watch for visibility (flow-root avoids margin-collapse issues).
   const anchor = document.createElement("div");
@@ -493,6 +504,10 @@ function applySticky(container) {
 
   container.parentNode.insertBefore(anchor, container);
   anchor.appendChild(container);
+
+  // Fires event 11 only once per page visit, however many times the
+  // section scrolls in and out of view during that visit.
+  let hasLoggedViewport = false;
 
   function stick() {
     anchor.style.height = anchor.offsetHeight + "px";
@@ -511,18 +526,22 @@ function applySticky(container) {
     container.classList.remove("sticky-recs-container");
     container.classList.add("unstuck");
 
-    // 11 Existing reccs in viewport
-    window.dataLayer.push({
-      event: "conversioEvent",
-      conversio: {
-        eventCategory: "Conversio CRO",
-        eventAction: "FN091 | Event Tracking",
-        eventLabel: "FN091 | (Variation 2) | Existing reccs in viewport",
-        eventSegment: "FN091EV2R",
-      },
-    });
+    if (!hasLoggedViewport) {
+      hasLoggedViewport = true;
 
-    // console.log("Existing reccs in viewport");
+      // 11 Existing reccs in viewport
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel: "FN091 | (Variation 2) | Existing reccs in viewport",
+          eventSegment: "FN091EV2R",
+        },
+      });
+
+      // console.log("Existing reccs in viewport");
+    }
   }
 
   const observer = new IntersectionObserver(
