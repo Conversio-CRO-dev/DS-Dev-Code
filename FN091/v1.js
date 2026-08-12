@@ -1,4 +1,6 @@
-console.log("David Silva | FN091 variation 1");
+// console.log("David Silva | FN091 variation 1");
+
+window.dataLayer = window.dataLayer || [];
 
 function stickRecommendationsSimple() {
   // Try multiple ways to find the container
@@ -157,6 +159,34 @@ function addTitleIcon(container) {
 
   icon.addEventListener("click", function () {
     toggleCollapse(container, icon);
+
+    if (container.classList.contains("collapsed")) {
+      // 8 Collapses upsell section
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel: "FN091 | (Variation 1) | Collapses upsell section",
+          eventSegment: "FN091EV1N",
+        },
+      });
+
+      // console.log("Collapses upsell section");
+    } else {
+      // 9 Manually opens upsell section
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel: "FN091 | (Variation 1) | Manually opens upsell section",
+          eventSegment: "FN091EV1O",
+        },
+      });
+
+      // console.log("Manually opens upsell section");
+    }
   });
 
   titleRow.classList.add("sticky-recs-title-row");
@@ -200,6 +230,19 @@ function applySticky(container) {
     anchor.style.height = "";
     container.classList.remove("sticky-recs-container");
     container.classList.add("unstuck");
+
+    // 11 Existing reccs in viewport
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel: "FN091 | (Variation 1) | Existing reccs in viewport",
+        eventSegment: "FN091EV1R",
+      },
+    });
+
+    // console.log("Existing reccs in viewport");
   }
 
   const observer = new IntersectionObserver(
@@ -260,6 +303,20 @@ function applySticky(container) {
         container.classList.contains("collapsed")
       ) {
         toggleCollapse(container, icon);
+
+        // 2 Discover element is expanded automatically
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel:
+              "FN091 | (Variation 1) | Discover element is expanded automatically",
+            eventSegment: "FN091EV1H",
+          },
+        });
+
+        // console.log("Discover element is expanded automatically");
       }
       stopAutoOpen();
     }, 10000);
@@ -272,7 +329,39 @@ function applySticky(container) {
   scheduleAutoOpen();
 }
 
+const LANDING_SESSION_KEY = "fn091_v1_landing_checked";
+
+// Only run for users whose current PDP view is itself the entry point
+// to the site this session (external/empty referrer), not those who
+// clicked into it from elsewhere on the site. Decided once per session,
+// via sessionStorage, so a later PDP view never re-triggers it even if
+// that later view also happens to have an external referrer.
+function isFirstPdpLandingThisSession() {
+  if (sessionStorage.getItem(LANDING_SESSION_KEY)) {
+    return false;
+  }
+  sessionStorage.setItem(LANDING_SESSION_KEY, "true");
+
+  const referrer = document.referrer;
+  if (!referrer) {
+    return true;
+  }
+
+  try {
+    const normalize = (host) => host.replace(/^www\./, "");
+    return (
+      normalize(new URL(referrer).hostname) !==
+      normalize(window.location.hostname)
+    );
+  } catch (e) {
+    return true;
+  }
+}
+
 function initStickyRecommendations() {
+  if (!isFirstPdpLandingThisSession()) {
+    return;
+  }
   stickRecommendationsSimple();
 }
 
@@ -282,3 +371,130 @@ if (document.readyState === "loading") {
 } else {
   initStickyRecommendations();
 }
+
+(function trackDiscoverySectionPresence() {
+  function checkAndLog() {
+    if (!document.querySelector(".sticky-recs-anchor")) {
+      return false;
+    }
+    // 1 Discovery section is present on PDPs
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel:
+          "FN091 | (Variation 1) | Discovery section is present on PDPs",
+        eventSegment: "FN091EV1G",
+      },
+    });
+
+    // console.log("Discovery section is present on PDPs");
+    return true;
+  }
+
+  function start() {
+    if (checkAndLog()) {
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (checkAndLog()) {
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+// Clicking track events
+function trackEvents() {
+  if (
+    !document.querySelector("body").classList.contains("fn091-events-tracked")
+  ) {
+    document.querySelector("body").classList.add("fn091-events-tracked");
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".sticky-recs-anchor [data-open-quickbuy]")) {
+        if (e.target.closest(".sticky-recs-container")) {
+          // 4 New reccs product ATB
+          window.dataLayer.push({
+            event: "conversioEvent",
+            conversio: {
+              eventCategory: "Conversio CRO",
+              eventAction: "FN091 | Event Tracking",
+              eventLabel: "FN091 | (Variation 1) | New reccs product ATB",
+              eventSegment: "FN091EV1J",
+            },
+          });
+
+          // console.log("New reccs product ATB");
+        } else if (e.target.closest(".sticky-recs-anchor .unstuck")) {
+          // 13 Existing reccs ATB
+          window.dataLayer.push({
+            event: "conversioEvent",
+            conversio: {
+              eventCategory: "Conversio CRO",
+              eventAction: "FN091 | Event Tracking",
+              eventLabel: "FN091 | (Variation 1) | Existing reccs ATB",
+              eventSegment: "FN091EV1T",
+            },
+          });
+
+          // console.log("Existing reccs ATB");
+        }
+        return;
+      }
+
+      if (e.target.closest(".sticky-recs-container a[href]")) {
+        // 3 New reccs product click through
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel:
+              "FN091 | (Variation 1) | New reccs product click through",
+            eventSegment: "FN091EV1I",
+          },
+        });
+
+        // console.log("New reccs product click through");
+      } else if (e.target.closest(".sticky-recs-anchor .unstuck a[href]")) {
+        // 12 Existing reccs click through
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 1) | Existing reccs click through",
+            eventSegment: "FN091EV1S",
+          },
+        });
+
+        // console.log("Existing reccs click through");
+      }
+
+      if (e.target.closest('product-form button[name="add"]')) {
+        // 15 Static ATB click
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 1) | Static ATB",
+            eventSegment: "FN091EV1V",
+          },
+        });
+
+        // console.log("Static ATB click");
+      }
+    });
+  }
+}
+
+trackEvents();
