@@ -1,4 +1,6 @@
-console.log("David Silva | FN091 variation 2");
+// console.log("David Silva | FN091 variation 2");
+
+window.dataLayer = window.dataLayer || [];
 
 function stickRecommendationsSimple() {
   let container = null;
@@ -363,6 +365,34 @@ function addTitleTabs(container) {
 
   icon.addEventListener("click", function () {
     toggleCollapse(container, icon);
+
+    if (container.classList.contains("collapsed")) {
+      // 8 Collapses upsell section
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel: "FN091 | (Variation 2) | Collapses upsell section",
+          eventSegment: "FN091EV2N",
+        },
+      });
+
+      // console.log("Collapses upsell section");
+    } else {
+      // 9 Manually opens upsell section
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          eventCategory: "Conversio CRO",
+          eventAction: "FN091 | Event Tracking",
+          eventLabel: "FN091 | (Variation 2) | Manually opens upsell section",
+          eventSegment: "FN091EV2O",
+        },
+      });
+
+      // console.log("Manually opens upsell section");
+    }
   });
 
   const tabs = document.createElement("div");
@@ -408,10 +438,36 @@ function addTitleTabs(container) {
 
   recsTab.addEventListener("click", function () {
     setActiveTab("recs");
+
+    // 7 Clicks "You might also like" tab
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel: "FN091 | (Variation 2) | Clicks 'You might also like' tab",
+        eventSegment: "FN091EV2M",
+      },
+    });
+
+    // console.log('Clicks "You might also like" tab');
   });
   exploreTab.addEventListener("click", function () {
     setActiveTab("explore");
     fitExploreToRecsHeight(container, explorePanel);
+
+    // 5 Clicks "Explore" tab
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel: "FN091 | (Variation 2) | Clicks 'Explore' tab",
+        eventSegment: "FN091EV2K",
+      },
+    });
+
+    // console.log('Click "Explore" tab');
   });
 
   setActiveTab("recs");
@@ -454,6 +510,19 @@ function applySticky(container) {
     anchor.style.height = "";
     container.classList.remove("sticky-recs-container");
     container.classList.add("unstuck");
+
+    // 11 Existing reccs in viewport
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel: "FN091 | (Variation 2) | Existing reccs in viewport",
+        eventSegment: "FN091EV2R",
+      },
+    });
+
+    // console.log("Existing reccs in viewport");
   }
 
   const observer = new IntersectionObserver(
@@ -512,6 +581,20 @@ function applySticky(container) {
         container.classList.contains("collapsed")
       ) {
         toggleCollapse(container, icon);
+
+        // 2 Discover element is expanded automatically
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel:
+              "FN091 | (Variation 2) | Discover element is expanded automatically",
+            eventSegment: "FN091EV2H",
+          },
+        });
+
+        // console.log("Discover element is expanded automatically");
       }
       stopAutoOpen();
     }, 10000);
@@ -524,7 +607,34 @@ function applySticky(container) {
   scheduleAutoOpen();
 }
 
+const LANDING_SESSION_KEY = "fn091_v2_landing_checked";
+
+function isFirstPdpLandingThisSession() {
+  if (sessionStorage.getItem(LANDING_SESSION_KEY)) {
+    return false;
+  }
+  sessionStorage.setItem(LANDING_SESSION_KEY, "true");
+
+  const referrer = document.referrer;
+  if (!referrer) {
+    return true;
+  }
+
+  try {
+    const normalize = (host) => host.replace(/^www\./, "");
+    return (
+      normalize(new URL(referrer).hostname) !==
+      normalize(window.location.hostname)
+    );
+  } catch (e) {
+    return true;
+  }
+}
+
 function initStickyRecommendations() {
+  if (!isFirstPdpLandingThisSession()) {
+    return;
+  }
   stickRecommendationsSimple();
 }
 
@@ -533,3 +643,159 @@ if (document.readyState === "loading") {
 } else {
   initStickyRecommendations();
 }
+
+(function trackDiscoverySectionPresence() {
+  function checkAndLog() {
+    if (!document.querySelector(".sticky-recs-anchor")) {
+      return false;
+    }
+    // 1 Discovery section is present on PDPs
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        eventCategory: "Conversio CRO",
+        eventAction: "FN091 | Event Tracking",
+        eventLabel:
+          "FN091 | (Variation 2) | Discovery section is present on PDPs",
+        eventSegment: "FN091EV2G",
+      },
+    });
+
+    // console.log("Discovery section is present on PDPs");
+    return true;
+  }
+
+  function start() {
+    if (checkAndLog()) {
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (checkAndLog()) {
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", start);
+  } else {
+    start();
+  }
+})();
+
+// Clicking track events
+function trackEvents() {
+  if (
+    !document.querySelector("body").classList.contains("fn091-events-tracked")
+  ) {
+    document.querySelector("body").classList.add("fn091-events-tracked");
+    document.addEventListener("click", (e) => {
+      if (
+        e.target.closest(
+          ".sticky-recs-container .sticky-recs-content-stack > .page-margin-slider [data-open-quickbuy]",
+        )
+      ) {
+        // 4 New reccs product ATB
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 2) | New reccs product ATB",
+            eventSegment: "FN091EV2J",
+          },
+        });
+
+        // console.log("New reccs product ATB");
+        return;
+      } else if (
+        e.target.closest(
+          ".sticky-recs-anchor .unstuck .sticky-recs-content-stack > .page-margin-slider [data-open-quickbuy]",
+        )
+      ) {
+        // 13 Existing reccs ATB
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 2) | Existing reccs ATB",
+            eventSegment: "FN091EV2T",
+          },
+        });
+
+        // console.log("Existing reccs ATB");
+        return;
+      }
+
+      if (
+        e.target.closest(
+          ".sticky-recs-container .sticky-recs-content-stack > .page-margin-slider a[href]",
+        )
+      ) {
+        // 3 New reccs product click through
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel:
+              "FN091 | (Variation 2) | New reccs product click through",
+            eventSegment: "FN091EV2I",
+          },
+        });
+
+        // console.log("New reccs product click through");
+      } else if (
+        e.target.closest(
+          ".sticky-recs-anchor .unstuck .sticky-recs-content-stack > .page-margin-slider a[href]",
+        )
+      ) {
+        // 12 Existing reccs click through
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 2) | Existing reccs click through",
+            eventSegment: "FN091EV2S",
+          },
+        });
+
+        // console.log("Existing reccs click through");
+      } else if (e.target.closest(".sticky-recs-explore-panel a[href]")) {
+        // 6 Explore category click through
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel:
+              "FN091 | (Variation 2) | Explore category click through",
+            eventSegment: "FN091EV2L",
+          },
+        });
+
+        // console.log("Explore category click through");
+      }
+
+      if (e.target.closest('product-form button[name="add"]')) {
+        // 15 Static ATB click
+        window.dataLayer.push({
+          event: "conversioEvent",
+          conversio: {
+            eventCategory: "Conversio CRO",
+            eventAction: "FN091 | Event Tracking",
+            eventLabel: "FN091 | (Variation 2) | Static ATB",
+            eventSegment: "FN091EV2V",
+          },
+        });
+
+        // console.log("Static ATB click");
+      }
+    });
+  }
+}
+
+trackEvents();
