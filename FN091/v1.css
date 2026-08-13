@@ -1,5 +1,6 @@
-/* Hide the theme's native mobile sticky add-to-basket bar */
-variants-mobile-sticky {
+/* Hide the theme's native mobile sticky add-to-basket bar, but only on
+   the specific PDP view where the sticky recs module actually renders */
+body.fn091-sticky-active variants-mobile-sticky {
   display: none !important;
 }
 
