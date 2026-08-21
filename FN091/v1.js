@@ -157,7 +157,9 @@ function addTitleIcon(container) {
   icon.className = "sticky-recs-arrow";
   icon.innerHTML = ARROW_ICON_OPEN;
 
-  icon.addEventListener("click", function () {
+  // Attached to the whole title row (not just the icon) so tapping the
+  // heading text also toggles it, not only the small arrow.
+  titleRow.addEventListener("click", function () {
     toggleCollapse(container, icon);
 
     if (container.classList.contains("collapsed")) {
@@ -205,6 +207,16 @@ function applySticky(container) {
   // bar to just this page view, so PDPs where the module doesn't render
   // (e.g. a later PDP visit this session) keep their native bar.
   document.body.classList.add("fn091-sticky-active");
+
+  // Marks each card's title so CSS can zero its margin-bottom only for
+  // cards with no sale price, since doing that unconditionally also
+  // shrinks the gap between the sale price and the struck-through price.
+  container.querySelectorAll(".swiper-slide").forEach((slide) => {
+    const title = slide.querySelector(".ellipsis-2-line");
+    if (title && !slide.querySelector(".text-orange")) {
+      title.classList.add("fn091-no-sale-title");
+    }
+  });
 
   // Anchor reserves the container's natural slot in the page and is the
   // stable target we watch for visibility. It establishes its own block
@@ -433,20 +445,7 @@ function trackEvents() {
     document.querySelector("body").classList.add("fn091-events-tracked");
     document.addEventListener("click", (e) => {
       if (e.target.closest(".sticky-recs-anchor [data-open-quickbuy]")) {
-        if (e.target.closest(".sticky-recs-container")) {
-          // 4 New reccs product ATB
-          window.dataLayer.push({
-            event: "conversioEvent",
-            conversio: {
-              eventCategory: "Conversio CRO",
-              eventAction: "FN091 | Event Tracking",
-              eventLabel: "FN091 | (Variation 1) | New reccs product ATB",
-              eventSegment: "FN091EV1J",
-            },
-          });
-
-          // console.log("New reccs product ATB");
-        } else if (e.target.closest(".sticky-recs-anchor .unstuck")) {
+        if (e.target.closest(".sticky-recs-anchor .unstuck")) {
           // 13 Existing reccs ATB
           window.dataLayer.push({
             event: "conversioEvent",

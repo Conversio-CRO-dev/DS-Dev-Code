@@ -66,8 +66,13 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-title-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-title-row {
+  flex-direction: row-reverse;
 }
 
 .sticky-recs-arrow {
@@ -77,21 +82,21 @@ body.fn091-sticky-active variants-mobile-sticky {
 .sticky-recs-container:not(.unstuck) .sticky-recs-arrow {
   display: inline-flex;
   align-items: center;
-  height: 14px;
-  margin-right: 18px;
+  width: 15px;
+  height: 8px;
 }
 
 .sticky-recs-arrow svg {
   display: block;
-  height: 100%;
-  width: auto;
+  width: 15px;
+  height: 8px;
 }
 
 .sticky-recs-container:not(.unstuck) .h2 {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 1.1rem;
+  font-size: 0.875rem;
   line-height: 20px;
   letter-spacing: 0;
   text-align: center;
@@ -106,6 +111,47 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-container:not(.unstuck) .h2 {
   opacity: 1;
+}
+
+.sticky-recs-container:not(.unstuck) .ellipsis-2-line {
+  width: 131px;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+/* Only zero the title's margin-bottom for cards with no sale price
+   (fn091-no-sale-title, added by JS); sale cards keep the default gap,
+   since removing it there also shrinks the space between the sale price
+   and the struck-through original price. */
+.sticky-recs-container:not(.unstuck) .ellipsis-2-line.fn091-no-sale-title {
+  margin-bottom: 0;
+}
+
+.sticky-recs-container:not(.unstuck) .money {
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.sticky-recs-container:not(.unstuck) .text-orange {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.sticky-recs-container:not(.unstuck) .text-purpleNavy {
+  line-height: 14px;
+}
+
+.sticky-recs-container:not(.unstuck) [data-open-quickbuy] {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck) .swiper-slide .flex.items-start.flex-wrap {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck) .swiper-slide img {
+  width: 131px;
+  height: 174px;
 }
 
 .sticky-recs-container.collapsed .h2 {
