@@ -128,7 +128,6 @@
 .fn092-atc-popup__title {
   font-size: 15px;
   line-height: 1.25;
-  font-weight: 600;
   margin-bottom: 4px;
 }
 
@@ -161,15 +160,16 @@
   justify-content: center;
   width: 100%;
   height: 46px;
-  background: #000000;
-  color: #ffffff;
+  background: #ffffff;
+  color: #000000;
+  border: 1.5px solid #000000;
   font-size: 15px;
   text-decoration: none;
   cursor: pointer;
 }
 
 .fn092-atc-popup__cta:hover {
-  background: #1c2733;
+  background: #f2f2f2;
 }
 
 .fn092-atc-popup__checkout {
@@ -179,15 +179,15 @@
   width: 100%;
   height: 46px;
   margin-top: 10px;
-  background: #ded4b4;
-  color: #1c2733;
+  background: #000000;
+  color: #ffffff;
   font-size: 15px;
   text-decoration: none;
   cursor: pointer;
 }
 
 .fn092-atc-popup__checkout:hover {
-  background: #d3c8a2;
+  background: #1c2733;
 }
 
 @media screen and (max-width: 767px) {
