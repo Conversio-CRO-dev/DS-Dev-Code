@@ -64,8 +64,13 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-title-row {
   display: flex;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+}
+
+.sticky-recs-container:not(.unstuck) .sticky-recs-title-row {
+  flex-direction: row-reverse;
 }
 
 .sticky-recs-arrow {
@@ -74,16 +79,14 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-container:not(.unstuck) .sticky-recs-arrow {
   display: inline-flex;
-  align-items: center;
-  height: 14px;
-  margin-top: 4px;
-  margin-right: 24px;
+  width: 15px;
+  height: 20px;
 }
 
 .sticky-recs-arrow svg {
   display: block;
-  height: 100%;
-  width: auto;
+  width: 15px;
+  height: 8px;
 }
 
 .sticky-recs-container.collapsed {
@@ -112,11 +115,117 @@ body.fn091-sticky-active variants-mobile-sticky {
   display: none;
 }
 
+/* Scoped to the recs slider specifically (direct child of
+   .sticky-recs-content-stack), not the Explore panel, which reuses the
+   same card classes but should keep its own sizing. */
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .ellipsis-2-line {
+  width: 131px;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+/* Only zero the title's margin-bottom for cards with no sale price
+   (fn091-no-sale-title, added by JS); sale cards keep the default gap,
+   since removing it there also shrinks the space between the sale price
+   and the struck-through original price. */
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .ellipsis-2-line.fn091-no-sale-title {
+  margin-bottom: 0;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .money {
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .text-orange {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .text-purpleNavy {
+  line-height: 14px;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  [data-open-quickbuy] {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .swiper-slide
+  .flex.items-start.flex-wrap {
+  display: none;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .swiper-slide
+  img {
+  width: 131px;
+  height: 174px;
+}
+
+/* Overrides Swiper's own inline margin-right on each slide, which
+   otherwise takes priority over a plain (non-!important) CSS rule. */
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-content-stack
+  > .page-margin-slider
+  .swiper-slide {
+  margin-right: 0 !important;
+}
+
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-explore-panel
+  .flex.items-start.flex-wrap {
+  display: none;
+}
+
+/* !important since fitExploreToRecsHeight() sets width/height inline on
+   these images (and re-applies it), which otherwise wins over plain CSS. */
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-explore-panel
+  .swiper-slide
+  img {
+  width: 138px !important;
+  height: 184px !important;
+}
+
+/* font-size/line-height need !important since fitExploreToRecsHeight()
+   sets them inline (matching the recs title's computed style). */
+.sticky-recs-container:not(.unstuck)
+  .sticky-recs-explore-panel
+  .swiper-slide
+  h3 {
+  font-size: 14px !important;
+  line-height: 20px !important;
+  text-decoration: underline solid #344b75;
+}
+
 .sticky-recs-tab {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 1.1rem;
+  font-size: 14px;
   line-height: 20px;
   letter-spacing: 0;
   color: inherit;
