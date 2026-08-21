@@ -1,4 +1,4 @@
-// console.log("David Silva | FN093 variation 1");
+console.log("David Silva | FN093 variation 1");
 
 (function () {
   "use strict";
@@ -84,6 +84,13 @@
     return nowHtml;
   }
 
+  /* Gift card / voucher products use their monetary value as a variant
+   * option (e.g. "£25"), which just duplicates the price already shown
+   * above it — skip any option value that looks like a price. */
+  function looksLikePrice(value) {
+    return /^£\s?\d+(\.\d{1,2})?$/.test(String(value).trim());
+  }
+
   /* Build the variant detail lines, e.g. "Raven Lofi Print" then "Size: 12". */
   function buildOptionLines(item) {
     var lines = [];
@@ -93,6 +100,8 @@
     if (options && options.length) {
       options.forEach(function (option) {
         if (!option || option.value == null || option.value === "") return;
+        if (looksLikePrice(option.value)) return;
+        if (option.value === "Default Title") return;
         if (/size/i.test(option.name)) {
           sizeLines.push("Size: " + option.value);
         } else {
@@ -100,7 +109,9 @@
         }
       });
     } else if (item.variant_title && item.variant_title !== "Default Title") {
-      lines = item.variant_title.split(" / ");
+      lines = item.variant_title.split(" / ").filter(function (part) {
+        return !looksLikePrice(part);
+      });
     }
 
     return lines.concat(sizeLines);
@@ -132,14 +143,22 @@
   var autoCloseTimer = null;
   var openedAt = 0;
 
-  /* Mini-basket drawer hand-off state (mobile only — see bindBasketIcon /
-   * openMiniBasket below). allowDrawerOpen tells neutralizeDrawer's observer
-   * to leave a sanctioned open alone instead of auto-closing it. */
-  var allowDrawerOpen = false;
-
   function ensurePopup() {
-    if (popupEl) return popupEl;
+    /* Checking document.body.contains() (not just truthiness) matters: if
+     * another instance of this script removed our element (see the cleanup
+     * pass in showPopup below), popupEl would still be a truthy reference to
+     * a now-detached node — reusing it would silently do nothing visible. */
+    if (popupEl && document.body.contains(popupEl)) return popupEl;
     if (!document.body) return null;
+
+    /* Remove any stray backdrop/popup left by another instance of this
+     * script before creating a fresh pair, so we never end up creating a
+     * second one on top of an existing (possibly still-visible) one. */
+    document
+      .querySelectorAll(".fn092-atc-backdrop, .fn092-atc-popup")
+      .forEach(function (el) {
+        el.remove();
+      });
 
     /* Dark backdrop (shown on mobile only — see SCSS). */
     backdropEl = document.createElement("div");
@@ -268,13 +287,23 @@
       },
     );
 
+    /* Remove any stray backdrop/popup left by another instance of this
+     * script right before showing ours — the last line of defence against
+     * duplicate execution, checked at the exact moment we're about to make
+     * one visible rather than only when it's first created. */
+    document
+      .querySelectorAll(".fn092-atc-backdrop, .fn092-atc-popup")
+      .forEach(function (node) {
+        if (node !== backdropEl && node !== el) node.remove();
+      });
+
     openedAt = Date.now();
     el.classList.add("is-visible");
     if (backdropEl) backdropEl.classList.add("is-visible");
     document.body.classList.add("fn092-atc-lock");
     pushConversioEvent(
       "FN093 | (Variation 1) | Post ATB Triggered: Mini Basket/Overlay triggered",
-      "FN093EV1G",
+      "FN093EV1Q",
     );
 
     /* Close on outside click. Defer binding so the click that triggered the
@@ -292,6 +321,13 @@
   }
 
   function handleAdd(data) {
+    if (!userInitiatedAdd) return;
+    userInitiatedAdd = false;
+    if (userInitiatedAddTimer) {
+      clearTimeout(userInitiatedAddTimer);
+      userInitiatedAddTimer = null;
+    }
+
     if (!data) return;
     var item = data.items ? data.items[data.items.length - 1] : data;
     if (!item || !item.id) return;
@@ -299,11 +335,14 @@
     /* Always show the custom overlay for a fresh add, even if the mini-basket
      * happens to be open already (e.g. user opened it, then added another
      * item from elsewhere) — close it first via its own native method. */
-    if (allowDrawerOpen) {
-      allowDrawerOpen = false;
-      var drawer = document.getElementById("cart-drawer");
-      if (drawer && typeof drawer.closeDrawer === "function") {
-        drawer.closeDrawer();
+    var openDrawerEl = document.getElementById("cart-drawer");
+    if (
+      openDrawerEl &&
+      openDrawerEl.classList.contains("fn093-drawer-visible")
+    ) {
+      openDrawerEl.classList.remove("fn093-drawer-visible");
+      if (typeof openDrawerEl.closeDrawer === "function") {
+        openDrawerEl.closeDrawer();
       }
     }
 
@@ -318,6 +357,34 @@
   function isAddUrl(url) {
     return typeof url === "string" && /\/cart\/add/.test(url);
   }
+
+  /* Only show the popup for a /cart/add response that followed a genuine
+   * user click on an add control — not any request that happens to match
+   * the URL pattern. The theme silently re-adds the item to sync the cart
+   * line when you change size on a product that's already in your basket,
+   * which was showing (and immediately hiding again) the popup with no
+   * click ever happening. Armed by a real click, consumed by handleAdd, and
+   * auto-expired so a stray click can't authorise an unrelated later add. */
+  var userInitiatedAdd = false;
+  var userInitiatedAddTimer = null;
+
+  document.addEventListener(
+    "click",
+    function (event) {
+      if (
+        event.target.closest(
+          'button[type="submit"][name="add"], #add-btn-mobile, quickbuy-wrapper',
+        )
+      ) {
+        userInitiatedAdd = true;
+        if (userInitiatedAddTimer) clearTimeout(userInitiatedAddTimer);
+        userInitiatedAddTimer = setTimeout(function () {
+          userInitiatedAdd = false;
+        }, 3000);
+      }
+    },
+    true,
+  );
 
   var nativeFetch = window.fetch;
   if (typeof nativeFetch === "function") {
@@ -377,9 +444,9 @@
       if (finished) return;
       finished = true;
       if (panel) panel.removeEventListener("transitionend", onTransitionEnd);
-      /* Bail if the drawer was reopened while we were waiting (re-reads the
-       * live flag, not a stale value from when this call started). */
-      if (allowDrawerOpen) return;
+      /* Bail if the drawer was reopened while we were waiting (reads the
+       * live DOM, not a stale flag from when this call started). */
+      if (drawer.querySelector(".drawer-open-right")) return;
       drawer.classList.remove("fn093-drawer-visible");
       drawer.style.setProperty("display", "none", "important");
     };
@@ -416,21 +483,28 @@
 
       var closeIfOpen = function () {
         var openPanel = drawer.querySelector(".drawer-open-right");
+        /* Read the DOM class itself rather than a private JS variable — if
+         * this script ends up running more than once on the page (seen
+         * happening independently of us), each instance's own MutationObserver
+         * needs to agree on whether an open is sanctioned, and a variable
+         * private to one instance's closure can't do that. The class lives
+         * on the one real #cart-drawer element, so every instance reads the
+         * same answer. */
+        var sanctioned = drawer.classList.contains("fn093-drawer-visible");
 
         if (!openPanel) {
-          if (allowDrawerOpen) {
+          if (sanctioned) {
             /* The manually-opened drawer was dismissed (native close button,
              * outside click, etc. — all handled natively since we opened it
              * via the real openDrawer() method). Let its slide-out play,
              * then re-arm neutralisation for the next automatic (post
              * add-to-cart) open attempt. */
-            allowDrawerOpen = false;
             hideDrawerAfterTransition(drawer);
           }
           return;
         }
 
-        if (allowDrawerOpen) {
+        if (sanctioned) {
           /* We opened this on purpose (openMiniBasket) — leave it alone.
            * No writes here: this must stay a pure read, or every internal
            * re-render of the drawer's own contents (recs carousel, quantity
@@ -474,7 +548,8 @@
     var drawer = document.getElementById("cart-drawer");
     if (!drawer || typeof drawer.openDrawer !== "function") return;
 
-    allowDrawerOpen = true;
+    /* Adding this class is itself the "sanctioned open" signal that every
+     * neutralizeDrawer instance on the page reads — see closeIfOpen. */
     drawer.classList.add("fn093-drawer-visible");
     drawer.style.removeProperty("display");
     drawer.openDrawer();
