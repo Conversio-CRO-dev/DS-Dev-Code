@@ -1,0 +1,284 @@
+.selling-fast-pill-sa {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.5rem 0.5rem 0.6rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: 2px solid #26d07c;
+  color: #111;
+  gap: 5px;
+  letter-spacing: 0.8px;
+  font-family: bebasneuepro-bold, bebasneuepro-bold-fallback;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.selling-fast-pill-sa .selling-fast-pill-text-sa {
+  position: relative;
+  top: 0.09em;
+}
+
+.green-circle {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #26d07c;
+  flex-shrink: 0;
+}
+
+.selling-fast-pill-sa .green-circle {
+  width: 20px;
+  height: 20px;
+}
+
+.selling-fast-times-header-sa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.selling-fast-times-header-sa h2 {
+  margin-bottom: 0;
+}
+
+.selling-fast-mobile-pill-wrap-sa {
+  display: none;
+}
+
+.selling-fast-mobile-header-pill-sa {
+  display: none;
+}
+
+.selling-fast-slot-sa {
+  border-color: #26d07c !important;
+  position: relative;
+}
+
+.selling-fast-slot-sa .selling-fast-clock-sa {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.selling-fast-dropdown-option-sa {
+  position: relative;
+}
+
+.selling-fast-option-content-sa {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.selling-fast-option-label-sa {
+  font-size: 0.9rem;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #111;
+  font-family: bebasneuepro-bold, bebasneuepro-bold-fallback;
+}
+
+.selling-fast-option-label-sa:before {
+  content: "- ";
+}
+
+.selling-fast-clock-inline-sa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+}
+
+.selling-fast-mobile-selected-sa {
+  border-color: #26d07c !important;
+}
+
+.selling-fast-mobile-selected-sa span.block.truncate {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  max-width: 100% !important;
+}
+
+.selling-fast-mobile-selected-sa .selling-fast-option-label-sa {
+  font-size: 0.85rem;
+  color: #111;
+  flex-shrink: 0;
+}
+
+.selling-fast-mobile-selected-sa .selling-fast-clock-inline-sa {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+@media (max-width: 1024px) {
+  .selling-fast-pill-sa .selling-fast-pill-text-sa {
+    top: 0;
+  }
+
+  .selling-fast-mobile-pill-wrap-sa {
+    display: block;
+    width: 100%;
+  }
+
+  .selling-fast-mobile-pill-wrap-sa .selling-fast-pill-sa {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+  }
+
+  .selling-fast-mobile-pill-wrap-sa .green-circle {
+    width: 18px;
+    height: 18px;
+  }
+
+  .selling-fast-mobile-header-pill-sa {
+    display: inline-flex;
+  }
+
+  .selling-fast-mobile-header-pill-sa .selling-fast-pill-sa {
+    padding: 0.4rem 0.4rem 0.4rem 0.55rem;
+    border-radius: 0.5rem;
+    gap: 5px;
+  }
+
+  .selling-fast-mobile-header-pill-sa .selling-fast-pill-text-sa {
+    font-size: 0.875rem;
+  }
+
+  .selling-fast-mobile-header-pill-sa .green-circle {
+    width: 16px;
+    height: 16px;
+  }
+
+  .selling-fast-best-seller-row-sa {
+    flex-wrap: nowrap;
+    gap: 0.45rem;
+  }
+
+  .selling-fast-best-seller-row-sa > .lg\:hidden,
+  .selling-fast-best-seller-row-sa > .selling-fast-mobile-header-pill-sa,
+  .selling-fast-best-seller-row-sa > button {
+    flex-shrink: 0;
+  }
+
+  .selling-fast-best-seller-row-sa .lg\:hidden > span {
+    font-size: 0.875rem !important;
+    padding: 0.4rem 0.55rem !important;
+    white-space: nowrap !important;
+  }
+
+  .selling-fast-best-seller-row-sa > button {
+    font-size: 0.875rem !important;
+    white-space: nowrap;
+  }
+
+  .selling-fast-best-seller-row-sa > button svg {
+    width: 18px !important;
+    height: 18px !important;
+    margin-left: 0.35rem !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  li.flex.flex-col .flex.flex-col.gap-y-5.pt-5.pb-2.px-3 {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 > div:first-child {
+    flex: 7 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 > div:last-child {
+    flex: 3 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 > div,
+  .mobile-dropdown-container,
+  .mobile-book-container {
+    display: flex !important;
+    align-items: stretch !important;
+    width: 100% !important;
+  }
+
+  .mobile-dropdown-container button,
+  .mobile-dropdown-container .relative {
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 button,
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 a,
+  .mobile-dropdown-container button,
+  .mobile-book-container a {
+    width: 100% !important;
+    font-size: 16px !important;
+    padding: 0.75rem 0.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+  }
+
+  .mobile-dropdown-container .relative {
+    width: 100% !important;
+  }
+
+  .mobile-dropdown-container button span {
+    line-height: 1.2 !important;
+  }
+
+  .lg\:hidden.flex.flex-col.xs\:flex-row.gap-2 button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .mobile-dropdown-container [role="listbox"] {
+    top: 50px !important;
+    position: absolute !important;
+  }
+
+  .lg\:hidden .selling-fast-slot-sa,
+  .swiper .selling-fast-slot-sa {
+    padding-right: 1.6rem !important;
+  }
+
+  .lg\:hidden .selling-fast-slot-sa .selling-fast-clock-sa,
+  .swiper .selling-fast-slot-sa .selling-fast-clock-sa {
+    top: 4px !important;
+    right: 5px !important;
+    width: 11px !important;
+    height: 11px !important;
+  }
+}
