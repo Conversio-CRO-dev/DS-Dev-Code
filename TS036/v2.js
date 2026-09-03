@@ -148,7 +148,7 @@ function keepElementUpdated(selector, newText, onSuccess) {
     applying = true;
     el.textContent = newText;
     applying = false;
-    // console.log(`1: ${el.tagName.toLowerCase()}  —  updated content: "${newText}");
+    // console.log(`1: ${el.tagName.toLowerCase()}  —  updated content: "${newText}"`);
     if (typeof onSuccess === "function") onSuccess(el);
   }
 
@@ -320,6 +320,10 @@ function keepSearchResultProductsUpdated(onSuccess) {
       match: "rookie racer 342 | starter track",
       newText: "Kids and Family Fun 342",
     },
+    {
+      match: "rookie race",
+      newText: "Kids and Family Fun Experience",
+    },
   ];
   let applying = false;
 
@@ -406,6 +410,8 @@ function keepBookingPageUpdated() {
   const NEW_TEXT_NAME_342 = "Kids and Family Fun 342";
   const TARGET_BLOCK_342 = "rookie racer 342";
   const NEW_TEXT_BLOCK_342 = "Kids and Family Fun 342";
+  const TARGET_NAME_ROOKIE = "rookie race";
+  const NEW_TEXT_NAME_ROOKIE = "Kids and Family Fun Experience";
   let applying = false;
 
   const observedRoots = new WeakSet();
@@ -465,6 +471,14 @@ function keepBookingPageUpdated() {
       }
       break;
     }
+    for (const el of nameEls) {
+      if (!el.textContent.trim().toLowerCase().includes(TARGET_NAME_ROOKIE))
+        continue;
+      if (el.textContent.trim() !== NEW_TEXT_NAME_ROOKIE) {
+        el.textContent = NEW_TEXT_NAME_ROOKIE;
+      }
+      break;
+    }
 
     // Partial replacement on div.blocks — preserves the time suffix (e.g. "- 09:30")
     const blockEls = [];
@@ -490,6 +504,16 @@ function keepBookingPageUpdated() {
         el.textContent = updated;
       }
     }
+    for (const el of blockEls) {
+      if (!el.textContent.toLowerCase().includes(TARGET_NAME_ROOKIE)) continue;
+      const updated = el.textContent.replace(
+        /Rookie Race/gi,
+        NEW_TEXT_NAME_ROOKIE,
+      );
+      if (el.textContent !== updated) {
+        el.textContent = updated;
+      }
+    }
 
     // Full replacement on h3.description-name (supplement booker — "Added to cart" view)
     const descEls = [];
@@ -510,6 +534,14 @@ function keepBookingPageUpdated() {
       }
       break;
     }
+    for (const el of descEls) {
+      if (!el.textContent.trim().toLowerCase().includes(TARGET_NAME_ROOKIE))
+        continue;
+      if (el.textContent.trim() !== NEW_TEXT_NAME_ROOKIE) {
+        el.textContent = NEW_TEXT_NAME_ROOKIE;
+      }
+      break;
+    }
 
     // Image update — identifies the product image by its alt attribute matching the old name
     const productImgs = [];
@@ -526,6 +558,13 @@ function keepBookingPageUpdated() {
       const alt = (img.getAttribute("alt") || "").trim().toLowerCase();
       if (!alt.includes(TARGET_NAME_342) && !alt.includes(TARGET_NAME_342_CART))
         continue;
+      if (img.getAttribute("src") !== NEW_SRC) {
+        img.setAttribute("src", NEW_SRC);
+      }
+    }
+    for (const img of productImgs) {
+      const alt = (img.getAttribute("alt") || "").trim().toLowerCase();
+      if (!alt.includes(TARGET_NAME_ROOKIE)) continue;
       if (img.getAttribute("src") !== NEW_SRC) {
         img.setAttribute("src", NEW_SRC);
       }
@@ -555,6 +594,20 @@ function keepBookingPageUpdated() {
         continue;
       if (el.textContent.trim() !== NEW_TEXT_NAME_342) {
         el.textContent = NEW_TEXT_NAME_342;
+      }
+      const cartItem = el.closest("sms-sales-cart-item");
+      if (cartItem) {
+        const img = cartItem.querySelector("img[aria-label='Product picture']");
+        if (img && img.getAttribute("src") !== NEW_SRC) {
+          img.setAttribute("src", NEW_SRC);
+        }
+      }
+    }
+    for (const el of cartNameEls) {
+      const t = el.textContent.trim().toLowerCase();
+      if (!t.includes(TARGET_NAME_ROOKIE)) continue;
+      if (el.textContent.trim() !== NEW_TEXT_NAME_ROOKIE) {
+        el.textContent = NEW_TEXT_NAME_ROOKIE;
       }
       const cartItem = el.closest("sms-sales-cart-item");
       if (cartItem) {
