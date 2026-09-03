@@ -132,26 +132,18 @@
     if (!parsed.length) return [];
 
     if (!weekend) {
-      var weekdayMatches = parsed.filter(function (item) {
-        return item.minutes >= 18 * 60;
-      });
-
-      return weekdayMatches.length ? [weekdayMatches[0].raw] : [];
+      return [parsed[0].raw];
     }
 
-    var weekendPrimary = parsed.filter(function (item) {
-      return item.minutes >= 14 * 60 && item.minutes <= 16 * 60;
+    var beforeNoon = parsed.filter(function (item) {
+      return item.minutes < 12 * 60;
     });
 
-    if (weekendPrimary.length) {
-      return [weekendPrimary[0].raw];
+    if (beforeNoon.length) {
+      return [beforeNoon[0].raw];
     }
 
-    var weekendFallback = parsed.filter(function (item) {
-      return item.minutes >= 12 * 60 && item.minutes <= 14 * 60;
-    });
-
-    return weekendFallback.length ? [weekendFallback[0].raw] : [];
+    return [parsed[parsed.length - 1].raw];
   }
 
   function getDesktopTimeButtons(card) {
