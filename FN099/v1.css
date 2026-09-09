@@ -1,0 +1,60 @@
+.cro-fn099-plp-title-wrapper h1 {
+  font-size: 28px !important;
+}
+
+.cro-fn099-plp-hub-link {
+  font-size: 12px !important;
+  white-space: nowrap !important;
+}
+
+.cro-fn099-plp-description {
+  font-size: 12px !important;
+  line-height: 100% !important;
+}
+
+.cro-fn099-plp-hub-link-grid {
+  width: 111px !important;
+  min-width: 111px !important;
+  height: 36px !important;
+}
+
+.cro-fn099-plp-hub-link-carousel {
+  height: 44px !important;
+}
+
+.swiper-collections-hub .swiper-slide {
+  width: 103px !important;
+}
+
+.cro-fn099-plp-hub-carousel-wrapper {
+  margin-bottom: 0 !important;
+  margin-top: 1.5rem !important;
+}
+
+@media (max-width: 1023px) {
+  .cro-fn099-plp-title-wrapper {
+    margin-top: 0 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cro-fn099-plp-title-wrapper {
+    grid-column: 1 / -1 !important;
+  }
+
+  .cro-fn099-plp-title-wrapper h1 {
+    font-size: 36px !important;
+    white-space: nowrap !important;
+    margin-bottom: 15px !important;
+  }
+
+  .cro-fn099-plp-description {
+    font-size: 12px !important;
+    line-height: 100% !important;
+  }
+
+  .cro-fn099-plp-hub-row {
+    gap: 16px !important;
+    margin-left: 16px !important;
+  }
+}
