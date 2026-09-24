@@ -1,0 +1,103 @@
+:root {
+  --rp-green: #7c9f1a;
+  --rp-green-hover: #6f8e16;
+  --rp-accent: #c9d302;
+  --rp-border: #f1f1f1;
+  --rp-white: #ffffff;
+  --rp-text: #333333;
+  --rp-text-secondary: #717171;
+}
+
+.rp-prompt {
+  position: fixed;
+  z-index: 9999999;
+  background: var(--rp-white);
+  border-top: 3px solid var(--rp-accent);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
+  padding: 20px;
+  box-sizing: border-box;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.rp-prompt--visible {
+  transform: translateY(0);
+}
+
+.rp-prompt__header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.rp-prompt__close {
+  border: none;
+  cursor: pointer;
+  position: relative;
+  padding: 0;
+  top: -7.5px;
+  right: -7.5px;
+  color: var(--rp-text-secondary);
+  background: transparent;
+  transition: color 0.3s ease;
+}
+
+.rp-prompt__close:hover {
+  color: var(--rp-text);
+}
+
+.rp-prompt__copy {
+  margin: 0;
+  font-size: var(--cx-font-size-base);
+  line-height: 1.4;
+  color: var(--rp-text);
+}
+
+.rp-prompt__cta {
+  display: inline-block;
+  background: var(--rp-green);
+  color: var(--rp-white);
+  font-family: var(--cx-font-primary-bold);
+  font-size: var(--cx-font-size-h4);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 12px 15px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.rp-prompt__cta:hover {
+  background: var(--rp-green-hover);
+  color: var(--rp-white);
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
+  .rp-prompt {
+    left: auto;
+    bottom: 24px;
+    left: 24px;
+    width: 400px;
+    border-top: none;
+    border: 1px solid var(--rp-border);
+    border-left: 3px solid var(--rp-accent);
+    border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+  }
+
+  .rp-prompt--visible {
+    opacity: 1;
+    visibility: visible;
+  }
+}
