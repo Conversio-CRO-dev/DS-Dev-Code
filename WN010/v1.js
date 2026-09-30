@@ -1,69 +1,5 @@
 console.log("David Silva | WN010 variation 1");
 
-function waitForDataLayer(callback) {
-  let checkInterval = setInterval(() => {
-    if (window.dataLayer && Array.isArray(window.dataLayer)) {
-      clearInterval(checkInterval);
-      callback();
-    }
-  }, 100);
-}
-
-(function () {
-  "use strict";
-
-  var dl = (window.dataLayer = window.dataLayer || []);
-
-  function isConsentUpdate(args) {
-    return (
-      args &&
-      args.length >= 3 &&
-      args[0] === "consent" &&
-      args[1] === "update" &&
-      args[2] &&
-      args[2].analytics_storage === "granted"
-    );
-  }
-
-  function handleConsentUpdate(obj) {
-    waitForDataLayer(() => {
-      window.dataLayer.push({
-        event: "conversioExperience",
-        conversio: {
-          experience_category: "Conversio Experience",
-          experience_action:
-            "WN010 | Support Hotel Exploration at Room Selection Step",
-          experience_label: "WN010 | Variation 1",
-          experience_segment: "WN010.XV1",
-        },
-      });
-    });
-  }
-
-  // 1. Check historical pushes
-  for (var i = 0; i < dl.length; i++) {
-    if (isConsentUpdate(dl[i])) {
-      handleConsentUpdate(dl[i][2]);
-      return;
-    }
-  }
-
-  // 2. Listen for future pushes
-  var originalPush = dl.push;
-
-  dl.push = function () {
-    var args = Array.prototype.slice.call(arguments);
-
-    for (var j = 0; j < args.length; j++) {
-      if (isConsentUpdate(args[j])) {
-        handleConsentUpdate(args[j][2]);
-      }
-    }
-
-    return originalPush.apply(dl, arguments);
-  };
-})();
-
 (function () {
   const BACK_COOKIE_NAME = "cro_back_url";
   const FOUR_HOURS_IN_SECONDS = 60 * 60 * 4;
@@ -79,17 +15,16 @@ function waitForDataLayer(callback) {
       padding: 8px 16px 8px 10px !important;
       margin: 8px 0px 8px 0 !important;
       background-color: #0f3448 !important;
-      border-radius: 16px !important;
       color: #ffffff !important;
       text-decoration: none !important;
-      font-size: 12px !important;
+      font-size: 14px !important;
       font-weight: 700 !important;
       letter-spacing: 0.02em !important;
       line-height: 1.2 !important;
     }
 
     .croBackButton:hover {
-      opacity: 0.85 !important;
+      background-color: #3592B9 !important;
     }
 
     .croBackButtonIcon {
@@ -101,8 +36,7 @@ function waitForDataLayer(callback) {
       display: flex !important;
       flex-direction: column !important;
       text-align: left !important;
-      text-transform: none !important;
-      gap: 5px !important;
+      text-transform: uppercase !important;
     }
   `;
 
@@ -131,7 +65,7 @@ function waitForDataLayer(callback) {
       window.location.origin +
       window.location.pathname +
       (query ? "?" + query : "") +
-      window.location.hash
+      "#searchPageArea"
     );
   }
 
@@ -172,7 +106,10 @@ function waitForDataLayer(callback) {
   }
 
   function initBookingBackButton() {
+    if (document.getElementById("croBackButtonStyles")) return;
+
     const style = document.createElement("style");
+    style.id = "croBackButtonStyles";
     style.textContent = CUSTOM_STYLES;
     document.head.appendChild(style);
 
@@ -435,6 +372,42 @@ function waitForDataLayer(callback) {
     });
   }
 
+  function initSearchAreaScrollFix() {
+    if (window.location.hash !== "#searchPageArea") return;
+
+    function scrollWhenStable(target) {
+      let debounceTimer = null;
+
+      const observer = new MutationObserver(function () {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+          observer.disconnect();
+          target.scrollIntoView();
+        }, 300);
+      });
+
+      observer.observe(target, { childList: true, subtree: true });
+      debounceTimer = setTimeout(function () {
+        observer.disconnect();
+        target.scrollIntoView();
+      }, 300);
+    }
+
+    const target = document.getElementById("searchPageArea");
+    if (target) {
+      scrollWhenStable(target);
+      return;
+    }
+
+    new MutationObserver(function (mutations, observer) {
+      const found = document.getElementById("searchPageArea");
+      if (found) {
+        observer.disconnect();
+        scrollWhenStable(found);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   if (window.location.hostname === "book.warnerhotels.co.uk") {
     initBookingBackButton();
     trackEvents();
@@ -445,5 +418,6 @@ function waitForDataLayer(callback) {
     initEntryCapture();
     trackEvents();
     initBackNavigationDetection();
+    initSearchAreaScrollFix();
   }
 })();
