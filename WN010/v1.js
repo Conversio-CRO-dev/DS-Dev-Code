@@ -1,4 +1,4 @@
-// console.log("David Silva | WN010 variation 1");
+console.log("David Silva | WN010 variation 1");
 
 function waitForDataLayer(callback) {
   let checkInterval = setInterval(() => {
@@ -71,35 +71,38 @@ function waitForDataLayer(callback) {
     /^(utm_|_ga|_gl|_gcl|gclid$|gclsrc$|dclid$|fbclid$|msclkid$|ttclid$|twclid$|mc_(cid|eid)$)/i;
   const CUSTOM_STYLES = `
     .croBackButton {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      padding: 8px 0 8px 12px;
-      color: #1a1a1a;
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      line-height: 1;
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 5px !important;
+      padding: 8px 16px 8px 10px !important;
+      margin: 8px 0px 8px 0 !important;
+      background-color: #0f3448 !important;
+      border-radius: 16px !important;
+      color: #ffffff !important;
+      text-decoration: none !important;
+      font-size: 12px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.02em !important;
+      line-height: 1.2 !important;
     }
 
     .croBackButton:hover {
-      opacity: 0.7;
+      opacity: 0.85 !important;
     }
 
     .croBackButtonIcon {
-      display: block;
+      display: block !important;
+      flex-shrink: 0 !important;
     }
 
     .croBackButtonLabel {
-      display: block;
-    }
-
-    .croBackButton + .navbar-item {
-      padding: 8px 12px 8px 0px;
+      display: flex !important;
+      flex-direction: column !important;
+      text-align: left !important;
+      text-transform: none !important;
+      gap: 5px !important;
     }
   `;
 
@@ -154,7 +157,7 @@ function waitForDataLayer(callback) {
       '<svg class="croBackButtonIcon" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">' +
       '<path d="M15 4L7 12L15 20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>' +
       "</svg>" +
-      '<span class="croBackButtonLabel">Back</span>';
+      '<span class="croBackButtonLabel"><span>Back to</span><span>Breaks</span></span>';
     return link;
   }
 
