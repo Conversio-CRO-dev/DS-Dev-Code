@@ -1,4 +1,4 @@
-console.log("David Silva | FN097 variation 1");
+// console.log("David Silva | FN097 variation 1");
 
 window.dataLayer = window.dataLayer || [];
 
@@ -31,14 +31,6 @@ window.dataLayer = window.dataLayer || [];
     if (option.textContent.trim() === "Size:") {
       option.textContent = "Select size";
     }
-  }
-
-  function syncWornBy() {
-    const block = document.querySelector(
-      ".max-w-screen-2xl.mx-auto.mb-10.md\\:hidden",
-    );
-    if (!block) return;
-    block.style.display = mq.matches ? "none" : "";
   }
 
   function syncShippingIcon() {
@@ -87,7 +79,6 @@ window.dataLayer = window.dataLayer || [];
   function sync() {
     syncLabel();
     syncMobileSelectLabel();
-    syncWornBy();
     syncShippingIcon();
     syncAccordionIcons();
   }
@@ -135,7 +126,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Selects colour click");
+          // console.log("Selects colour click");
         }
 
         // 2. Clicks find your size
@@ -150,7 +141,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Find your size click");
+          // console.log("Find your size click");
         }
 
         // 3. Opens size selector dropdown
@@ -168,7 +159,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Opens size selector dropdown");
+          // console.log("Opens size selector dropdown");
         }
 
         // 4. Selects size from dropdown
@@ -187,7 +178,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Selects size from dropdown");
+          // console.log("Selects size from dropdown");
         }
 
         // 5. Clicks Reviews Summary
@@ -206,7 +197,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Clicks Reviews Summary");
+          // console.log("Clicks Reviews Summary");
         }
 
         // 6. Opens product info dropdown
@@ -232,7 +223,7 @@ function trackEvents() {
             },
           });
 
-          console.log("Opens product info dropdown: " + titleText);
+          // console.log("Opens product info dropdown: " + titleText);
         }
       },
       true,
