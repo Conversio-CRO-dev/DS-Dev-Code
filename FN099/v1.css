@@ -2,6 +2,42 @@
   font-size: 28px !important;
 }
 
+/* <read-more> is an unrecognized custom element, so without styling it
+   defaults to display:inline. It likely only worked in its original spot
+   because the theme scopes a "display: block" rule to that container -
+   force it here regardless of which container it ends up in. */
+read-more {
+  display: block !important;
+}
+
+/* Some PLPs use a circular-avatar variant for the category quicklinks
+   instead of flat buttons - size those avatar images down from the
+   theme's 80px default. */
+.cro-fn099-plp-hub-row img {
+  width: 64px !important;
+  height: 64px !important;
+}
+
+/* Avatar-variant anchor column, resized from the theme's 160px (w-40).
+   Excludes anchors already tagged as button-style hub links, since this
+   selector's specificity would otherwise override their own width rule
+   on button-style PLPs that share the same .cro-fn099-plp-hub-row class. */
+.cro-fn099-plp-hub-row a:not(.cro-fn099-plp-hub-link) {
+  width: 112px !important;
+  gap: 8px !important;
+}
+
+/* Same avatar anchor column, but inside the carousel (mobile/tablet,
+   below 1032px) - narrower than the 112px desktop/grid version. */
+.swiper-collections-hub a:not(.cro-fn099-plp-hub-link) {
+  width: 96px !important;
+}
+
+.cro-fn099-plp-hub-row a > div {
+  font-size: 12px !important;
+  text-align: center !important;
+}
+
 .cro-fn099-plp-hub-link {
   font-size: 12px !important;
   white-space: nowrap !important;
@@ -13,17 +49,22 @@
 }
 
 .cro-fn099-plp-hub-link-grid {
-  width: 111px !important;
+  width: auto !important;
   min-width: 111px !important;
   height: 36px !important;
 }
 
 .cro-fn099-plp-hub-link-carousel {
+  /* Size to the label's own text first (not just "w-full" matching the
+     slide), so the slide below can then shrink-to-fit around it. */
+  width: auto !important;
+  min-width: 103px !important;
   height: 44px !important;
 }
 
 .swiper-collections-hub .swiper-slide {
-  width: 103px !important;
+  width: auto !important;
+  min-width: 103px !important;
 }
 
 .cro-fn099-plp-hub-carousel-wrapper {
@@ -31,9 +72,62 @@
   margin-top: 1.5rem !important;
 }
 
+.cro-fn099-plp-intro-wrapper {
+  margin-bottom: 0 !important;
+}
+
 @media (max-width: 1023px) {
   .cro-fn099-plp-title-wrapper {
     margin-top: 0 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .cro-fn099-plp-title-wrapper h1 {
+    margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cro-fn099-plp-title-wrapper h1 {
+    margin-bottom: 1.3rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Avatar-variant carousels keep their own 1032px threshold below, so
+     exclude them from this 768px one. */
+  .cro-fn099-plp-hub-carousel-wrapper:not(.cro-fn099-plp-hub-carousel-avatar) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1031px) {
+  /* Avatar-variant carousel keeps sliding through 1031px instead of
+     switching to the grid treatment at 992px like the button variant -
+     override Swiper's own inline slide spacing to 16px throughout. */
+  .cro-fn099-plp-hub-carousel-avatar .swiper-slide {
+    margin-right: 16px !important;
+  }
+
+  /* Mobile/tablet sticky filter bar's padding-top, removed only on PLPs
+     using the circle/avatar quicklinks variant. */
+  body.cro-fn099-plp-avatar [class*="lg:hidden"][class*="pt-5"] {
+    padding-top: 0 !important;
+  }
+}
+
+@media (min-width: 1032px) {
+  .cro-fn099-plp-hub-carousel-wrapper.cro-fn099-plp-hub-carousel-avatar {
+    display: none !important;
+  }
+
+  .cro-fn099-plp-hub-row.cro-fn099-plp-hub-row-avatar {
+    gap: 24px !important;
+  }
+
+  .cro-fn099-plp-hub-row-avatar-wrapper {
+    margin-bottom: 0.75rem !important;
   }
 }
 
@@ -57,4 +151,12 @@
     gap: 16px !important;
     margin-left: 16px !important;
   }
+}
+
+/* The margin-left above exists to space the button-variant row away from
+   the filter button it gets moved next to - the avatar/circle variant
+   never relocates, it stays in its original spot, so that margin doesn't
+   apply here. */
+.cro-fn099-plp-hub-row.cro-fn099-plp-hub-row-avatar {
+  margin-left: 0 !important;
 }
