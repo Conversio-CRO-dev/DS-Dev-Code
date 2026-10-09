@@ -1,4 +1,4 @@
-console.log("David Silva | FN091 variation 2");
+// console.log("David Silva | FN091 variation 2");
 
 window.dataLayer = window.dataLayer || [];
 
@@ -208,6 +208,9 @@ function fitExploreToRecsHeight(container, explorePanel) {
 
   if (contentStack) {
     contentStack.style.height = targetHeight + "px";
+    // Kept around so stick() can restore it after unstick() clears it
+    // (fitExploreToRecsHeight only ever runs once, guarded above).
+    contentStack.dataset.fittedHeight = targetHeight + "px";
   }
 
   // h3 carries the theme's own heading styles; match the recs title's
@@ -539,6 +542,13 @@ function applySticky(container) {
     container.classList.remove("unstuck");
     resetActiveTabToRecs(container);
 
+    // Restores the height fitExploreToRecsHeight() computed, since
+    // unstick() clears it and that function only ever runs once.
+    const contentStack = container.querySelector(".sticky-recs-content-stack");
+    if (contentStack && contentStack.dataset.fittedHeight) {
+      contentStack.style.height = contentStack.dataset.fittedHeight;
+    }
+
     const icon = container.querySelector(".sticky-recs-arrow");
     if (icon) {
       icon.innerHTML = ARROW_ICON_CLOSED;
@@ -549,6 +559,15 @@ function applySticky(container) {
     anchor.style.height = "";
     container.classList.remove("sticky-recs-container");
     container.classList.add("unstuck");
+
+    // fitExploreToRecsHeight() sets a fixed inline height on this element
+    // for the stuck cross-fade layout only; left in place it clips/
+    // overlaps the natural (unstuck) content whenever it's taller than
+    // that stale measurement.
+    const contentStack = container.querySelector(".sticky-recs-content-stack");
+    if (contentStack) {
+      contentStack.style.height = "";
+    }
 
     if (!hasLoggedViewport) {
       hasLoggedViewport = true;
@@ -674,7 +693,14 @@ function isFirstPdpLandingThisSession() {
   }
 }
 
+function isProductPage() {
+  return /\/products\//.test(window.location.pathname);
+}
+
 function initStickyRecommendations() {
+  if (!isProductPage()) {
+    return;
+  }
   if (!isFirstPdpLandingThisSession()) {
     return;
   }

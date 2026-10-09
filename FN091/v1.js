@@ -383,7 +383,14 @@ function isFirstPdpLandingThisSession() {
   }
 }
 
+function isProductPage() {
+  return /\/products\//.test(window.location.pathname);
+}
+
 function initStickyRecommendations() {
+  if (!isProductPage()) {
+    return;
+  }
   if (!isFirstPdpLandingThisSession()) {
     return;
   }
