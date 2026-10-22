@@ -1,0 +1,221 @@
+/* SY008 | V1 | body.sy008-v1 is only added by v1.js on desktop search pages */
+
+/* Don't use display: contents on the slot, Spartacus won't render its content */
+body.sy008-v1 cx-page-layout.SearchResultsGridPageTemplate {
+  display: flow-root;
+}
+
+body.sy008-v1 cx-page-slot.ProductLeftRefinements,
+body.sy008-v1 .ProductLeftRefinements cx-product-facet-navigation {
+  display: block;
+  min-height: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Sit beside the floated panel instead of underneath it */
+body.sy008-v1 .SearchResultsGridPageTemplate > .AdditionalCategories,
+body.sy008-v1 .SearchResultsGridPageTemplate > .SearchResultsGridSlot {
+  display: flow-root;
+}
+
+/* Empty tiles still have Bootstrap's mt-5 margin */
+body.sy008-v1 .AdditionalCategories brakes-product-tile-interaction:empty {
+  margin-top: 0 !important;
+}
+
+body.sy008-v1 .SearchResultsGridSlot .product-items__list {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+body.sy008-v1.modal-open {
+  overflow: auto !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet-list.dialog {
+  float: left;
+  width: 196px;
+  margin-top: 16px; /* same as #product-results-list margin-top, lines up with the first row of cards */
+  margin-right: 20px;
+  position: static;
+  display: block;
+  height: auto;
+  background: none;
+  z-index: auto;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet-list .inner {
+  position: static;
+  max-width: none !important;
+  height: auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+  box-shadow: none;
+  border-radius: 0.25rem !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements .facet-list-body {
+  height: auto !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Stops the slide-in on load, !important also beats Angular's JS animations */
+body.sy008-v1 .ProductLeftRefinements cx-facet-list,
+body.sy008-v1 .ProductLeftRefinements cx-facet-list .inner {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+  translate: none !important;
+  opacity: 1 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements .list-header {
+  margin: 0 !important;
+  padding: 16px !important;
+  border-bottom: 3px solid var(--cx-color-primary, #6ba229);
+}
+
+body.sy008-v1 .ProductLeftRefinements .list-header h4 {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+}
+
+body.sy008-v1 .sy008-filter-icon {
+  margin-right: 2.5px;
+  font-size: 0.8em;
+}
+
+/* Padding here, not on the panel, so divider lines run edge to edge */
+body.sy008-v1 .ProductLeftRefinements cx-facet .heading {
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  text-align: left;
+  font-size: 1rem !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet > div {
+  padding: 0 12px;
+}
+
+/* Divider on the whole group, not the heading, so it sits under the options when a group is open */
+body.sy008-v1 .ProductLeftRefinements cx-facet .heading {
+  border-bottom: 0 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet {
+  border-bottom: 1px solid #dcdcdc;
+}
+
+/* Option row set explicitly so the checkbox can be centred on the first line of text:
+   first line centre = 10px padding + 20px line / 2 = 20px, checkbox top = 20px - 16px / 2 = 12px */
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value {
+  padding: 10px 0 10px 26px !important; /* 16px checkbox + 10px gap */
+}
+
+/* 0.875rem matches the design, at 1rem labels like "Meal Solutions (139)" don't fit */
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value,
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value span {
+  font-size: 0.875rem !important;
+  line-height: 20px !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value > span {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value::before {
+  width: 16px !important;
+  height: 16px !important;
+  top: 12px !important;
+  left: 0 !important;
+}
+
+/* Tick scaled to 80% to fit the smaller checkbox */
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value.selected::after,
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value:active::after {
+  left: 0.3rem !important;
+  top: 13px !important;
+  width: 0.35rem !important;
+  height: 0.7rem !important;
+}
+
+/* data-sy008-show-all is set by v1.js, only the first 5 options show until "Show all" is clicked */
+body.sy008-v1
+  .ProductLeftRefinements
+  cx-facet[data-sy008-show-all="false"]
+  a.value:nth-of-type(n + 6) {
+  display: none !important;
+}
+
+body.sy008-v1 .sy008-show-all-link {
+  display: block;
+  margin: 2px 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cx-color-primary, #6ba229);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: underline;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* Allergen disclaimer: restyled only, text and buttons unchanged as it's legal content */
+body.sy008-v1 .ProductLeftRefinements #allergensFacetModal {
+  width: auto !important;
+  margin: 0 12px 12px !important;
+  padding: 12px !important;
+  border: 1px solid #ebe7e7 !important;
+}
+
+body.sy008-v1
+  .ProductLeftRefinements
+  #allergensFacetModal
+  .disclaimer_box--title {
+  margin: 0 0 6px !important;
+  font-size: 0.875rem !important;
+  font-weight: 700;
+}
+
+body.sy008-v1
+  .ProductLeftRefinements
+  #allergensFacetModal
+  .disclaimer-box--text {
+  margin-bottom: 12px !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.45 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements #allergensFacetModal .btn {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 6px 12px !important;
+  font-size: 0.875rem !important;
+  line-height: 1.4 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements #allergensFacetModal .btn + .btn {
+  margin-top: 8px !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements #allergensFacetModal .btn.mb-3 {
+  margin-bottom: 0 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements .facet-list-body > cx-facet:last-of-type {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+body.sy008-v1 .ProductLeftRefinements .page-actions-filter,
+body.sy008-v1 .ProductLeftRefinements .list-header .close,
+body.sy008-v1 .ProductLeftRefinements .cx-facet-list-footer,
+body.sy008-v1 .ProductLeftRefinements cx-facet-list cx-active-facets {
+  display: none !important;
+}
