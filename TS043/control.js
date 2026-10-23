@@ -1,4 +1,4 @@
-console.log("David Silva | TS043 control");
+// console.log("David Silva | TS043 control");
 
 (function () {
   if (window.ts043ControlLoaded) return;
@@ -39,19 +39,19 @@ console.log("David Silva | TS043 control");
     if (button && isTimeButton(button)) {
       // 2. Time Slot Click
       trackEvent("Time Slot Click", "H");
-      console.log("Time Slot Click");
+      // console.log("Time Slot Click");
     } else if (event.target.closest('a[href*="/book/product-list"]')) {
       // 3. Book Now Click
       trackEvent("Book Now Click", "I");
-      console.log("Book Now Click");
+      // console.log("Book Now Click");
     } else if (event.target.closest('button[aria-controls^="description_"]')) {
       // 4. More Details Click
       trackEvent("More Details Click", "J");
-      console.log("More Details Click");
+      // console.log("More Details Click");
     } else if (event.target.closest("button.bg-cloudGrey")) {
       // 5. Discount Code Copy Click
       trackEvent("Discount Code Copy Click", "K");
-      console.log("Discount Code Copy Click");
+      // console.log("Discount Code Copy Click");
     }
   }
 
