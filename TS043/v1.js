@@ -1,4 +1,4 @@
-console.log("David Silva | TS043 variation 1");
+// console.log("David Silva | TS043 variation 1");
 
 (function () {
   if (window.ts043Loaded) return;
@@ -8,6 +8,7 @@ console.log("David Silva | TS043 variation 1");
   const TWO_COLUMNS_FROM = "1024px";
   const THREE_COLUMNS_FROM = "1100px";
   const PANEL_GAP = 5;
+  const IMAGE_RATIO = "5 / 4";
 
   function trackEvent(name, letter) {
     window.dataLayer = window.dataLayer || [];
@@ -32,22 +33,37 @@ console.log("David Silva | TS043 variation 1");
       "." + PREFIX + "-trigger { display: none; }",
 
       "@media (min-width: " + TWO_COLUMNS_FROM + ") {",
+      // Row gap is 0 because the cards share these rows; the space between cards is a margin instead
       grid +
-        " { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }",
+        " { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; row-gap: 0; }",
+      // Each card takes 4 shared rows (image, title, middle, grey panel), so sections line up across a row
       card +
-        " { flex-direction: column; margin-bottom: 0; border: 1px solid #938C85; box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); }",
+        " { display: grid; grid-row: span 4; grid-template-rows: subgrid; row-gap: 0; margin-bottom: 24px; border: 1px solid #938C85; box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25); }",
 
       part + "image { max-width: none; }",
-      part + "content { padding: 16px 24px 24px; }",
+      // Same shape for every image; "cover" trims tiny differences instead of stretching the photo
       part +
-        "title-row { display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 16px; }",
+        "image img { width: 100%; height: auto; aspect-ratio: " +
+        IMAGE_RATIO +
+        "; object-fit: cover; object-position: center; }",
+      part + "content { display: contents; }",
+      part +
+        "title-row { display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; gap: 16px; margin: 16px 24px 0; }",
+      // Hugs the grey panel with a fixed gap; any extra row height goes above it instead
+      part + "middle { align-self: end; margin: 0 24px 12px; }",
+      // While any More details is open, neighbours keep their USPs under the title and the space goes below
+      grid +
+        ':has(button[aria-controls^="description_"][aria-expanded="true"]) .' +
+        PREFIX +
+        "-middle { align-self: start; }",
 
       part + "booking {",
       "  display: grid;",
       "  grid-template-columns: repeat(2, minmax(0, 1fr));",
       '  grid-template-areas: "price price" "times book" "arrive arrive";',
       "  gap: 16px 12px;",
-      "  margin-top: auto;",
+      // Content sits at the bottom, so extra row height shows as space at the top of the grey panel
+      "  align-content: end;",
       "  padding: 16px 24px 20px;",
       "  background: #FBFAFA;",
       "  position: relative;",
@@ -231,6 +247,8 @@ console.log("David Silva | TS043 variation 1");
     addPartClass(card.children[0], "image");
     addPartClass(card.children[1], "content");
     addPartClass(title.parentElement, "title-row");
+    // USPs + More details, the block right after the title row
+    addPartClass(title.parentElement.nextElementSibling, "middle");
 
     addPartClass(booking, "booking");
     addPartClass(heading, "times-heading");
@@ -330,24 +348,24 @@ console.log("David Silva | TS043 variation 1");
       // 1. Time Dropdown Click
       if (card.classList.contains(PREFIX + "-open")) {
         trackEvent("Time Dropdown Click", "G");
-        console.log("Time Dropdown Click");
+        // console.log("Time Dropdown Click");
       }
     } else if (event.target.closest("." + PREFIX + "-time-grid button")) {
       // 2. Time Slot Click
       trackEvent("Time Slot Click", "H");
-      console.log("Time Slot Click");
+      // console.log("Time Slot Click");
     } else if (event.target.closest("." + PREFIX + "-book a")) {
       // 3. Book Now Click
       trackEvent("Book Now Click", "I");
-      console.log("Book Now Click");
+      // console.log("Book Now Click");
     } else if (event.target.closest('button[aria-controls^="description_"]')) {
       // 4. More Details Click
       trackEvent("More Details Click", "J");
-      console.log("More Details Click");
+      // console.log("More Details Click");
     } else if (event.target.closest("." + PREFIX + "-price button")) {
       // 5. Discount Code Copy Click
       trackEvent("Discount Code Copy Click", "K");
-      console.log("Discount Code Copy Click");
+      // console.log("Discount Code Copy Click");
     }
   }
 
