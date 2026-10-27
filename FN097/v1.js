@@ -10,7 +10,9 @@ window.dataLayer = window.dataLayer || [];
   let observer;
 
   function getSizeFields() {
-    return document.querySelectorAll('[data-dropdown-name="Size"]');
+    return document.querySelectorAll(
+      "[data-size-selector-wrapper] [data-dropdown-name]",
+    );
   }
 
   function syncLabel() {
@@ -146,7 +148,7 @@ function trackEvents() {
 
         // 3. Opens size selector dropdown
         if (
-          e.target.closest('[data-dropdown-name="Size"] [data-dropdown-btn]')
+          e.target.closest("[data-size-selector-wrapper] [data-dropdown-btn]")
         ) {
           window.dataLayer.push({
             event: "conversioEvent",
@@ -164,9 +166,7 @@ function trackEvents() {
 
         // 4. Selects size from dropdown
         if (
-          e.target.closest(
-            '[data-dropdown-content="Size"] [data-dropdown-value]',
-          )
+          e.target.closest("[data-size-selector-wrapper] [data-dropdown-value]")
         ) {
           window.dataLayer.push({
             event: "conversioEvent",
