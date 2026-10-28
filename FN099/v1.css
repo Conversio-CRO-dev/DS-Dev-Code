@@ -44,8 +44,14 @@ read-more {
 }
 
 .cro-fn099-plp-description {
-  font-size: 12px !important;
-  line-height: 100% !important;
+  font-size: 16px !important;
+}
+
+/* Only the fallback-created bottom wrapper (used on PLPs with no real SEO
+   block) - the normal bottom block keeps its native margin-bottom since
+   other content usually follows it. */
+.cro-fn099-plp-description-fallback {
+  margin-bottom: 0 !important;
 }
 
 .cro-fn099-plp-hub-link-grid {
@@ -76,6 +82,13 @@ read-more {
   margin-bottom: 0 !important;
 }
 
+/* Native filters-row container (holds the filter button) - only ever
+   visible from its own native lg:flex breakpoint (desktop), so no extra
+   media query needed here. */
+[class*="justify-between"][class*="lg:flex"] {
+  margin-bottom: 0 !important;
+}
+
 @media (max-width: 1023px) {
   .cro-fn099-plp-title-wrapper {
     margin-top: 0 !important;
@@ -85,6 +98,21 @@ read-more {
 @media (max-width: 767px) {
   .cro-fn099-plp-title-wrapper h1 {
     margin-bottom: 0 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Mobile sticky filter bar's padding-top, removed from tablet up
+     (unscoped to any variant - the element is natively "lg:hidden" so this
+     has no effect once desktop's lg breakpoint hides it anyway). */
+  [class*="lg:hidden"][class*="pt-5"] {
+    padding-top: 0 !important;
+  }
+
+  /* Halves the native gap-8 (32px) row-wrap spacing, for tablet and
+     desktop alike. */
+  .cro-fn099-plp-hub-row {
+    gap: 16px !important;
   }
 }
 
@@ -143,20 +171,6 @@ read-more {
   }
 
   .cro-fn099-plp-description {
-    font-size: 12px !important;
-    line-height: 100% !important;
+    font-size: 16px !important;
   }
-
-  .cro-fn099-plp-hub-row {
-    gap: 16px !important;
-    margin-left: 16px !important;
-  }
-}
-
-/* The margin-left above exists to space the button-variant row away from
-   the filter button it gets moved next to - the avatar/circle variant
-   never relocates, it stays in its original spot, so that margin doesn't
-   apply here. */
-.cro-fn099-plp-hub-row.cro-fn099-plp-hub-row-avatar {
-  margin-left: 0 !important;
 }

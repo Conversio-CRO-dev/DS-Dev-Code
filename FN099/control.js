@@ -51,11 +51,20 @@ function trackEvents() {
       var filtersTriggerEl = e.target.closest("filters-trigger");
       if (filtersTriggerEl) {
         setTimeout(function () {
-          var label = filtersTriggerEl.querySelector("[data-filter-toggle]");
-          if (!label) return;
+          var labels = filtersTriggerEl.querySelectorAll(
+            "[data-filters-label]",
+          );
+          var visibleLabel = null;
+          for (var i = 0; i < labels.length; i++) {
+            if (window.getComputedStyle(labels[i]).display !== "none") {
+              visibleLabel = labels[i];
+              break;
+            }
+          }
+          if (!visibleLabel) return;
 
-          var text = label.textContent.trim();
-          if (text === "Filters & Sort") {
+          var state = visibleLabel.getAttribute("data-filters-label");
+          if (state === "hidden") {
             window.dataLayer.push({
               event: "conversioEvent",
               conversio: {
@@ -67,7 +76,7 @@ function trackEvents() {
             });
 
             // console.log("Hides filters");
-          } else if (text === "Hide Filters") {
+          } else if (state === "shown") {
             window.dataLayer.push({
               event: "conversioEvent",
               conversio: {
@@ -94,12 +103,12 @@ function trackEvents() {
           conversio: {
             eventCategory: "Conversio CRO",
             eventAction: "FN099 | Event Tracking",
-            eventLabel: "FN099 | (Control Original) | Hides filters",
-            eventSegment: "FN099ECOI",
+            eventLabel: "FN099 | (Control Original) | Closes Filters",
+            eventSegment: "FN099ECOO",
           },
         });
 
-        // console.log("Hides filters");
+        // console.log("Closes filters");
       }
 
       // 4. Opens filters (mobile drawer trigger)

@@ -13,6 +13,7 @@
   var HUB_CAROUSEL_WRAPPER_CLASS = "cro-fn099-plp-hub-carousel-wrapper";
   var HUB_CAROUSEL_AVATAR_CLASS = "cro-fn099-plp-hub-carousel-avatar";
   var AVATAR_PLP_CLASS = "cro-fn099-plp-avatar";
+  var DESCRIPTION_FALLBACK_WRAPPER_CLASS = "cro-fn099-plp-description-fallback";
   var lastH1 = null;
 
   function isPlpPage() {
@@ -111,14 +112,35 @@
 
   function updateCollectionsHubSwiper(hubSection) {
     var swiperEl = hubSection.querySelector(".swiper-collections-hub");
+    if (!swiperEl || !swiperEl.swiper) return;
+
+    // This carousel's native config uses a fixed numeric slidesPerView
+    // (e.g. 1.7), which makes Swiper calculate each slide's width itself
+    // from container-width / ratio, rather than reading our CSS-resized
+    // content. That mismatch let the carousel scroll past its real
+    // content into blank space (its own computed maxTranslate assumed
+    // wider slides than we're actually rendering). Forcing "auto" makes
+    // Swiper measure our actual rendered widths instead, keeping its
+    // scroll boundaries in sync with them.
+    if (swiperEl.swiper.params.slidesPerView !== "auto") {
+      swiperEl.swiper.params.slidesPerView = "auto";
+    }
+
+    // The left inset before the first slide comes from .page-margin-slider's
+    // own margin-left (not Swiper's slidesOffsetBefore, which is 0) - mirror
+    // it as slidesOffsetAfter so scrolling to the end reserves the same
+    // amount of space after the last slide, read dynamically rather than
+    // hardcoded in case it ever differs by breakpoint.
+    var marginSlider = hubSection.querySelector(".page-margin-slider");
+    var edgeOffset = marginSlider
+      ? parseFloat(getComputedStyle(marginSlider).marginLeft) || 0
+      : 0;
+    swiperEl.swiper.params.slidesOffsetAfter = edgeOffset;
+
     // Our CSS resizes .swiper-slide directly, but Swiper caches slide widths
     // internally for its swipe/snap math - update() re-measures the DOM so
     // that internal state matches what's now on screen.
-    if (
-      swiperEl &&
-      swiperEl.swiper &&
-      typeof swiperEl.swiper.update === "function"
-    ) {
+    if (typeof swiperEl.swiper.update === "function") {
       swiperEl.swiper.update();
     }
   }
@@ -132,7 +154,11 @@
 
   function stripWord(text, word) {
     var pattern = new RegExp("\\s*" + word + "\\s*", "gi");
-    return text.replace(pattern, " ").replace(/\s+/g, " ").trim();
+    var stripped = text.replace(pattern, " ").replace(/\s+/g, " ").trim();
+    // If the label is just the word itself (e.g. "T-Shirts" on its own),
+    // stripping it would leave an empty button - keep the original text
+    // instead of blanking it out.
+    return stripped || text;
   }
 
   function applyHubLinkCopy(el) {
@@ -166,113 +192,43 @@
     }
   }
 
-  var HUB_ROW_ANCHOR_ATTR = "data-cro-fn099-hub-row-anchor";
-
-  function getHubLayoutState() {
-    // Three states: below 768px shows the carousel; 768-991px shows the
-    // grid links in their original position (above the filters section);
-    // 992px+ moves them next to the filter button.
-    if (window.matchMedia("(min-width: 992px)").matches) return "desktop";
-    if (window.matchMedia("(min-width: 768px)").matches) return "tablet";
-    return "mobile";
-  }
-
   function moveHubLinksGridRow() {
+    // This row no longer relocates next to the filter button - the client
+    // asked for it to stay under the title (in the space freed up by moving
+    // the description to the bottom of the page) at every breakpoint.
+    // Below 768px the carousel shows instead; from 768px up this row is
+    // forced visible in place, since the site's own native breakpoint for
+    // showing it is higher.
     var sample = document.querySelector("." + HUB_LINK_GRID_CLASS);
     if (!sample) return;
 
     var hubRow = sample.closest(".flex.flex-row.flex-wrap.gap-8");
     if (!hubRow) return;
 
-    // Remember where this row originally lived, so it can be moved back
-    // when the viewport drops below desktop.
-    if (!hubRow.__croAnchor) {
-      var originalWrapper = hubRow.closest('[class*="pdpDesktop:block"]');
-      if (originalWrapper) {
-        var anchor = document.createElement("span");
-        anchor.setAttribute(HUB_ROW_ANCHOR_ATTR, "true");
-        anchor.style.display = "none";
-        hubRow.parentNode.insertBefore(anchor, hubRow);
-        hubRow.__croAnchor = anchor;
-        hubRow.__croWrapper = originalWrapper;
-      }
-    }
+    var originalWrapper = hubRow.closest('[class*="pdpDesktop:block"]');
+    if (!originalWrapper) return;
 
-    var anchor = hubRow.__croAnchor;
-    var originalWrapper = hubRow.__croWrapper;
-    var state = getHubLayoutState();
-
-    if (state === "desktop") {
-      var filtersTrigger = document.querySelector("filters-trigger");
-      if (!filtersTrigger || !filtersTrigger.parentNode) return;
-
-      if (filtersTrigger.nextElementSibling !== hubRow) {
-        filtersTrigger.parentNode.insertBefore(
-          hubRow,
-          filtersTrigger.nextSibling,
+    if (window.matchMedia("(min-width: 768px)").matches) {
+      // No margin-top override - the wrapper has no mt-* class, so it's
+      // already 0 natively. margin-bottom mirrors the exact values the H1
+      // itself uses at these same breakpoints, so the row-to-filters gap
+      // matches the h1-to-row gap for visual consistency, instead of the
+      // wrapper's native (much larger) "mb-8 lg:mb-16".
+      originalWrapper.style.setProperty("display", "block", "important");
+      originalWrapper.style.removeProperty("margin-top");
+      if (window.matchMedia("(min-width: 1024px)").matches) {
+        originalWrapper.style.setProperty("margin-bottom", "20px", "important");
+      } else {
+        originalWrapper.style.setProperty(
+          "margin-bottom",
+          "1.3rem",
+          "important",
         );
       }
-      if (originalWrapper) {
-        originalWrapper.style.display = "none";
-      }
     } else {
-      // mobile or tablet: keep the row in its original position, above the
-      // filters section.
-      if (anchor && anchor.parentNode && anchor.nextSibling !== hubRow) {
-        anchor.parentNode.insertBefore(hubRow, anchor.nextSibling);
-      }
-      if (originalWrapper) {
-        if (state === "tablet") {
-          // The wrapper's own "hidden" class still applies here (the site's
-          // native breakpoint for showing it is higher) - force it visible.
-          originalWrapper.style.setProperty("display", "block", "important");
-          originalWrapper.style.setProperty(
-            "margin-top",
-            "1.25rem",
-            "important",
-          );
-          originalWrapper.style.setProperty("margin-bottom", "0", "important");
-        } else {
-          originalWrapper.style.removeProperty("display");
-          originalWrapper.style.removeProperty("margin-top");
-          originalWrapper.style.removeProperty("margin-bottom");
-        }
-      }
-    }
-
-    updateFiltersRowVisibility(state === "desktop");
-  }
-
-  function updateFiltersRowVisibility(desktop) {
-    // The desktop filters row (normally hidden until the theme's native
-    // "lg" breakpoint) and the separate mobile sticky filter bar (normally
-    // hidden only at that same native "lg" breakpoint) both need to flip
-    // early at our own 768px point too. A CSS override fought the theme's
-    // own !important utility classes and lost depending on stylesheet load
-    // order - setting inline styles with explicit "important" priority
-    // always outranks any external stylesheet rule, sidestepping that.
-    var filtersTrigger = document.querySelector("filters-trigger");
-    var filtersRow = filtersTrigger
-      ? filtersTrigger.closest('[class*="lg:flex"]')
-      : null;
-    var mobileFilterBar = document.querySelector(
-      '[class*="lg:hidden"][class*="sticky"]',
-    );
-
-    if (filtersRow) {
-      if (desktop) {
-        filtersRow.style.setProperty("display", "flex", "important");
-      } else {
-        filtersRow.style.removeProperty("display");
-      }
-    }
-
-    if (mobileFilterBar) {
-      if (desktop) {
-        mobileFilterBar.style.setProperty("display", "none", "important");
-      } else {
-        mobileFilterBar.style.removeProperty("display");
-      }
+      originalWrapper.style.removeProperty("display");
+      originalWrapper.style.removeProperty("margin-top");
+      originalWrapper.style.removeProperty("margin-bottom");
     }
   }
 
@@ -299,23 +255,76 @@
     }
   }
 
+  function moveDescriptionFallback(readMore) {
+    // Some PLPs have no bottom SEO block at all (no .rte/.metafield-rich_text_field
+    // anywhere on the page) - insert a wrapper matching that block's usual
+    // visual structure right after the recurring "New Arrivals/Broadcast"
+    // promo slider, the last other section before the page trails off.
+    // Anchored on ".swiper-peek-b" rather than the section's own id, since
+    // that id looks theme-editor-generated and could change if the promo
+    // section is ever reconfigured.
+    var promoSwiper = document.querySelector(".swiper-peek-b");
+    var promoSection = promoSwiper
+      ? promoSwiper.closest(".shopify-section")
+      : null;
+    if (!promoSection || !promoSection.parentNode) return false;
+
+    var outer = document.createElement("div");
+    outer.className =
+      "max-w-screen-2xl mx-auto mb-14 lg:mb-18 " +
+      DESCRIPTION_FALLBACK_WRAPPER_CLASS;
+
+    var grid = document.createElement("div");
+    grid.className = "grid-container page-margin";
+
+    var col = document.createElement("div");
+    col.className = "col-span-4 md:col-span-8 lg:col-span-4 mb-5 rte";
+
+    col.appendChild(readMore);
+    grid.appendChild(col);
+    outer.appendChild(grid);
+
+    promoSection.parentNode.insertBefore(outer, promoSection.nextSibling);
+    return true;
+  }
+
+  function findBottomDescriptionAnchor() {
+    // The real bottom SEO block's content immediately after the <h2> isn't
+    // consistent across PLPs - sometimes it's the .metafield-rich_text_field
+    // directly, sometimes it's wrapped in a <reveal-content> "read more"
+    // toggle component instead. Detecting by "first child is a real <h2>"
+    // (not the hero/promo carousel's styled <div class="h2">, and not the
+    // FAQ accordion's ".rte" spans, whose first child is the metafield
+    // itself, no <h2> at all) and inserting right after it, whatever
+    // follows, covers both shapes without needing to know which one it is.
+    var rteBlocks = document.querySelectorAll(".rte");
+    for (var i = 0; i < rteBlocks.length; i++) {
+      var firstChild = rteBlocks[i].firstElementChild;
+      if (
+        firstChild &&
+        firstChild.tagName === "H2" &&
+        firstChild.nextElementSibling
+      ) {
+        return firstChild.nextElementSibling;
+      }
+    }
+    return null;
+  }
+
   function moveDescriptionToBottom() {
     var readMore = document.querySelector("read-more");
     if (!readMore || readMore.__croMoved) return;
 
-    // Not every PLP is guaranteed to have this bottom SEO block - if it's
-    // missing, leave the description where it already is. Some PLPs also
-    // have an unrelated hero/promo carousel that reuses the same
-    // ".rte .metafield-rich_text_field" pattern for its own blurb, but its
-    // heading is a styled <div class="h2">, not a real <h2> - requiring an
-    // actual <h2> directly before the field rules those out.
-    var metafield = document.querySelector(
-      ".rte > h2 + .metafield-rich_text_field",
-    );
-    if (!metafield || !metafield.parentNode) return;
+    var anchor = findBottomDescriptionAnchor();
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(readMore, anchor);
+      readMore.__croMoved = true;
+      return;
+    }
 
-    metafield.parentNode.insertBefore(readMore, metafield);
-    readMore.__croMoved = true;
+    if (moveDescriptionFallback(readMore)) {
+      readMore.__croMoved = true;
+    }
   }
 
   function applyPlpStyles() {
