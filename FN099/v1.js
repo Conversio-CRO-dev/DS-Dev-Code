@@ -1,4 +1,4 @@
-// console.log("David Silva | FN099 variation 1");
+console.log("David Silva | FN099 variation 1");
 
 (function () {
   var TITLE_WRAPPER_CLASS = "cro-fn099-plp-title-wrapper";
@@ -329,6 +329,7 @@
 
   function applyPlpStyles() {
     if (!isPlpPage()) return;
+
     applyTitleStyle();
     applyDescriptionStyle();
     applyHubLinksStyle();
@@ -341,7 +342,7 @@
   var debounceTimer;
   var observer = new MutationObserver(function () {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(applyPlpStyles, 300);
+    debounceTimer = setTimeout(applyPlpStyles, 50);
   });
 
   observer.observe(document.body, { childList: true, subtree: true });
