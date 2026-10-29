@@ -85,9 +85,19 @@ window.dataLayer = window.dataLayer || [];
     syncAccordionIcons();
   }
 
+  let syncScheduled = false;
+  function scheduleSync() {
+    if (syncScheduled) return;
+    syncScheduled = true;
+    requestAnimationFrame(function () {
+      syncScheduled = false;
+      sync();
+    });
+  }
+
   function watchLabel() {
     if (observer) return;
-    observer = new MutationObserver(sync);
+    observer = new MutationObserver(scheduleSync);
     observer.observe(document.body, {
       childList: true,
       characterData: true,
