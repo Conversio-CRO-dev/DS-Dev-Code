@@ -64,6 +64,7 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-title-row {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -79,6 +80,7 @@ body.fn091-sticky-active variants-mobile-sticky {
 
 .sticky-recs-container:not(.unstuck) .sticky-recs-arrow {
   display: inline-flex;
+  flex-direction: column;
   width: 15px;
   height: 20px;
 }

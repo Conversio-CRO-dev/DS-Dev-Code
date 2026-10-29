@@ -714,10 +714,12 @@ if (document.readyState === "loading") {
 }
 
 (function trackDiscoverySectionPresence() {
+  var SESSION_KEY_TRACKED = "fn091_v2_discovery_tracked";
+
   function checkAndLog() {
-    if (!document.querySelector(".sticky-recs-anchor")) {
-      return false;
-    }
+    if (sessionStorage.getItem(SESSION_KEY_TRACKED)) return false;
+    if (!document.querySelector(".sticky-recs-anchor")) return false;
+    sessionStorage.setItem(SESSION_KEY_TRACKED, "1");
     // 1 Discovery section is present on PDPs
     window.dataLayer.push({
       event: "conversioEvent",
