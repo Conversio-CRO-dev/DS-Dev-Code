@@ -1,0 +1,174 @@
+/* Mobile first: sticky bar fixed to the bottom of the screen */
+.sy009-mov {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  padding: 14px 48px 16px 16px;
+  background: #fff;
+  border-top: 3px solid #7c9f19;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  font-family: Brandon, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #333;
+}
+
+/* Our display rule above would otherwise override the hidden attribute */
+.sy009-mov[hidden] {
+  display: none;
+}
+
+/* Brakes uses a separate bold font file instead of font-weight: bold */
+.sy009-mov strong {
+  font-family: BrandonBold, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.sy009-mov__message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.sy009-mov__tick {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sy009-mov__bar {
+  height: 8px;
+  background: #e6e6e6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.sy009-mov__fill {
+  width: 0;
+  height: 100%;
+  background: #7c9f19;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.sy009-mov__labels {
+  display: none;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.sy009-mov__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 26px;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+}
+
+.sy009-mov__desktop-only {
+  display: none;
+}
+
+/* Desktop and tablet: floating card from 768px, below that the mobile bar */
+@media (min-width: 768px) {
+  .sy009-mov {
+    /* Start where v1.js normally places the card next to Live Chat (measured), so it doesn't jump when the chat loads */
+    left: 50px;
+    right: auto;
+    bottom: 38px;
+    width: 420px;
+    padding: 16px 48px 16px 20px;
+    border-top: 0;
+    border-left: 4px solid #7c9f19;
+    border-radius: 4px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .sy009-mov__labels {
+    display: flex;
+  }
+
+  .sy009-mov__desktop-only {
+    display: inline;
+  }
+
+  .sy009-mov__mobile-only {
+    display: none;
+  }
+}
+
+/* Animations only run for people who haven't asked their device for reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .sy009-mov--entering {
+    animation: sy009-slide-up 0.4s ease-out;
+  }
+
+  /* forwards keeps the last frame until v1.js hides the prompt */
+  .sy009-mov--closing {
+    animation: sy009-slide-down 0.3s ease-in forwards;
+  }
+}
+
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .sy009-mov--entering {
+    animation-name: sy009-slide-in-left;
+  }
+
+  .sy009-mov--closing {
+    animation-name: sy009-slide-out-left;
+  }
+}
+
+/* Mobile: bar slides up from below the screen and back down */
+@keyframes sy009-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes sy009-slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* Desktop: card slides in from beyond the left edge with a fade, and back out */
+@keyframes sy009-slide-in-left {
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes sy009-slide-out-left {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-120%);
+    opacity: 0;
+  }
+}
