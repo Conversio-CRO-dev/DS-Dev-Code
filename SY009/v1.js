@@ -1,34 +1,30 @@
 (function () {
   console.log("David Silva | SY009 variation 1");
 
+  // Stops the code running twice if the tool injects it again
+  if (window.sy009v1) return;
+  window.sy009v1 = true;
+
   const MIN_ORDER_VALUE = 150;
   const HEADER_PRICE_SELECTOR = "cx-mini-cart .mini-cart-price";
   const PROMPT_ID = "sy009-mov";
   const CHAT_HOST_ID = "talkative-engage";
   const CHAT_STYLE_ID = "sy009-chat-style";
   const CHAT_BUTTON_SELECTOR = 'button[title="Open Talkative Widget"]';
-  const DESKTOP_QUERY = "(min-width: 768px)";
   const CLOSED_STORAGE_KEY = "sy009MovClosed";
   const ENTRANCE_STORAGE_KEY = "sy009MovEntrancePlayed";
   const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
   const ENTERING_CLASS = "sy009-mov--entering";
   const CLOSING_CLASS = "sy009-mov--closing";
   const EXCLUDED_PATHS = ["/cart", "/checkout"];
-  const CHAT_HOLD_ATTRIBUTE = "data-sy009-hold-chat";
   const VIEW_TRACKED_STORAGE_KEY = "sy009MovViewTracked";
   const REACHED_TRACKED_STORAGE_KEY = "sy009MovReachedTracked";
 
-  // Mobile: lift the Live Chat bubble above our bar, falling back to Talkative's own position.
-  // Desktop: outside cart/checkout, hold the chat at Talkative's normal 32px (it can raise itself to 100px)
+  // Mobile only: lift the Live Chat bubble above our bar, falling back to Talkative's own position
   const CHAT_STYLE = `
     @media (max-width: 767px) {
       .fixed:has(${CHAT_BUTTON_SELECTOR}) {
         bottom: var(--sy009-chat-bottom, calc(env(safe-area-inset-bottom) + 32px)) !important;
-      }
-    }
-    @media (min-width: 768px) {
-      :host([${CHAT_HOLD_ATTRIBUTE}]) .fixed:has(${CHAT_BUTTON_SELECTOR}) {
-        bottom: calc(env(safe-area-inset-bottom) + 32px) !important;
       }
     }
   `;
@@ -73,13 +69,6 @@
     });
   }
 
-  function getChatButton() {
-    const chatHost = document.getElementById(CHAT_HOST_ID);
-    return chatHost && chatHost.shadowRoot
-      ? chatHost.shadowRoot.querySelector(CHAT_BUTTON_SELECTOR)
-      : null;
-  }
-
   // Talkative lives in an open shadow DOM, so our v1.css can't reach it
   function setUpChat() {
     const chatHost = document.getElementById(CHAT_HOST_ID);
@@ -96,59 +85,6 @@
     style.id = CHAT_STYLE_ID;
     style.textContent = CHAT_STYLE;
     chatHost.shadowRoot.appendChild(style);
-
-    // Talkative changes its own position (we've seen 32px and 100px), so follow it when it moves
-    new MutationObserver(alignWithChat).observe(chatHost.shadowRoot, {
-      attributes: true,
-      attributeFilter: ["style"],
-      subtree: true,
-    });
-
-    alignWithChat();
-  }
-
-  // Desktop only: line up the card's centre with the Live Chat button's centre,
-  // and give the card the same gap from the left edge as the chat has from the right
-  function alignWithChat() {
-    // Switches the desktop chat rule in CHAT_STYLE on and off, before we measure the chat.
-    // Off on cart/checkout, where Talkative raises the chat above Brakes' sticky Place Order button
-    const chatHost = document.getElementById(CHAT_HOST_ID);
-
-    if (chatHost) {
-      chatHost.toggleAttribute(CHAT_HOLD_ATTRIBUTE, !isExcludedPage());
-    }
-
-    const prompt = document.getElementById(PROMPT_ID);
-
-    if (!prompt) {
-      return;
-    }
-
-    const chatButton = getChatButton();
-    const chatBox = chatButton ? chatButton.getBoundingClientRect() : null;
-
-    // Mobile, hidden prompt or no chat: fall back to the bottom and left values in v1.css
-    if (
-      !window.matchMedia(DESKTOP_QUERY).matches ||
-      prompt.hidden ||
-      !chatBox ||
-      chatBox.height === 0
-    ) {
-      prompt.style.bottom = "";
-      prompt.style.left = "";
-      return;
-    }
-
-    const chatCentreFromBottom =
-      window.innerHeight - (chatBox.top + chatBox.height / 2);
-    const cardBottom = chatCentreFromBottom - prompt.offsetHeight / 2;
-
-    // clientWidth leaves out the scrollbar, which fixed elements are positioned against
-    const chatGapFromRight =
-      document.documentElement.clientWidth - chatBox.right;
-
-    prompt.style.bottom = `${Math.max(cardBottom, 16)}px`;
-    prompt.style.left = `${Math.max(chatGapFromRight, 16)}px`;
   }
 
   // CSS variables pass into the shadow DOM, so setting it on body reaches the chat style
@@ -276,10 +212,7 @@
     prompt.addEventListener("animationend", handleAnimationEnd);
 
     // Runs whenever the prompt is shown, hidden or its text wraps onto another line
-    new ResizeObserver(function () {
-      updateChatOffset();
-      alignWithChat();
-    }).observe(prompt);
+    new ResizeObserver(updateChatOffset).observe(prompt);
 
     // Added to body (outside Angular's cx-storefront) so the site doesn't remove it on page changes
     document.body.appendChild(prompt);
@@ -428,9 +361,6 @@
     lastPathname = pathname;
     trackEvents(basketValue);
     renderPrompt(basketValue);
-
-    // Also on page changes, so the chat hold switches off on cart/checkout even if the prompt was already closed
-    alignWithChat();
   }
 
   // Watch the whole body because Angular can replace the header elements, not just edit them
@@ -440,8 +370,6 @@
     subtree: true,
     characterData: true,
   });
-
-  window.addEventListener("resize", alignWithChat);
 
   handlePageChange();
 })();

@@ -5,7 +5,7 @@
   right: 0;
   bottom: 0;
   z-index: 1000;
-  padding: 14px 48px 16px 16px;
+  padding: 14px 16px 16px;
   background: #fff;
   border-top: 3px solid #7c9f19;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
@@ -31,6 +31,8 @@
   align-items: center;
   gap: 8px;
   margin: 0 0 10px;
+  /* Only the headline shares a row with the X, so the bar and labels can run full width */
+  padding-right: 28px;
 }
 
 .sy009-mov__tick {
@@ -55,7 +57,7 @@
 }
 
 .sy009-mov__labels {
-  display: none;
+  display: flex;
   justify-content: space-between;
   margin-top: 8px;
   font-size: 14px;
@@ -84,20 +86,15 @@
 /* Desktop and tablet: floating card from 768px, below that the mobile bar */
 @media (min-width: 768px) {
   .sy009-mov {
-    /* Start where v1.js normally places the card next to Live Chat (measured), so it doesn't jump when the chat loads */
-    left: 50px;
+    left: 10px;
     right: auto;
-    bottom: 38px;
+    bottom: 10px;
     width: 420px;
-    padding: 16px 48px 16px 20px;
+    padding: 16px 20px;
     border-top: 0;
     border-left: 4px solid #7c9f19;
     border-radius: 4px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  .sy009-mov__labels {
-    display: flex;
   }
 
   .sy009-mov__desktop-only {
