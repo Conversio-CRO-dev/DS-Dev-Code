@@ -3,6 +3,10 @@
 window.dataLayer = window.dataLayer || [];
 
 const GRID_SELECTOR = "#CollectionProductGrid";
+// First selector is the current PLP, second is the flat lay PLP
+const PRICE_SELECTOR =
+  "[data-ajax-product-card-price-2], .product-card-price-rating";
+const SWATCH_SELECTOR = "[data-swatch], .product-card-price-rating ~ div a";
 const API_URL = "/api/2025-04/graphql.json";
 // Public Storefront token, the same one the theme's compare tool sends
 const API_TOKEN = "fb5c9d20856f6e9a1b447b9e284e0917";
@@ -14,7 +18,8 @@ const SUMMARY_QUERY =
 // Every rule depends on the body class, so the styles can't apply before init runs
 const STYLES = `
   body.fn095-v1 product-card .fn095-title,
-  body.fn095-v1 product-card [data-ajax-product-card-price-2] p {
+  body.fn095-v1 product-card [data-ajax-product-card-price-2] p,
+  body.fn095-v1 product-card .product-card-price-rating p {
     font-size: 16px;
   }
 
@@ -163,7 +168,7 @@ const cardResizeObserver = new ResizeObserver((entries) => {
 });
 
 const decorateCard = (card, summaryText) => {
-  const price = card.querySelector("[data-ajax-product-card-price-2]");
+  const price = card.querySelector(PRICE_SELECTOR);
   if (!price) return;
 
   // Every card has this badge wrapper; it's just empty when there's no "Just In" style badge
@@ -267,7 +272,7 @@ const watchCardClicks = () => {
       );
       if (!link) return;
 
-      if (link.matches("[data-swatch]")) {
+      if (link.matches(SWATCH_SELECTOR)) {
         // 4. Selects colour
         window.dataLayer.push({
           event: "conversioEvent",

@@ -3,6 +3,8 @@
 window.dataLayer = window.dataLayer || [];
 
 const GRID_SELECTOR = "#CollectionProductGrid";
+// First selector is the current PLP, second is the flat lay PLP
+const SWATCH_SELECTOR = "[data-swatch], .product-card-price-rating ~ div a";
 const API_URL = "/api/2025-04/graphql.json";
 // Public Storefront token, the same one the theme's compare tool sends
 const API_TOKEN = "fb5c9d20856f6e9a1b447b9e284e0917";
@@ -163,7 +165,7 @@ const watchCardClicks = () => {
       );
       if (!link) return;
 
-      if (link.matches("[data-swatch]")) {
+      if (link.matches(SWATCH_SELECTOR)) {
         // 4. Selects colour
         window.dataLayer.push({
           event: "conversioEvent",
