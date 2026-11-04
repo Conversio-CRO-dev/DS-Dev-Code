@@ -10,6 +10,19 @@
   const desktop = window.matchMedia("(min-width: 1200px)");
   const MAX_OPTIONS = 5;
 
+  if (isSearchPage() && desktop.matches) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: "conversio_experience",
+      conversio: {
+        experience_category: "Conversio Experience",
+        experience_action: "SY008 | Exposed Filters",
+        experience_label: "SY008 | Variation 1",
+        experience_segment: "SY008.XV1",
+      },
+    });
+  }
+
   // Wording after "Show all ", groups not listed use their name in lowercase
   const SHOW_ALL_LABELS = {
     "New Products": "new products",
@@ -201,12 +214,121 @@
     updateShowAllLinks();
   }
 
+  // The site only ticks an option once the new results arrive, so show the customer's choice straight away
+  let pendingTick = null;
+  let pendingTimer;
+
+  function getGroupName(group) {
+    const heading = group.querySelector(".heading");
+    return heading ? heading.textContent.trim() : "";
+  }
+
+  // Option text without the count, which changes after loading
+  function getOptionName(option) {
+    const copy = option.cloneNode(true);
+    const count = copy.querySelector(".count");
+    if (count) count.remove();
+    return copy.textContent.trim();
+  }
+
+  // Angular rebuilds the whole panel while loading, so find the option again by group and name
+  function findOption(groupName, optionName) {
+    const groups = Array.from(
+      document.querySelectorAll(
+        ".ProductLeftRefinements cx-facet-list cx-facet",
+      ),
+    );
+    const group = groups.find(function (item) {
+      return getGroupName(item) === groupName;
+    });
+    if (!group) return null;
+
+    const options = Array.from(group.querySelectorAll("a.value"));
+    return (
+      options.find(function (option) {
+        return getOptionName(option) === optionName;
+      }) || null
+    );
+  }
+
+  function clearPendingTick() {
+    pendingTick = null;
+    clearTimeout(pendingTimer);
+    document
+      .querySelectorAll(".sy008-tick-on, .sy008-tick-off")
+      .forEach(function (option) {
+        option.classList.remove("sy008-tick-on", "sy008-tick-off");
+      });
+  }
+
+  function applyPendingTick() {
+    if (!pendingTick) return;
+
+    const option = findOption(pendingTick.group, pendingTick.name);
+    if (!option) return;
+
+    // The site's own tick has caught up, so ours is no longer needed
+    if (option.classList.contains("selected") === pendingTick.ticked) {
+      // console.log("SY008 | site tick caught up: " + pendingTick.name);
+      clearPendingTick();
+      return;
+    }
+
+    option.classList.add(
+      pendingTick.ticked ? "sy008-tick-on" : "sy008-tick-off",
+    );
+  }
+
+  function showTickStraightAway(event) {
+    if (!event.isTrusted) return;
+    if (!isSearchPage() || !desktop.matches) return;
+
+    const option = event.target.closest(
+      ".ProductLeftRefinements cx-facet-list cx-facet a.value",
+    );
+    if (!option) return;
+
+    clearPendingTick();
+    pendingTick = {
+      group: getGroupName(option.closest("cx-facet")),
+      name: getOptionName(option),
+      ticked: !option.classList.contains("selected"),
+    };
+    // console.log("SY008 | " + (pendingTick.ticked ? "tick" : "untick") + " shown straight away: " + pendingTick.group + " > " + pendingTick.name);
+    applyPendingTick();
+
+    // If the search fails the site never updates, so don't keep a wrong tick
+    pendingTimer = setTimeout(clearPendingTick, 10000);
+  }
+
+  // Capture phase: runs as the mouse is released, before the browser redraws, so the tick never disappears
+  document.addEventListener("click", showTickStraightAway, true);
+
   function trackResultsClicks(event) {
     window.dataLayer = window.dataLayer || [];
 
     // Skip clicks made by scripts (including ours), only real customer clicks count
     if (!event.isTrusted) return;
     if (!isSearchPage() || !desktop.matches) return;
+
+    // Selected filter chips: the row under the grey bar (the copy inside the panel is hidden), "Clear all" not included
+    const filterChip = event.target.closest(
+      "cx-product-facet-navigation cx-active-facets a:not(.facet-clear-all)",
+    );
+    if (filterChip) {
+      // console.log("SY008 | V1 | Clear individual filters | " + filterChip.textContent.trim());
+      // 3. Clear individual filters
+      window.dataLayer.push({
+        event: "conversioEvent",
+        conversio: {
+          event_category: "Conversio CRO",
+          event_action: "SY008 | Event Tracking",
+          event_label: "SY008 | (Variation 1) | Clear individual filters",
+          event_segment: "SY008EV1I",
+        },
+      });
+      return;
+    }
 
     // Product cards only, not ad tiles in the grid
     const card = event.target.closest(
@@ -258,6 +380,8 @@
   // Angular re-renders the page without reloading, so re-check whenever the DOM changes
   let timer;
   const observer = new MutationObserver(function () {
+    // Not debounced: runs before the screen updates, so a rebuilt option never shows without its tick
+    applyPendingTick();
     clearTimeout(timer);
     timer = setTimeout(checkPage, 100);
   });

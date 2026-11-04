@@ -143,6 +143,42 @@ body.sy008-v1 .ProductLeftRefinements cx-facet a.value:active::after {
   height: 0.7rem !important;
 }
 
+/* Copies of the site's ticked and unticked looks, used by v1.js while the results load */
+body.sy008-v1 .ProductLeftRefinements cx-facet a.value.sy008-tick-on::after {
+  content: "";
+  position: absolute;
+  left: 0.3rem;
+  top: 13px;
+  width: 0.35rem;
+  height: 0.7rem;
+  border: solid rgb(124, 159, 25);
+  border-width: 0 0.125rem 0.125rem 0;
+  transform: rotate(45deg);
+}
+
+body.sy008-v1
+  .ProductLeftRefinements
+  cx-facet.multi-select
+  a.value.sy008-tick-on::before {
+  background-color: var(--cx-color-inverse) !important;
+  border-color: var(--cx-color-dark) !important;
+}
+
+body.sy008-v1
+  .ProductLeftRefinements
+  cx-facet
+  a.value.selected.sy008-tick-off::after {
+  display: none !important;
+}
+
+body.sy008-v1
+  .ProductLeftRefinements
+  cx-facet.multi-select
+  a.value.selected.sy008-tick-off::before {
+  background-color: var(--cx-color-white) !important;
+  border-color: var(--cx-color-gray) !important;
+}
+
 /* data-sy008-show-all is set by v1.js, only the first 5 options show until "Show all" is clicked */
 body.sy008-v1
   .ProductLeftRefinements
