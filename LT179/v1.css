@@ -1,0 +1,173 @@
+/* LT179 v1 | Subscribe & Save basket module. Only applies when v1.js adds the body class. */
+
+.lt179-v1 [data-testid="subscribe-save-offer"] {
+  display: none !important;
+}
+
+.lt179-v1 .lt179-module {
+  container-type: inline-size;
+  margin: 24px 0;
+}
+
+.lt179-v1 .lt179-module .lt179-card {
+  display: flex;
+  flex-direction: column;
+  background: #f6f8fb;
+  border: 1px solid #222;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: Roboto, Arial, sans-serif;
+  color: #222;
+}
+
+/* Left / top: logo and offer message */
+.lt179-v1 .lt179-module .lt179-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.lt179-v1 .lt179-module .lt179-logo {
+  display: block;
+  width: 192px;
+  height: auto;
+}
+
+.lt179-v1 .lt179-module .lt179-intro-text {
+  margin: 0;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #e2004d;
+}
+
+/* Middle: title and benefits */
+.lt179-v1 .lt179-module .lt179-details {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.lt179-v1 .lt179-module .lt179-title {
+  margin: 0;
+  font-family: "Noto Serif", Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.18px;
+  color: #222;
+}
+
+.lt179-v1 .lt179-module .lt179-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 0 0;
+  list-style: none;
+}
+
+.lt179-v1 .lt179-module .lt179-benefit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.lt179-v1 .lt179-module .lt179-benefit strong {
+  font-weight: 700;
+}
+
+.lt179-v1 .lt179-module .lt179-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fbe6f1;
+}
+
+/* Right / bottom: button */
+.lt179-v1 .lt179-module .lt179-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px 16px;
+}
+
+.lt179-v1 .lt179-module .lt179-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 181px;
+  height: 44px;
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 2px;
+  background: #117b53;
+  color: #fff;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.28px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.lt179-v1 .lt179-module .lt179-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Desktop layout: switches on the module's own width, not the screen width */
+@container (min-width: 640px) {
+  .lt179-v1 .lt179-module .lt179-card {
+    flex-direction: row;
+  }
+
+  .lt179-v1 .lt179-module .lt179-intro {
+    flex: 0 0 32%;
+    gap: 8px;
+    border-bottom: 0;
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .lt179-v1 .lt179-module .lt179-logo {
+    width: 200px;
+  }
+
+  .lt179-v1 .lt179-module .lt179-intro-text {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .lt179-v1 .lt179-module .lt179-details {
+    flex: 1 1 auto;
+    padding: 16px 20px;
+  }
+
+  .lt179-v1 .lt179-module .lt179-footer {
+    flex: 0 0 auto;
+    padding: 16px 24px;
+  }
+
+  .lt179-v1 .lt179-module .lt179-button {
+    width: 220px;
+  }
+}
