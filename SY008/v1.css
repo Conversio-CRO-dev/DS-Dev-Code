@@ -179,6 +179,28 @@ body.sy008-v1
   border-color: var(--cx-color-gray) !important;
 }
 
+/* Stops the page jumping while results load: the site removes the banner and the title for a moment,
+   so keep their space (heights measured by v1.js). Banner: from the URL change (sy008-keep-banner, added by v1.js)
+   until it's back. Title: while the spinner shows */
+body.sy008-v1.sy008-keep-banner
+  .SearchResultsGridPageTemplate:not(:has(.evg-amp-leaderboard))
+  > .evg-leaderboard-slot--plp:first-of-type {
+  min-height: var(--sy008-banner-space, 0px);
+}
+
+/* The new banner is shorter while its image loads */
+body.sy008-v1.sy008-keep-banner
+  .SearchResultsGridPageTemplate
+  > .evg-leaderboard-slot--plp:has(.evg-amp-leaderboard) {
+  min-height: var(--sy008-banner-height, 0px);
+}
+
+body.sy008-v1:has(cx-spinner.overlay-dark)
+  .SearchResultsGridPageTemplate
+  > .TopHeaderSlot {
+  min-height: var(--sy008-title-height, 0px);
+}
+
 /* data-sy008-show-all is set by v1.js, only the first 5 options show until "Show all" is clicked */
 body.sy008-v1
   .ProductLeftRefinements

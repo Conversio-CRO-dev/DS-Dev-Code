@@ -200,11 +200,111 @@
   // Only close the panel at the moment the variant switches off, never a slide-out the customer opened themselves
   let wasActive = false;
 
+  // Each new search counts once, ticking filters or sorting keeps the same search term
+  let lastExposedSearch = null;
+
+  function trackFiltersExposed() {
+    window.dataLayer = window.dataLayer || [];
+
+    const panel = document.querySelector(
+      "cx-page-slot.ProductLeftRefinements cx-facet-list cx-facet",
+    );
+    if (!panel) return;
+
+    const searchTerm = getSearchTerm();
+    if (searchTerm === lastExposedSearch) return;
+    lastExposedSearch = searchTerm;
+
+    // 4. Filters Exposed (on search results)
+    // console.log("SY008 | V1 | Filters Exposed | " + searchTerm);
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        event_category: "Conversio CRO",
+        event_action: "SY008 | Event Tracking",
+        event_label:
+          "SY008 | (Variation 1) | Filters Exposed (on search results)",
+        event_segment: "SY008EV1Q",
+      },
+    });
+  }
+
+  // While results load the site removes the banner and the title for a moment, which makes the page jump.
+  // Remember their heights (read only, nothing is changed) so v1.css can keep that space while they're missing
+  function rememberHeights() {
+    if (document.querySelector("cx-spinner.overlay-dark")) return;
+
+    const titleSlot = document.querySelector(
+      ".SearchResultsGridPageTemplate > .TopHeaderSlot",
+    );
+    const banner = document.querySelector(
+      ".SearchResultsGridPageTemplate > .evg-leaderboard-slot--plp .evg-amp-leaderboard",
+    );
+    const bannerImage = banner ? banner.querySelector("img") : null;
+
+    // Only once the image has loaded, while loading the banner is shorter
+    if (
+      titleSlot &&
+      bannerImage &&
+      bannerImage.complete &&
+      bannerImage.naturalHeight > 0
+    ) {
+      const bannerSlot = banner.closest(".evg-leaderboard-slot--plp");
+      document.body.style.setProperty(
+        "--sy008-banner-height",
+        bannerSlot.offsetHeight + "px",
+      );
+
+      // Old empty slots add an extra 10px margin above the banner, so measure the whole space above the title.
+      // The kept slot's own bottom margin is taken off, as it still applies
+      const firstSlot = document.querySelector(
+        ".SearchResultsGridPageTemplate > .evg-leaderboard-slot--plp",
+      );
+      const space =
+        titleSlot.getBoundingClientRect().top -
+        firstSlot.getBoundingClientRect().top -
+        parseFloat(getComputedStyle(firstSlot).marginBottom);
+      document.body.style.setProperty(
+        "--sy008-banner-space",
+        Math.round(space) + "px",
+      );
+    }
+
+    if (titleSlot && titleSlot.querySelector("h1")) {
+      document.body.style.setProperty(
+        "--sy008-title-height",
+        titleSlot.offsetHeight + "px",
+      );
+    }
+  }
+
+  // Evergage removes its banner as soon as the URL changes (before the spinner shows) and adds it back a moment later.
+  // Runs from the observer in the same moment, so v1.css keeps the banner space before the screen updates
+  let lastUrl = window.location.href;
+  let bannerTimer;
+
+  function keepBannerSpace() {
+    if (window.location.href === lastUrl) return;
+    lastUrl = window.location.href;
+
+    // console.log("SY008 | V1 | URL changed, keeping banner space");
+    document.body.classList.add("sy008-keep-banner");
+
+    // If no banner comes back (a search without one), stop keeping the space
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(function () {
+      document.body.classList.remove("sy008-keep-banner");
+    }, 3000);
+  }
+
   function checkPage() {
     const isActive = isSearchPage() && desktop.matches;
 
     if (wasActive && !isActive) closeFilterPanel();
     wasActive = isActive;
+
+    // Coming back to search later is a new search
+    if (!isSearchPage()) lastExposedSearch = null;
 
     document.body.classList.toggle(TEST_CLASS, isActive);
     if (!isActive) return;
@@ -212,6 +312,8 @@
     openFilterPanel();
     addFilterIcon();
     updateShowAllLinks();
+    trackFiltersExposed();
+    rememberHeights();
   }
 
   // The site only ticks an option once the new results arrive, so show the customer's choice straight away
@@ -382,6 +484,7 @@
   const observer = new MutationObserver(function () {
     // Not debounced: runs before the screen updates, so a rebuilt option never shows without its tick
     applyPendingTick();
+    keepBannerSpace();
     clearTimeout(timer);
     timer = setTimeout(checkPage, 100);
   });
