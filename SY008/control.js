@@ -54,6 +54,26 @@
       background-color: var(--cx-color-white) !important;
       border-color: var(--cx-color-gray) !important;
     }
+
+    /* Stops the page jumping while results load: the site removes the banner and the title for a moment,
+       so keep their space (heights measured below). Banner: from the URL change (sy008-keep-banner) until it's back.
+       Title: while the spinner shows. The heights are only set on desktop search pages, everywhere else they fall back to 0 */
+    body.sy008-keep-banner
+      .SearchResultsGridPageTemplate:not(:has(.evg-amp-leaderboard))
+      > .evg-leaderboard-slot--plp:first-of-type {
+      min-height: var(--sy008-banner-space, 0px);
+    }
+
+    /* The new banner is shorter while its image loads */
+    body.sy008-keep-banner
+      .SearchResultsGridPageTemplate
+      > .evg-leaderboard-slot--plp:has(.evg-amp-leaderboard) {
+      min-height: var(--sy008-banner-height, 0px);
+    }
+
+    body:has(cx-spinner.overlay-dark) .SearchResultsGridPageTemplate > .TopHeaderSlot {
+      min-height: var(--sy008-title-height, 0px);
+    }
   `;
   document.head.appendChild(style);
 
@@ -148,8 +168,142 @@
   document.addEventListener("click", showTickStraightAway, true);
 
   // Runs before the screen updates, so a rebuilt option never shows without its tick
-  const observer = new MutationObserver(applyPendingTick);
+  function getSearchTerm() {
+    const text = new URLSearchParams(window.location.search).get("text") || "";
+    return text.split(":")[0].toLowerCase();
+  }
+
+  // Control has no exposed panel, so count the moment V1 would show it: the Filter button on a desktop search page.
+  // Each new search counts once, ticking filters or sorting keeps the same search term
+  let lastExposedSearch = null;
+
+  function trackFiltersExposed() {
+    window.dataLayer = window.dataLayer || [];
+
+    // Coming back to search later is a new search
+    if (!isSearchPage()) {
+      lastExposedSearch = null;
+      return;
+    }
+    if (!desktop.matches) return;
+
+    const filterButton = document.querySelector(
+      "cx-page-slot.ProductLeftRefinements button.page-actions-filter",
+    );
+    if (!filterButton) return;
+
+    const searchTerm = getSearchTerm();
+    if (searchTerm === lastExposedSearch) return;
+    lastExposedSearch = searchTerm;
+
+    // 4. Filters Exposed (on search results)
+    // console.log("SY008 | Control | Filters Exposed | " + searchTerm);
+    window.dataLayer.push({
+      event: "conversioEvent",
+      conversio: {
+        event_category: "Conversio CRO",
+        event_action: "SY008 | Event Tracking",
+        event_label:
+          "SY008 | (Control Original) | Filters Exposed (on search results)",
+        event_segment: "SY008ECOQ",
+      },
+    });
+  }
+
+  // While results load the site removes the banner and the title for a moment, which makes the page jump.
+  // Remember their heights (read only, nothing is changed) so the styles above can keep that space while they're missing
+  function rememberHeights() {
+    // Other pages keep the site's normal behaviour
+    if (!isSearchPage() || !desktop.matches) {
+      document.body.style.removeProperty("--sy008-banner-height");
+      document.body.style.removeProperty("--sy008-banner-space");
+      document.body.style.removeProperty("--sy008-title-height");
+      return;
+    }
+    if (document.querySelector("cx-spinner.overlay-dark")) return;
+
+    const titleSlot = document.querySelector(
+      ".SearchResultsGridPageTemplate > .TopHeaderSlot",
+    );
+    const banner = document.querySelector(
+      ".SearchResultsGridPageTemplate > .evg-leaderboard-slot--plp .evg-amp-leaderboard",
+    );
+    const bannerImage = banner ? banner.querySelector("img") : null;
+
+    // Only once the image has loaded, while loading the banner is shorter
+    if (
+      titleSlot &&
+      bannerImage &&
+      bannerImage.complete &&
+      bannerImage.naturalHeight > 0
+    ) {
+      const bannerSlot = banner.closest(".evg-leaderboard-slot--plp");
+      document.body.style.setProperty(
+        "--sy008-banner-height",
+        bannerSlot.offsetHeight + "px",
+      );
+
+      // Old empty slots add an extra 10px margin above the banner, so measure the whole space above the title.
+      // The kept slot's own bottom margin is taken off, as it still applies
+      const firstSlot = document.querySelector(
+        ".SearchResultsGridPageTemplate > .evg-leaderboard-slot--plp",
+      );
+      const space =
+        titleSlot.getBoundingClientRect().top -
+        firstSlot.getBoundingClientRect().top -
+        parseFloat(getComputedStyle(firstSlot).marginBottom);
+      document.body.style.setProperty(
+        "--sy008-banner-space",
+        Math.round(space) + "px",
+      );
+    }
+
+    if (titleSlot && titleSlot.querySelector("h1")) {
+      document.body.style.setProperty(
+        "--sy008-title-height",
+        titleSlot.offsetHeight + "px",
+      );
+    }
+  }
+
+  // Evergage removes its banner as soon as the URL changes (before the spinner shows) and adds it back a moment later.
+  // Runs from the observer in the same moment, so the styles above keep the banner space before the screen updates
+  let lastUrl = window.location.href;
+  let bannerTimer;
+
+  function keepBannerSpace() {
+    if (window.location.href === lastUrl) return;
+    lastUrl = window.location.href;
+    if (!isSearchPage() || !desktop.matches) return;
+
+    // console.log("SY008 | Control | URL changed, keeping banner space");
+    document.body.classList.add("sy008-keep-banner");
+
+    // If no banner comes back (a search without one), stop keeping the space
+    clearTimeout(bannerTimer);
+    bannerTimer = setTimeout(function () {
+      document.body.classList.remove("sy008-keep-banner");
+    }, 3000);
+  }
+
+  function checkPage() {
+    trackFiltersExposed();
+    rememberHeights();
+  }
+
+  let timer;
+  const observer = new MutationObserver(function () {
+    // Straight away, so a rebuilt option never shows without its tick
+    applyPendingTick();
+    keepBannerSpace();
+
+    // Angular re-renders the page without reloading, so re-check once the DOM settles
+    clearTimeout(timer);
+    timer = setTimeout(checkPage, 100);
+  });
   observer.observe(document.body, { childList: true, subtree: true });
+  desktop.addEventListener("change", checkPage);
+  checkPage();
 
   function trackResultsClicks(event) {
     window.dataLayer = window.dataLayer || [];
