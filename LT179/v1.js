@@ -1,14 +1,20 @@
-console.log("David Silva | LT179 variation 1");
+// console.log("David Silva | LT179 variation 1");
 
 (function () {
   // Stop the code running twice if the script is injected more than once
   if (window.LT179_loaded) return;
   window.LT179_loaded = true;
 
+  // Make sure the tracking array exists, so a push never throws an error
+  window.adobeDataLayer = window.adobeDataLayer || [];
+
   const CART_UPDATE_URL = "/webapi/carts/";
   let updateTimer = null;
   let latestCheckId = 0;
   let currentSubscription = null;
+  let upsellSeenFired = false;
+  let basketHadSubscription = null;
+  let seenObserver = null;
 
   // Icons from the Figma design (pink #E2004D, 14x14)
   const ICONS = {
@@ -94,7 +100,7 @@ console.log("David Silva | LT179 variation 1");
       escapeHtml(sub.colour) +
       " wine delivered <strong>every " +
       escapeHtml(sub.frequency) +
-      " weeks</strong> for <strong>up to " +
+      " weeks</strong> for <strong>around " +
       escapeHtml(price) +
       "</strong>"
     );
@@ -165,8 +171,117 @@ console.log("David Silva | LT179 variation 1");
       module.innerHTML = buildModuleHtml(currentSubscription);
     }
     wrapper.insertAdjacentElement("afterend", module);
-    console.log("LT179: module placed");
+    // console.log("LT179: module placed");
+    watchUpsellSeen(module);
   }
+
+  // ---------- Events ----------
+
+  function watchUpsellSeen(module) {
+    if (upsellSeenFired || !("IntersectionObserver" in window)) return;
+
+    if (!seenObserver) {
+      seenObserver = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting || upsellSeenFired) return;
+            upsellSeenFired = true;
+            seenObserver.disconnect();
+            // 1. Subscription Upsell Seen (triggering event, once per basket view)
+            adobeDataLayer.push({
+              event: "targetClickEvent",
+              eventData: {
+                click: {
+                  clickLocation: "Conversio CRO",
+                  clickAction: "LT179 | Event Tracking",
+                  clickText:
+                    "LT179 (Variation 1) | Subscription Upsell Seen (trigger)",
+                },
+              },
+            });
+            // console.log("LT179 EVENT: Subscription Upsell Seen");
+          });
+        },
+        { threshold: 0.5 },
+      );
+    }
+    seenObserver.observe(module);
+  }
+
+  // A new page view (SPA navigation) counts as a new basket view
+  function watchPageChanges() {
+    const originalPushState = history.pushState;
+    history.pushState = function () {
+      const result = originalPushState.apply(this, arguments);
+      upsellSeenFired = false;
+      return result;
+    };
+    window.addEventListener("popstate", function () {
+      upsellSeenFired = false;
+    });
+  }
+
+  function cartHasSubscription(cart) {
+    const items = (cart && cart.lineItems) || [];
+    return items.some(function (item) {
+      const upsell =
+        item.classificationDetails && item.classificationDetails.upsell;
+      return Boolean(upsell && upsell.type === "WINEPLAN");
+    });
+  }
+
+  // Compare each new basket with the previous one, so every way of removing the subscription counts
+  function checkSubscriptionRemoved(xhr) {
+    let cart;
+    try {
+      cart =
+        xhr.responseType === "json"
+          ? xhr.response
+          : JSON.parse(xhr.responseText);
+    } catch (error) {
+      return;
+    }
+    if (!cart || !cart.lineItems) return;
+
+    const hasSubscription = cartHasSubscription(cart);
+    if (basketHadSubscription === true && !hasSubscription) {
+      // 3. Remove Subscription
+      adobeDataLayer.push({
+        event: "targetClickEvent",
+        eventData: {
+          click: {
+            clickLocation: "Conversio CRO",
+            clickAction: "LT179 | Event Tracking",
+            clickText: "LT179 (Variation 1) | Remove Subscription",
+          },
+        },
+      });
+      // console.log("LT179 EVENT: Remove Subscription");
+    }
+    basketHadSubscription = hasSubscription;
+  }
+
+  function watchCheckoutClicks() {
+    document.addEventListener("click", function (event) {
+      if (!isCartPage()) return;
+      if (event.target.closest(".order-summary .payment-checkout a")) {
+        // 4. Proceed to Checkout Click
+        adobeDataLayer.push({
+          event: "targetClickEvent",
+          eventData: {
+            click: {
+              clickLocation: "Conversio CRO",
+              clickAction: "LT179 | Event Tracking",
+              clickText: "LT179 (Variation 1) | Proceed to Checkout Click",
+            },
+          },
+        });
+        // console.log("LT179 EVENT: Proceed to Checkout Click");
+      }
+    });
+  }
+
+  // ---------- End events ----------
 
   function renderModule(sub, checkId) {
     if (checkId !== latestCheckId) return;
@@ -184,7 +299,7 @@ console.log("David Silva | LT179 variation 1");
     const module = document.querySelector(".lt179-module");
     if (module) {
       module.remove();
-      console.log("LT179: module removed");
+      // console.log("LT179: module removed");
     }
   }
 
@@ -208,7 +323,7 @@ console.log("David Silva | LT179 variation 1");
   function clickNativeButton(nativeButton) {
     setButtonAdding(true);
     nativeButton.click();
-    console.log("LT179: native add button clicked");
+    // console.log("LT179: native add button clicked");
 
     // If the basket never updates, give the button back so the user can try again
     setTimeout(function () {
@@ -257,6 +372,19 @@ console.log("David Silva | LT179 variation 1");
   function onAddButtonClick(button) {
     if (!currentSubscription || button.disabled) return;
 
+    // 2. Add Subscription CTA Click
+    adobeDataLayer.push({
+      event: "targetClickEvent",
+      eventData: {
+        click: {
+          clickLocation: "Conversio CRO",
+          clickAction: "LT179 | Event Tracking",
+          clickText: "LT179 (Variation 1) | Add Subscription CTA Click",
+        },
+      },
+    });
+    // console.log("LT179 EVENT: Add Subscription CTA Click");
+
     const nativeButton = findNativeAddButton();
     if (nativeButton) {
       clickNativeButton(nativeButton);
@@ -273,11 +401,11 @@ console.log("David Silva | LT179 variation 1");
         }),
       );
     } catch (error) {
-      console.log("LT179: could not save pending add", error);
+      // console.log("LT179: could not save pending add", error);
       return;
     }
     setButtonAdding(true);
-    console.log("LT179: native button missing, reloading to finish the add");
+    // console.log("LT179: native button missing, reloading to finish the add");
     window.location.reload();
   }
 
@@ -306,7 +434,7 @@ console.log("David Silva | LT179 variation 1");
 
   function onBasketUpdated(reason) {
     if (!isCartPage()) return;
-    console.log("LT179: basket updated (" + reason + ")");
+    // console.log("LT179: basket updated (" + reason + ")");
     document.body.classList.add("lt179-v1");
 
     latestCheckId = latestCheckId + 1;
@@ -322,17 +450,19 @@ console.log("David Silva | LT179 variation 1");
         if (checkId !== latestCheckId) return;
 
         if (!subscription) {
-          console.log("LT179: no offer");
+          // console.log("LT179: no offer");
           removeModule();
           return;
         }
-        console.log("LT179: offer", subscription);
+        // console.log("LT179: offer", subscription);
         renderModule(subscription, checkId);
       })
       .catch(function (error) {
         if (checkId !== latestCheckId) return;
-        console.log("LT179: no offer (request failed)", error);
+        // Agreed fallback: show the site's original Subscribe & Save box instead
+        // console.log("LT179: request failed, showing native box", error);
         removeModule();
+        document.body.classList.remove("lt179-v1");
       });
   }
 
@@ -352,6 +482,7 @@ console.log("David Silva | LT179 variation 1");
       this.addEventListener("load", function () {
         const isCartRequest = String(url).indexOf(CART_UPDATE_URL) !== -1;
         if (isCartRequest && this.status >= 200 && this.status < 300) {
+          checkSubscriptionRemoved(this);
           scheduleBasketUpdated(method + " " + url);
         }
       });
@@ -362,6 +493,8 @@ console.log("David Silva | LT179 variation 1");
   watchCartRequests();
   watchForRedraws();
   watchAddButton();
+  watchPageChanges();
+  watchCheckoutClicks();
 
   // The basket may have loaded before this script ran
   scheduleBasketUpdated("page load");
