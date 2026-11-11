@@ -1,0 +1,48 @@
+/* Same layout on desktop and mobile: centred message with a progress bar underneath */
+.sy010-mov {
+  font-family: Brandon, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #333;
+  text-align: center;
+}
+
+/* Our rules above would otherwise override the hidden attribute */
+.sy010-mov[hidden] {
+  display: none;
+}
+
+/* Brakes uses a separate bold font file instead of font-weight: bold */
+.sy010-mov strong {
+  font-family: BrandonBold, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+}
+
+.sy010-mov__message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.sy010-mov__tick {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sy010-mov__bar {
+  height: 6px;
+  background: #e6e6e6;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sy010-mov__fill {
+  width: 0;
+  height: 100%;
+  background: #7c9f19;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
