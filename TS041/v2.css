@@ -1,0 +1,153 @@
+/* TS041 V2: bigger Adults and Children quantity buttons plus a typeable number box */
+
+/* Desktop and tablet (768px and up): 40x40 buttons, 8px gap */
+body.ts041-v2 [data-ts041-stepper] {
+  align-items: center;
+  gap: 8px;
+}
+
+body.ts041-v2 [data-ts041-stepper] > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-width: 2px;
+  /* Hides the site's small "-" / "+" text (still read by screen readers); the glyphs are drawn below */
+  font-size: 0;
+}
+
+/* Minus bar (both buttons), plus the vertical bar on the + button */
+body.ts041-v2 [data-ts041-stepper] > button::before,
+body.ts041-v2 [data-ts041-stepper] > button:last-child::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+body.ts041-v2 [data-ts041-stepper] > button:last-child::after {
+  width: 2px;
+  height: 12px;
+}
+
+/* Faded when disabled (Children minus at 0), as in the design */
+body.ts041-v2 [data-ts041-stepper] > button:disabled {
+  opacity: 0.4;
+}
+
+/* React's number stays in the page (it owns the real count) but our box is shown instead */
+body.ts041-v2 [data-ts041-stepper] > span {
+  display: none;
+}
+
+/* The typeable box: 64x40 on desktop. 22px text is above the 16px iOS needs to avoid zooming */
+body.ts041-v2 .ts041-box {
+  box-sizing: border-box;
+  width: 64px;
+  height: 40px;
+  margin: 0;
+  padding: 0 4px;
+  border: 1px solid #9b9b9b;
+  border-radius: 0;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  text-align: center;
+  cursor: text;
+}
+
+body.ts041-v2 .ts041-box:focus {
+  border-color: #1d6fb8;
+  outline: 2px solid #1d6fb8;
+  outline-offset: 0;
+}
+
+/* Modal rows grow 53px to 56px; the inline bar keeps its height */
+body.ts041-v2 [data-ts041-row="modal"] {
+  height: 56px;
+}
+
+/*
+  Inline bar (shows from 1280px): fields no longer share the width equally.
+  Adults and Children get more room so their labels stay on two lines,
+  Date and Search give some back. Tune the flex-grow numbers here.
+*/
+@media (min-width: 1280px) {
+  /* 1. Location: already truncates long names with "..." */
+  body.ts041-v2 [data-ts041-form="inline"] > :nth-child(1) {
+    flex: 1.3 1 0;
+    min-width: 0;
+  }
+
+  /* 2. Date: min-width keeps "06/08/2027" and its arrow from clipping */
+  body.ts041-v2 [data-ts041-form="inline"] > :nth-child(2) {
+    flex: 0.85 1 0;
+    min-width: 160px;
+  }
+
+  /* 3. Activity */
+  body.ts041-v2 [data-ts041-form="inline"] > :nth-child(3) {
+    flex: 1.15 1 0;
+    min-width: 0;
+  }
+
+  /* 4 and 5. Adults and Children: as wide as their content, so the label sits next to the buttons */
+  /* width: auto overrides the site's w-full (100%), which would otherwise take the whole bar */
+  body.ts041-v2 [data-ts041-form="inline"] > :has([data-ts041-row]) {
+    flex: 0 0 auto;
+    width: auto;
+  }
+
+  /* Fixed label width wraps "Adults (13 / years +)" and "Children (8-12 / years)" onto two lines */
+  body.ts041-v2 [data-ts041-row="inline"] > span {
+    flex: 0 0 auto;
+    width: 80px;
+  }
+
+  /* 6. Search */
+  body.ts041-v2 [data-ts041-form="inline"] > :last-child {
+    flex: 0.8 1 0;
+    min-width: 120px;
+  }
+}
+
+/* Narrow desktops (1280px to 1535px): 4px button gap to save room, still within the brief */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  body.ts041-v2 [data-ts041-row="inline"] [data-ts041-stepper] {
+    gap: 4px;
+  }
+
+  /* Brief allows 52px to 64px on desktop; the narrow bar uses the smallest */
+  body.ts041-v2 [data-ts041-row="inline"] .ts041-box {
+    width: 52px;
+  }
+}
+
+/* Mobile (below 768px): 44x44 buttons, 4px gap, 60px rows */
+@media (max-width: 767px) {
+  body.ts041-v2 [data-ts041-stepper] {
+    gap: 4px;
+  }
+
+  body.ts041-v2 [data-ts041-stepper] > button {
+    width: 44px;
+    height: 44px;
+  }
+
+  body.ts041-v2 [data-ts041-row="modal"] {
+    height: 60px;
+  }
+
+  body.ts041-v2 .ts041-box {
+    width: 56px;
+    height: 44px;
+  }
+}
