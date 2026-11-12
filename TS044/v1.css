@@ -1,0 +1,195 @@
+/* TS044 | Variation 1 | Time slots removed */
+
+.ts044 .ts044-intro,
+.ts044 .ts044-times,
+.ts044 .ts044-mobile-times,
+.ts044 .ts044-mobile-arrive {
+  display: none !important;
+}
+
+.ts044 .ts044-note {
+  margin: 0;
+  text-align: center;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.ts044 .ts044-note--mobile {
+  padding: 0 1rem 0.875rem;
+}
+
+.ts044 .ts044-mobile-book {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .ts044 .ts044-note--mobile {
+    display: none;
+  }
+
+  /* Card = image | middle | panel. The row height comes from the image (and the panel) */
+  /* Image height = (column - 16px padding each side) at 5:4. Every card shares it */
+  .ts044 {
+    --ts044-image-column: 20rem;
+    --ts044-image-height: calc((var(--ts044-image-column) - 32px) * 0.8);
+  }
+
+  .ts044 .ts044-card {
+    display: grid;
+    /* Panel = 35% of the card on every desktop width */
+    grid-template-columns: var(--ts044-image-column) minmax(0, 1fr) 35%;
+  }
+
+  .ts044 .ts044-image {
+    max-width: none;
+  }
+
+  /* Every image the same shape; "cover" crops instead of stretching */
+  .ts044 .ts044-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+  }
+
+  /* height 0 + min-height 100% = the middle never makes the card taller, it just fills the row.
+     16px top/bottom matches the image padding, so title and More details line up with the image */
+  .ts044 .ts044-content {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    min-height: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    overflow: hidden;
+  }
+
+  /* Badge beside the title at every desktop width (the site stacks it above below 1280px) */
+  .ts044 .ts044-title-row {
+    flex: none;
+    flex-direction: row;
+    gap: 16px;
+    padding-bottom: 8px;
+  }
+
+  /* Tighter than the site so a 2-line title + 3 USPs fit next to the image, as in the design */
+  .ts044 .ts044-title-row h3 {
+    line-height: 1;
+  }
+
+  .ts044 .ts044-description > div {
+    padding-top: 8px;
+  }
+
+  /* USPs take whatever space is left and get cut off, More details stays at the bottom */
+  .ts044 .ts044-details {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* Fade out whatever doesn't fit, instead of the site's "..." (which it hides at 768-1024px) */
+  .ts044 .ts044-description[aria-expanded="false"] {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    padding-bottom: 0;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 calc(100% - 32px),
+      transparent
+    );
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 32px), transparent);
+  }
+
+  .ts044 .ts044-description[aria-expanded="false"]::after {
+    content: none;
+  }
+
+  /* More details open: the card grows as usual so the full description shows */
+  .ts044
+    .ts044-card:has(.ts044-description[aria-expanded="true"])
+    .ts044-content {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Same colour as the card border; 16px top/bottom matches the image padding */
+  .ts044 .ts044-panel {
+    justify-content: flex-start;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    background: #fff;
+    border-left: 1px solid #938c85;
+  }
+
+  /* Content ends level with the image bottom, even when More details makes the card taller */
+  .ts044 .ts044-desktop {
+    justify-content: flex-end;
+    gap: 8px;
+    height: auto;
+    min-height: var(--ts044-image-height);
+    /* The site caps this at 320/448px; let it fill the wider panel */
+    max-width: none;
+  }
+
+  .ts044 .ts044-price {
+    margin-bottom: 0;
+  }
+
+  /* Price on top (right), code line underneath */
+  .ts044 .ts044-price-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .ts044 .ts044-amount {
+    order: -1;
+    align-self: flex-end;
+    gap: 2px;
+  }
+
+  /* "Regular price:" sits outside the struck-through span, so it isn't crossed out */
+  .ts044 .ts044-amount > span:first-child:has(.line-through)::before {
+    content: "Regular price:\00a0";
+    color: #5f5f5f;
+    text-transform: uppercase;
+  }
+
+  .ts044 .ts044-amount .text-primary {
+    display: none;
+  }
+
+  /* The % comes from the card's own "10% OFF" text (set in JS) */
+  .ts044 .ts044-amount[data-ts044-save]:has(.line-through)::after {
+    content: "Save " attr(data-ts044-save) " Online";
+    font-family: inherit;
+    text-transform: uppercase;
+  }
+
+  .ts044 .ts044-code {
+    flex: none;
+    flex-wrap: nowrap;
+    bottom: 0;
+    white-space: nowrap;
+  }
+
+  /* The chip already has a 4px gap after it */
+  .ts044 .ts044-code > span:last-child {
+    display: inline;
+  }
+
+  /* Slimmer than the site's 56px, as in the design, so the panel fits the image height */
+  .ts044 .ts044-book a {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .ts044 .ts044-note--desktop {
+    text-align: left;
+    line-height: 1.25;
+  }
+}
